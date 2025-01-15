@@ -1,0 +1,101 @@
+\RequirePackage{graphicx}              
+\RequirePackage{amsmath}               
+\RequirePackage{amsfonts}              
+\RequirePackage{amsthm}                
+\RequirePackage{amssymb}
+\RequirePackage{mathrsfs}
+\RequirePackage{url}
+\RequirePackage{xcolor}
+\RequirePackage{hyperref}
+\RequirePackage[inline]{enumitem}
+\RequirePackage{mathtools}
+\RequirePackage{bm}
+\RequirePackage{dsfont}
+
+
+\hypersetup{
+	unicode = true,
+	colorlinks = true,
+	citecolor = blue,
+	filecolor = blue,
+	linkcolor = blue,
+	urlcolor = blue,
+	pdfstartview = {FitH},
+}
+
+
+% theorem environments
+\@ifundefined{theorem}{
+    \theoremstyle{plain}
+    \newtheorem{theorem}{Theorem}[section]
+    \newtheorem{lemma}[theorem]{Lemma}
+    \newtheorem{corollary}[theorem]{Corollary}
+    \newtheorem{proposition}[theorem]{Proposition}
+    \newtheorem{claim}[theorem]{Claim}
+
+    \theoremstyle{definition}
+    \newtheorem{definition}[theorem]{Definition}
+    \newtheorem{conjecture}[theorem]{Conjecture}
+    \newtheorem{example}[theorem]{Example}
+    \newtheorem{algo-thm}{Algorithm}
+    \newtheorem{remark}{Remark}
+    \newtheorem{note}{Note}
+    \newtheorem{problem}{Problem}[section]
+    \newtheorem{fact}{Fact}
+}
+
+\newcommand{\tildO}{\tilde{O}}
+
+% roman numerals
+\newcommand{\romnum}[1]{\romannumeral #1}
+\newcommand{\Romnum}[1]{\uppercase\expandafter{\romannumeral #1}}
+
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+
+\DeclareMathOperator{\fieldchar}{char} % characteristic of a field
+\DeclareMathOperator{\End}{End} % endomorphism group
+\DeclareMathOperator{\Aut}{Aut} % automorphism group
+\DeclareMathOperator{\Tr}{Tr} % trace
+\DeclareMathOperator{\Gal}{Gal} % Galois
+\DeclareMathOperator{\order}{ord} % order
+\DeclareMathOperator{\lcm}{lcm} % least common multiple
+\DeclareMathOperator{\divisor}{div} % divisor on a curve
+\DeclareMathOperator{\Cl}{Cl} % class (group)
+\DeclareMathOperator{\Ell}{Ell} % set of elliptic curves
+\DeclareMathOperator{\supp}{supp} % support
+\DeclareMathOperator{\norm}{N} % norm
+\DeclareMathOperator{\negl}{negl} % negligible
+\DeclareMathOperator{\Res}{Res} % Resultant or Residue, ...
+\DeclareMathOperator{\GL}{GL} % general linear group
+\DeclareMathOperator{\minpoly}{minpoly} % minimal polynomial
+\DeclareMathOperator{\poly}{poly} % polynomial
+\DeclareMathOperator{\rev}{rev} % reverse
+\DeclareMathOperator{\entpy}{H} % entropy
+\let\hom\relax
+\DeclareMathOperator{\Hom}{Hom} % Hom
+\DeclareMathOperator{\img}{Im} % Image of a map
+\DeclareMathOperator{\E}{\mathbb{E}} % expectation
+
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\ket}{\lvert}{\rangle}
+\DeclarePairedDelimiter{\bra}{\langle}{\rvert}
+\DeclarePairedDelimiterX{\braket}[2]{\langle}{\rangle}{#1 \delimsize\vert #2}
+\DeclarePairedDelimiter{\lrang}{\langle}{\rangle}
+\DeclarePairedDelimiter{\opnorm}{\lVert}{\rVert}
+
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\K}{\mathbb{K}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\F}{\mathbb{F}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\MM}{\mathsf{M}}
+\newcommand{\CC}{\mathsf{C}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\SX}{\mathcal{S(X)}}
+\newcommand{\U}{\mathcal{U}} % uniform dist
+\newcommand{\PosSemi}{\mathrm{Pos}} % Positive semidefinite
