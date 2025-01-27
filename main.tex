@@ -141,15 +141,66 @@ Entanglement, along with superposition, forms the backbone of quantum computing 
 
 
 \subsection*{Quantum Gates and Circuits}
-Quantum gates are the operational primitives of quantum computation. They manipulate qubits by altering their states in a manner consistent with quantum mechanics. Examples include:
-\begin{itemize}
-    \item \textbf{Hadamard Gate ($H$)}: Creates superposition from a basis state.
-    \item \textbf{Pauli Gates ($X, Y, Z$)}: Rotate qubit states around different axes.
-    \item \textbf{CNOT Gate}: Entangles two qubits by flipping the second qubit based on the state of the first.
-\end{itemize}
-A sequence of quantum gates forms a \textit{quantum circuit}, analogous to classical logic circuits but with exponentially richer possibilities due to quantum parallelism.
 
 
+Quantum logic gates are the fundamental building blocks of quantum circuits, manipulating qubits—the basic units of quantum information. Unlike classical logic gates, quantum gates are reversible and represented by unitary matrices, ensuring the preservation of quantum information.
+
+\subsection*{Key Quantum Logic Gates}
+
+\subsubsection*{1. Pauli-X Gate (NOT Gate)}
+\textbf{Operation:} Flips the state of a qubit from $|0\rangle$ to $|1\rangle$ and vice versa. \\
+\textbf{Matrix Representation:}
+\[
+X = 
+\begin{bmatrix}
+0 & 1 \\
+1 & 0
+\end{bmatrix}
+\]
+
+\subsubsection*{2. Hadamard Gate (H Gate)}
+\textbf{Operation:} Creates a superposition state, transforming $|0\rangle$ into $\frac{|0\rangle + |1\rangle}{\sqrt{2}}$ and $|1\rangle$ into $\frac{|0\rangle - |1\rangle}{\sqrt{2}}$. \\
+\textbf{Matrix Representation:}
+\[
+H = \frac{1}{\sqrt{2}}
+\begin{bmatrix}
+1 & 1 \\
+1 & -1
+\end{bmatrix}
+\]
+
+\subsubsection*{3. Controlled-NOT Gate (CNOT Gate)}
+\textbf{Operation:} A two-qubit gate that flips the state of the target qubit if the control qubit is in the state $|1\rangle$. \\
+\textbf{Matrix Representation:}
+\[
+CNOT =
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 0
+\end{bmatrix}
+\]
+
+\subsubsection*{4. Toffoli Gate (CCNOT Gate)}
+\textbf{Operation:} A three-qubit gate that flips the state of the target qubit if both control qubits are in the state $|1\rangle$. \\
+\textbf{Matrix Representation:}
+\[
+CCNOT =
+\begin{bmatrix}
+1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0 & 0 & 0 & 1 & 0
+\end{bmatrix}
+\]
+
+\subsection*{Universal Gates}
+A set of gates is considered \textbf{universal} if any unitary operation can be approximated to arbitrary precision using a sequence of gates from this set. For example, single-qubit rotation gates combined with the CNOT gate form a universal set, enabling the construction of any quantum algorithm.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction to Quantum Walks}
@@ -158,81 +209,125 @@ A sequence of quantum gates forms a \textit{quantum circuit}, analogous to class
 The concept of a \textit{quantum walk} is a quantum analog of the classical random walk and plays a significant role in quantum algorithms. There are two main types of quantum walks: \textit{continuous-time} and \textit{discrete-time} quantum walks, both of which exhibit behaviors that are significantly different from classical random walks.
 
 \section*{Continuous-Time Quantum Walks}
-A \textit{continuous-time quantum walk} is defined on a graph, where the evolution of the system is governed by a differential equation similar to the Schrödinger equation:
-\[
-i\frac{d}{dt}q(t) = Hq(t),
-\]
-where the Hamiltonian \( H \) is an \( N \times N \) Hermitian matrix, with \( H_{jk} = 0 \) if and only if vertices \( j \) and \( k \) are not connected. The vector \( q(t) \in \mathbb{C}^N \) contains the complex amplitudes corresponding to each vertex. Notably, the state space for the quantum walk is the same as that for the corresponding classical random walk.
 
-One important matrix associated with the graph \( G \) is the \textit{Laplacian matrix}, defined as:
+
+Classical continuous-time random walks (Markov chains) are a foundational concept in stochastic processes, where time is treated as a continuous variable. In this framework, a walker moves from one vertex of a graph to an adjacent vertex at any time, with probabilities evolving over time. The probability of the walker being at a vertex can be visualized as a liquid seeping from one vertex to its neighbors. Initially, the walker is most likely to be found at the starting vertex, but as time progresses, the probability shifts to neighboring vertices. This dynamic is governed by a constant transition rate \( \gamma \), uniform across all vertices and time.
+
+To model this mathematically, the probability of transitioning from one vertex to another in an infinitesimal time interval \( \Delta t \) is proportional to \( \gamma \Delta t \). For a vertex \( x_j \) with degree \( d_j \) (the number of neighboring vertices), the probability of the walker staying on \( x_j \) is 
+
 \[
-L_{jk} =
-\begin{cases}
--\text{deg}(j) & \text{if } j = k, \\
-1 & \text{if } (j, k) \in E, \\
-0 & \text{otherwise}.
-\end{cases}
+1 - d_j \gamma \Delta t,
 \]
 
-The continuous-time random walk on \( G \) is then defined as the solution to the differential equation:
-\[
-\frac{d}{dt} p_j(t) = \sum_{k \in V} L_{jk} p_k(t),
-\]
-where \( p_j(t) \) represents the probability at vertex \( j \) at time \( t \). The solution to this equation can be expressed in closed form as:
-\[
-p(t) = e^{Lt} p(0),
-\]
-where \( L \) is the Laplacian matrix and \( p(0) \) is the initial condition.
+while the probability of transitioning to a neighboring vertex is 
 
-This equation closely resembles the Schrödinger equation, but it lacks the factor \( i \). By adding this factor and redefining the probabilities \( p_j(t) \) as quantum amplitudes \( q_j(t) = \langle j|\psi(t)\rangle \) (where \( \{ |j\rangle : j \in V \} \) is an orthonormal basis for the Hilbert space), we obtain:
 \[
-i \frac{d}{dt} q_j(t) = \sum_{k \in V} L_{jk} q_k(t),
-\]
-which is the Schrödinger equation with the Laplacian of the graph as the Hamiltonian. Since the Laplacian is a Hermitian operator, these dynamics preserve normalization:
-\[
-\frac{d}{dt} \sum_{j \in V} |q_j(t)|^2 = 0.
+\gamma \Delta t.
 \]
 
-The solution to this differential equation is:
+The evolution of probabilities over time is captured by the transition matrix \( M(t) \), where the entry \( M_{ij}(t) \) represents the probability of transitioning from vertex \( x_j \) to vertex \( x_i \) in time \( t \). The dynamics of the system are described by a differential equation derived from the transition matrix and an auxiliary matrix \( H \), known as the generating matrix. This equation, 
+
 \[
-|\psi(t)\rangle = e^{-iLt} |\psi(0)\rangle.
+\frac{dM(t)}{dt} = -H M(t),
 \]
 
-A continuous-time quantum walk can also be defined using any Hermitian Hamiltonian that respects the structure of \( G \).
+has a solution expressed as 
 
-\subsection*{Differences from Classical Random Walks}
-The evolution of a quantum walk, governed by a Hamiltonian, dictates state transitions over time while preserving normalization. This contrasts with classical random walks, which involve probabilistic transitions. Moreover, the wave nature of quantum mechanics introduces interference effects, enabling faster exploration of graphs compared to classical methods. For instance, on one-dimensional graphs, a classical random walk progresses at a rate proportional to the square root of time, while a quantum walk progresses linearly with time due to the wave-like propagation of quantum states.
+\[
+M(t) = e^{-Ht},
+\]
+
+which allows for the computation of probability distributions at any given time. The solution is verified using the Taylor series expansion of the exponential function.
+
+The passage from classical continuous-time Markov chains to quantum walks involves a standard quantization process. In classical random walks, probabilities evolve via the transition matrix \( M \). In contrast, the quantization process replaces the vector of probabilities with a state vector (probability amplitudes) and the non-unitary transition matrix with a unitary evolution operator, as required by quantum mechanics. This involves transforming the generating matrix \( H \) into a Hermitian operator and then constructing a unitary operator 
+
+\[
+U(t) = e^{-iHt}
+\]
+
+by multiplying \( H \) with the imaginary unit \( i \).
+
+In a continuous-time quantum walk, the quantum state evolves over time according to the unitary operator \( U(t) \). If the initial state of the system is \( |\psi(0)\rangle \), the state at time \( t \) is given by 
+
+\[
+|\psi(t)\rangle = U(t) |\psi(0)\rangle.
+\]
+
+The probability distribution for observing the walker at a specific vertex \( k \) is computed as 
+
+\[
+p_k = |\langle k | \psi(t) \rangle|^2,
+\]
+
+where \( |k\rangle \) represents the state corresponding to vertex \( k \).
+
+The continuous-time quantum walk introduces several key differences from its classical counterpart. Unlike classical random walks, which rely on probabilities, quantum walks involve probability amplitudes, enabling interference effects. These effects allow quantum walks to explore the graph more efficiently, leading to applications in quantum algorithms with speedups over classical approaches. Additionally, the transition matrix in classical random walks is replaced with a Hermitian operator in the quantum case, ensuring unitary evolution.
+
+
+
+*********Examples and further discussions here*********
+
+
+% Overall, the transition from classical continuous-time Markov chains to continuous-time quantum walks highlights fundamental differences between classical and quantum dynamics, particularly the role of interference and the constraints of unitary evolution in quantum systems. These differences underscore the potential of quantum walks in quantum computing and algorithm design.
+
+
+
 
 \section*{Discrete-Time Quantum Walks}
-\textit{Discrete-time quantum walks}, though more complex to define, provide a convenient framework for certain quantum algorithms, particularly quantum search algorithms.
+*******************
+The discrete-time coined quantum walk (DTQW) is a quantum analog of classical random walks, leveraging the principles of quantum mechanics to achieve unique computational and dynamical properties. It is defined on a graph or lattice, with the walker's state described by both its position and an internal "coin" state. The walker's position \( n \) on a one-dimensional lattice (line) is represented by a vector \( |n\rangle \) in an infinite-dimensional Hilbert space \( \mathcal{H}_P \), where the computational basis for \( \mathcal{H}_P \) is 
 
-In the simplest classical discrete-time random walk on a graph \( G \), at each time step, the walker moves from a given vertex to one of its neighbors with equal probability. This process is described by a \( |V| \times |V| \) matrix \( M \), where:
 \[
-M_{jk} = 
-\begin{cases} 
-\frac{1}{\text{deg}(k)} & \text{if } (j, k) \in E, \\
-0 & \text{otherwise}.
-\end{cases}
+\{ |n\rangle : n \in \mathbb{Z} \}.
 \]
-The initial probability distribution \( p \) over the vertices updates to \( p' = M p \) after one step.
 
-For quantum walks, maintaining unitarity requires a \textit{coin operator} \( C \) to determine the direction of the next step. A common choice for the coin operator is the Grover diffusion operator, defined as:
-\[
-C := \sum_{j \in V}\ket{j}\bra{j} \otimes (2\ket{\partial_j}\bra{\partial_j} - I),
-\]
-where:
-\[
-\ket{\partial_j} := \frac{1}{\sqrt{\deg(j)}} \sum_{k:(j,k) \in E}\ket{k},
-\]
-denotes the superposition of the neighboring vertices of \( \ket{j} \), and \( I \) is the identity matrix.
+The walker's internal state, or "coin," is represented by a two-dimensional Hilbert space \( \mathcal{H}_C \) with basis states \( |0\rangle \) and \( |1\rangle \). The coin state determines the direction of the walker's movement, and the total state of the system resides in the tensor product space 
 
-One step of the discrete-time quantum walk is described by the unitary operator \( SC \), where \( S \) is the swap operator:
 \[
-S = \sum_{(j,k) \in E}\ket{j,k}\bra{k,j}.
+\mathcal{H} = \mathcal{H}_C \otimes \mathcal{H}_P,
 \]
+
+combining the coin and position spaces.
+
+The dynamics of the walk are governed by two key operators: the coin operator and the shift operator. The coin is represented by a unitary matrix \( C \) acting on \( \mathcal{H}_C \). Common choices include the Hadamard matrix, which creates superpositions of the coin states. The Hadamard coin operator \( H \) is defined as 
+
+\[
+H = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}.
+\]
+
+The shift operator \( S \) moves the walker based on the coin state. For example, if the coin state is \( |0\rangle \), the walker moves to \( |n+1\rangle \), and if the coin state is \( |1\rangle \), the walker moves to \( |n-1\rangle \). The shift operator is explicitly given by 
+
+\[
+S = \sum_{n} |n+1\rangle \langle n| \otimes |0\rangle \langle 0| + |n-1\rangle \langle n| \otimes |1\rangle \langle 1|.
+\]
+
+The evolution of the system is described by the unitary operator 
+
+\[
+U = S \cdot (I \otimes C),
+\]
+
+where \( I \) is the identity operator on \( \mathcal{H}_P \). The state of the walker at time \( t+1 \) is given by 
+
+\[
+|\psi(t+1)\rangle = U |\psi(t)\rangle.
+\]
+
+Consider a quantum walk on a one-dimensional lattice. The walker's state evolves in superposition, allowing it to explore multiple paths simultaneously. Interference between these paths leads to faster spreading compared to classical random walks.
+
+Key features of DTQW include superposition, where the walker exists in a superposition of positions and coin states, enabling parallel exploration of multiple paths; interference, where quantum interference enhances or suppresses certain paths, leading to non-classical behavior; and quadratic speedup, where quantum walks spread faster than classical random walks, often quadratically, which is advantageous for algorithmic applications.
+
+DTQWs are used in quantum algorithms, such as quantum search and graph traversal, and in simulating physical systems like energy transport in photosynthesis. They also serve as a framework for universal quantum computation. The discrete-time quantum walk is a powerful tool in quantum computing, offering a rich interplay between quantum mechanics and graph theory. Its ability to exploit superposition and interference enables applications in algorithm design, simulation, and computation, making it a cornerstone of quantum information science.
+
+*********Examples and further discussions here*********
+
 
 \subsection*{Comparison of Models}
-The continuous-time model is simpler to define and analyze, often leading to exponential speedups under specific conditions, such as graphs with small maximum degrees. However, discrete-time quantum walks are easier to implement using quantum circuits, making them more practical in many applications. For example, while continuous-time models may struggle with certain problems like \textit{element distinctness}, discrete-time models handle them more effectively.
+
+From a computational standpoint, both continuous-time and discrete-time quantum walks offer distinct advantages. The continuous-time quantum walk is often considered more natural because it does not require expanding the state space, making it simpler to define and typically easier to analyze. For example, while the exponential speedup demonstrated by continuous-time quantum walks is widely believed to extend to the discrete-time model, the dynamics of the latter are more complex. To date, no rigorous analysis has been provided to confirm this extension.
+
+In contrast, the discrete-time quantum walk is generally more straightforward to implement using quantum circuits. Implementing continuous-time quantum walks, however, often relies on techniques that require the graph's maximum degree to be small. This constraint makes certain algorithms challenging to replicate using continuous-time quantum walks. Therefore, while continuous-time quantum walks excel in simplicity and analytical tractability, discrete-time quantum walks offer greater practicality and ease of implementation in quantum computing applications.
+
 
 
 
