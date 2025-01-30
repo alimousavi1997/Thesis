@@ -418,19 +418,64 @@ Alternatively, the group action can be viewed as a homomorphism \( \phi : G \to 
 
 \section*{Groups and Characters}
 
+
+\section{Abelian Groups}
+
+An \textbf{abelian group} (also called a \textbf{commutative group}) is a set \( G \) equipped with a binary operation \( \cdot \) (usually written as addition \( + \) or multiplication \( \cdot \)) that satisfies the following four group axioms, along with an additional \textbf{commutativity} property.
+
+\subsection{Axioms of an Abelian Group}
+A set \( G \) with a binary operation \( \cdot \) is an \textbf{abelian group} if the following conditions hold:
+
+\begin{enumerate}
+    \item \textbf{Closure}:  
+    For all \( a, b \in G \), the operation \( a \cdot b \) produces another element in \( G \):
+
+    \[
+    a \cdot b \in G.
+    \]
+
+    \item \textbf{Associativity}:  
+    For all \( a, b, c \in G \), the operation satisfies:
+
+    \[
+    (a \cdot b) \cdot c = a \cdot (b \cdot c).
+    \]
+
+    \item \textbf{Identity Element}:  
+    There exists an element \( e \in G \) such that for all \( a \in G \):
+
+    \[
+    e \cdot a = a \cdot e = a.
+    \]
+
+    This element \( e \) is called the \textbf{identity element}.
+
+    \item \textbf{Inverse Element}:  
+    For every element \( a \in G \), there exists an element \( a^{-1} \in G \) such that:
+
+    \[
+    a \cdot a^{-1} = a^{-1} \cdot a = e.
+    \]
+
+    \item \textbf{Commutativity (Abelian Property)}:  
+    For all \( a, b \in G \), the operation is \textbf{commutative}:
+
+    \[
+    a \cdot b = b \cdot a.
+    \]
+
+\end{enumerate}
+
+Since abelian groups satisfy commutativity, they allow more flexible mathematical operations and structure, leading to applications in algebra, number theory, and topology.
+
+\subsection{Characters of Abelian Groups}
 Let \( G \) be an abelian group. A function  
 
 \[
 \chi: G \to \mathbb{C}^{\times}
 \]
 
-that maps \( G \) to the group of nonzero complex numbers  
-
-\[
-\mathbb{C}^{\times} = \mathbb{C} \setminus \{0\}
-\]
-
-is called a \textbf{character} of \( G \) if it is a \textbf{group homomorphism}. That is, for all \( g_1, g_2 \in G \), the function satisfies:  
+that maps \( G \) to the group of nonzero complex numbers  \(\mathbb{C}^{\times} = \mathbb{C} \setminus \{0\}\), is called a \textbf{character} of \( G \) if it is a \textbf{group homomorphism}. That is, for all \( g_1, g_2 \in G \), the function satisfies:  
 
 \[
 \chi(g_1 g_2) = \chi(g_1) \chi(g_2).
