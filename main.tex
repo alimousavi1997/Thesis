@@ -413,14 +413,171 @@ Alternatively, the group action can be viewed as a homomorphism \( \phi : G \to 
     A subset \( Y \subseteq X \) is \textbf{invariant} under the action if \( g \cdot y \in Y \) for all \( g \in G \) and \( y \in Y \).
 \end{enumerate}
 
-\subsection*{Equivalence Relations Induced by Group Actions}
 
-The orbits of a group action define an equivalence relation on \( X \), where \( x \sim y \) if there exists \( g \in G \) such that \( g \cdot x = y \).
+
+
+\section*{Groups and Characters}
+
+Let \( G \) be an abelian group. A function  
+
+\[
+\chi: G \to \mathbb{C}^{\times}
+\]
+
+that maps \( G \) to the group of nonzero complex numbers  
+
+\[
+\mathbb{C}^{\times} = \mathbb{C} \setminus \{0\}
+\]
+
+is called a \textbf{character} of \( G \) if it is a \textbf{group homomorphism}. That is, for all \( g_1, g_2 \in G \), the function satisfies:  
+
+\[
+\chi(g_1 g_2) = \chi(g_1) \chi(g_2).
+\]
+
+\section*{Character Values for Finite Groups}
+
+If \( \chi \) is a character of a finite group (or more generally, a torsion group) \( G \), then each function value \( \chi(g) \) is a root of unity. This follows because, for each \( g \in G \), there exists some integer \( k \in \mathbb{N} \) such that:  
+
+\[
+g^k = e.
+\]
+
+Applying \( \chi \) to both sides, we obtain:  
+
+\[
+\chi(g)^k = \chi(g^k) = \chi(e) = 1.
+\]
+
+
+\section*{Number of Characters in a Finite Abelian Group}
+
+A \textbf{finite abelian group} of order \( n \) has exactly \( n \) distinct characters, denoted by:  
+
+\[
+\chi_1, \chi_2, \dots, \chi_n.
+\]
+
+The function \( \chi_1 \), defined by:  
+
+\[
+\chi_1(g) = 1, \quad \forall g \in G,
+\]
+
+is called the \textbf{principal character} of \( G \). The remaining \( n-1 \) characters are referred to as \textbf{non-principal characters}.
+
+\section*{Character Group}
+
+If \( G \) is an abelian group, the set of characters \( \{\chi_k\} \) forms an abelian group under pointwise multiplication, defined as:  
+
+\[
+(\chi_j \chi_k)(g) = \chi_j(g) \chi_k(g), \quad \forall g \in G.
+\]
+
+This group is called the \textbf{character group} of \( G \) and is often denoted as $\hat{G}$.  
+The \textbf{identity element} of \( \hat{G} \) is the principal character \( \chi_1 \), and the \textbf{inverse} of a character \( \chi_k \) is its reciprocal:  
+
+\[
+(\chi_k)^{-1} = \frac{1}{\chi_k}.
+\]
+
+If \( G \) is finite of order \( n \), then the character group \( \hat{G} \) is also of order \( n \). In this case, since  
+
+\[
+|\chi_k(g)| = 1, \quad \forall g \in G,
+\]
+
+the inverse of a character is simply its \textbf{complex conjugate}:
+
+\[
+\chi_k^{-1}(g) = \overline{\chi_k(g)}.
+\]
+
+
+
+\section{Quantum Fourier Transform}
+
+The \textbf{Quantum Fourier Transform (QFT)} is one of the most fundamental unitary transformations in quantum computing. It plays a crucial role in quantum algorithms, including Shor’s algorithm for integer factorization and quantum phase estimation. The QFT is the quantum analog of the classical discrete Fourier transform (DFT) but operates on quantum states, enabling efficient quantum computation of Fourier coefficients.
+
+In this section, we discuss the QFT in the context of abelian groups, with a focus on its implementation over \( \mathbb{Z}_{2^n} \), one of the most commonly used finite groups in quantum algorithms, including quantum walks.
+
+\section{Quantum Fourier Transform Over an Abelian Group}
+
+Let \( G \) be an abelian group. The \textbf{Quantum Fourier Transform} over \( G \) is defined as:
+
+\[
+F_G = \frac{1}{\sqrt{|G|}} \sum_{x \in G} \sum_{y \in \hat{G}} \chi_y(x) | y \rangle \langle x |
+\]
+
+where:
 
 \begin{itemize}
-    \item \textbf{Equivalence Classes}: The orbits of the action.
-    \item \textbf{Quotient Set}: The set of orbits, denoted \( X/G \).
+    \item \( \hat{G} \) is a complete set of characters of \( G \).
+    \item \( \chi_y(x) \) denotes the \( y \)th character of \( G \), evaluated at \( x \).
+    \item \( |x\rangle \) and \( |y\rangle \) are quantum states corresponding to elements of \( G \) and its dual group \( \hat{G} \).
 \end{itemize}
+
+Since \( G \) and \( \hat{G} \) are isomorphic, it is often useful to label the elements of \( \hat{G} \) using elements of \( G \). The unitary nature of the QFT follows from the \textbf{orthogonality of characters}.
+
+
+
+
+\subsection{QFT Over \( \mathbb{Z}_{2^n} \)}
+
+The QFT over \( G = \mathbb{Z}_{2^n} \) is defined as:
+
+\[
+F_{\mathbb{Z}_{2^n}} = \frac{1}{\sqrt{2^n}} \sum_{x,y \in \mathbb{Z}_{2^n}} \omega_{2^n}^{xy} | y \rangle \langle x |
+\]
+
+where:
+
+\[
+\omega_m = e^{2\pi i / m}
+\]
+
+is the \textbf{primitive} \( m \)th root of unity. This transformation maps an input basis state \( |x\rangle \) as follows:
+
+\[
+| x \rangle \to \frac{1}{\sqrt{2^n}} \sum_{y \in \mathbb{Z}_{2^n}} \omega_{2^n}^{xy} | y \rangle.
+\]
+
+This equation represents a \textbf{linear transformation} where each input state \( |x\rangle \) is mapped to a superposition of all basis states, weighted by phase factors.
+
+\subsection{Binary Representation and QFT Implementation}
+
+To implement this transformation efficiently, it is useful to express \( x \) and \( y \) in binary form:
+
+\[
+x = x_{n-1} x_{n-2} \dots x_1 x_0.
+\]
+
+The exponent in the Fourier transform formula can then be rewritten using its binary expansion:
+
+\[
+\omega_{2^n}^{xy} = e^{2\pi i x \sum_{k=0}^{n-1} y_k 2^k / 2^n}.
+\]
+
+Rewriting the transformation explicitly:
+
+\[
+| x \rangle \to \frac{1}{\sqrt{2^n}} \sum_{y \in \mathbb{Z}_{2^n}} e^{2\pi i x \sum_{k=0}^{n-1} y_k 2^k / 2^n} | y \rangle.
+\]
+
+This can be decomposed into a \textbf{tensor product of single-qubit states}, where each qubit state depends on the least significant bits of \( x \):
+
+\[
+\bigotimes_{k=0}^{n-1} | z_k \rangle.
+\]
+
+where
+
+\[
+| z_k \rangle = \frac{1}{\sqrt{2}} ( | 0 \rangle + e^{2\pi i ( x_0 2^{-n+k} + x_1 2^{-n+k+1} + \dots + x_{n-1} 2^{-1} )} | 1 \rangle ).
+\]
+
+This decomposition highlights the \textbf{hierarchical dependence of qubits on the binary digits of \( x \)}, making it possible to implement the QFT using \textbf{Hadamard gates and controlled phase shift gates}.
 
 
 \subsection*{Quantum walks from Group Actions}
