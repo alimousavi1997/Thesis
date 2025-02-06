@@ -625,6 +625,161 @@ where
 This decomposition highlights the \textbf{hierarchical dependence of qubits on the binary digits of \( x \)}, making it possible to implement the QFT using \textbf{Hadamard gates and controlled phase shift gates}.
 
 
+\subsection*{Cayley graphs}
+
+A Cayley graph is a graphical representation of a group based on a chosen set of generators. It is widely used in algebra, combinatorics, and theoretical computer science to study group structures and their applications in network theory, quantum computing, and cryptography.
+
+
+\section*{Definition of Cayley Graphs}
+
+A \textit{Cayley graph} is a graph that encodes the structure of a group with respect to a chosen generating set. Formally, let \( G \) be a group and \( S \) be a subset of \( G \) that serves as a generating set, meaning every element of \( G \) can be expressed as a finite product of elements from \( S \). The Cayley graph \( \Gamma(G, S) \) is defined as follows. The vertex set of the graph consists of the elements of \( G \), where each vertex corresponds to a unique group element. The edge set is constructed by drawing a directed edge from vertex \( g \) to vertex \( gs \) for each \( g \in G \) and \( s \in S \). If the generating set \( S \) is symmetric, meaning that whenever \( s \in S \), its inverse \( s^{-1} \) is also in \( S \), then the Cayley graph is undirected; otherwise, it is a directed graph.
+For example, For the cyclic group \( G = \mathbb{Z}_n = \{0,1,2,\dots, n-1\} \) with the generating set \( S = \{\pm 1\} \), the Cayley graph forms a cycle graph. In this graph, each vertex \( j \) is connected to \( j+1 \mod n \) and \( j-1 \mod n \), creating a cyclic structure.
+
+
+\section*{Quantum walks on Cayley graphs}
+Quantum walks on Cayley graphs play a crucial role in quantum computing, quantum search algorithms, and mathematical physics due to their deep connection with group theory and symmetry. The structured nature of Cayley graphs, derived from group elements and generators, ensures uniform exploration of the graph, leading to faster propagation compared to classical random walks. This property is particularly valuable in quantum algorithms, where quantum walks on Cayley graphs have been used to achieve exponential speedups in search and optimization problems. Additionally, their spectral properties, determined by the adjacency matrix and Fourier analysis on groups, provide insights into mixing times, state localization, and quantum transport phenomena. These advantages make Cayley graphs an essential framework for designing scalable and efficient quantum algorithms, offering a powerful bridge between algebraic structures and quantum mechanics.
+
+
+
+
+\section*{Discrete-Time Quantum Walk on Cayley Graphs}
+
+A discrete-time quantum walk on a Cayley graph requires a coin operator to maintain unitary evolution.
+
+\subsection*{State Space}
+The Hilbert space of the quantum walk is:
+\[
+\mathcal{H} = \mathcal{H}_G \otimes \mathcal{H}_C,
+\]
+where:
+\begin{itemize}
+    \item \( \mathcal{H}_G \) is the space spanned by group elements (vertices).
+    \item \( \mathcal{H}_C \) is the coin space, which determines movement directions.
+\end{itemize}
+
+Each state is represented as:
+\[
+|\psi\rangle = \sum_{g \in G} \sum_{s \in S} \alpha_{g,s} |g\rangle \otimes |s\rangle,
+\]
+where \( |g\rangle \) is the vertex state and \( |s\rangle \) represents the coin state.
+
+\subsection*{Evolution Operators}
+\textbf{Coin Flip Operator (\( C \))}: This unitary operator acts on the coin space to create a superposition of movement directions. A common choice is the Grover or Hadamard operator.
+
+\textbf{Shift Operator (\( S \))}: Moves the walker according to the group structure:
+\[
+S |g\rangle \otimes |s\rangle = |gs\rangle \otimes |s\rangle.
+\]
+This means that if the walker is at vertex \( g \) with a coin state \( s \), it moves to \( gs \).
+
+\textbf{Full Step Evolution}:
+\[
+U = S (C \otimes I),
+\]
+where \( U \) is the total unitary evolution per step.
+
+The probability of finding the walker at a particular vertex \( g \) after \( t \) steps is given by:
+\[
+P(g, t) = \sum_{s \in S} |\langle g, s | \psi(t) \rangle |^2.
+\]
+
+
+\section*{Continuous-Time Quantum Walk on Cayley Graphs}
+
+A continuous-time quantum walk on a Cayley graph follows a different evolution, governed by the Hamiltonian.
+
+\subsection*{Hamiltonian and Evolution}
+The evolution of the quantum walk is determined by the Schrödinger equation:
+\[
+i \frac{d}{dt} |\psi(t)\rangle = H |\psi(t)\rangle.
+\]
+Here, the Hamiltonian \( H \) is usually chosen as:
+\[
+H = A(\Gamma(G,S)),
+\]
+where \( A \) is the adjacency matrix of the Cayley graph:
+
+\[
+A_{g,h} =
+\begin{cases}
+1, & \text{if } h = gs \text{ for some } s \in S, \\
+0, & \text{otherwise}.
+\end{cases}
+\]
+ Alternatively, the Laplacian \( L \) can be used:
+\[
+H = L = D - A,
+\]
+where \( D \) is the degree matrix:
+
+\[
+D_{ij} =
+\begin{cases}
+\deg(v_i), & \text{if } i = j, \\
+0, & \text{otherwise}.
+\end{cases}
+\]
+
+Here, \( \deg(v_i) \) is the degree of vertex \( v_i \), which is the number of edges connected to \( v_i \).
+
+
+The solution to the quantum walk is given by:
+\[
+|\psi(t)\rangle = e^{-i H t} |\psi(0)\rangle.
+\]
+This means the probability amplitude at a vertex \( g \) spreads over time according to the unitary evolution operator \( e^{-i H t} \).
+
+
+\section*{Spectral Decomposition of the Adjacency Matrix of a Cayley Graph}
+
+The spectral decomposition of the adjacency matrix of a Cayley graph involves expressing the adjacency matrix in terms of its eigenvalues and eigenvectors. This decomposition is particularly useful for understanding the behavior of quantum walks, graph connectivity, expansion properties, and random walks on the graph.
+
+Spectral decomposition expresses \( A \) in terms of its eigenvalues and eigenvectors:
+\[
+A = \sum_{j} \lambda_j P_j,
+\]
+where:
+\begin{itemize}
+    \item \( \lambda_j \) are the eigenvalues of \( A \).
+    \item \( P_j \) are the projection matrices onto the corresponding eigenspaces.
+\end{itemize}
+
+Since Cayley graphs are highly structured, their eigenvalues and eigenvectors often have explicit formulas based on group representation theory and Fourier analysis on groups.
+
+For a finite group \( G \), the Fourier transform on groups helps diagonalize \( A \). The eigenvalues of \( A \) are computed as:
+\[
+\lambda_\rho = \sum_{s \in S} \rho(s),
+\]
+where \( \rho \) is an irreducible representation of \( G \). The set of eigenvalues depends on the sum over generators in the group's representation.
+
+For Abelian groups (e.g., \( \mathbb{Z}_n \)), the irreducible representations are characters, simplifying the spectral decomposition.
+
+For non-Abelian groups, the decomposition involves matrix-valued representations.
+
+\subsection*{Example: Cyclic Group \( \mathbb{Z}_n \)}
+
+Consider the Cayley graph of \( \mathbb{Z}_n \) with generator set \( S = \{\pm 1\} \), which forms a cycle graph. The adjacency matrix is:
+\[
+A_{jk} =
+\begin{cases}
+1, & \text{if } k = j \pm 1 \mod n, \\
+0, & \text{otherwise}.
+\end{cases}
+\]
+
+Its eigenvalues are:
+\[
+\lambda_k = 2\cos\left(\frac{2\pi k}{n}\right),
+\]
+with eigenvectors given by the discrete Fourier transform (DFT) basis:
+\[
+\psi_k(j) = e^{\frac{2\pi i k j}{n}}.
+\]
+
+This result generalizes to other Abelian groups, where the eigenvectors are given by the Fourier basis of the group.
+
+
+
 \subsection*{Quantum walks from Group Actions}
 The spectral decomposition of the adjacency matrix of a Cayley graph generated by a general group action $G$ provides insights into the structure and properties of the graph. This decomposition leverages the symmetries of the group $G$ and representation theory to analyze the eigenvalues and eigenvectors of the adjacency matrix.
 
