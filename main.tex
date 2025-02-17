@@ -833,42 +833,42 @@ where $A(g)$ is the action of $g$ as represented in the adjacency matrix.
 \]
 
 
-
+\section{Applicaions}
 \section{Quantum Money}
 
 
 \section*{Introduction to Quantum Money}
 Quantum money is a revolutionary concept in cryptography that uses quantum mechanics to create a form of currency that is provably secure against forgery. Originally introduced by physicist Stephen Wiesner in the 1970s, quantum money represents one of the earliest proposed applications of quantum information science. By encoding information into quantum states, quantum money exploits the fundamental principles of quantum mechanics to provide security features unattainable by classical systems.
 
-\section*{How Quantum Money Works}
-At its core, quantum money relies on two key principles of quantum mechanics: the \textit{no-cloning theorem} and the \textit{observer effect}.
+% \section*{How Quantum Money Works}
+% At its core, quantum money relies on two key principles of quantum mechanics: the \textit{no-cloning theorem} and the \textit{observer effect}.
 
-\subsection*{Encoding Information in Quantum States}
-\begin{itemize}
-    \item Each quantum bill contains a unique quantum state, such as a set of qubits encoded in superposition.
-    \item These states are generated and stored by the issuing authority (e.g., a central bank) using a secret algorithm.
-\end{itemize}
+% \subsection*{Encoding Information in Quantum States}
+% \begin{itemize}
+%     \item Each quantum bill contains a unique quantum state, such as a set of qubits encoded in superposition.
+%     \item These states are generated and stored by the issuing authority (e.g., a central bank) using a secret algorithm.
+% \end{itemize}
 
-\subsection*{Verification Process}
-\begin{itemize}
-    \item The issuing authority also generates a verification protocol, allowing a legitimate quantum bill to be authenticated.
-    \item When a user presents a quantum bill for verification, the authority measures the encoded quantum states using the pre-determined protocol.
-    \item If the measured states align with the expected values, the bill is deemed valid.
-\end{itemize}
+% \subsection*{Verification Process}
+% \begin{itemize}
+%     \item The issuing authority also generates a verification protocol, allowing a legitimate quantum bill to be authenticated.
+%     \item When a user presents a quantum bill for verification, the authority measures the encoded quantum states using the pre-determined protocol.
+%     \item If the measured states align with the expected values, the bill is deemed valid.
+% \end{itemize}
 
-\subsection*{Unforgeability}
-\begin{itemize}
-    \item Due to the \textit{no-cloning theorem}, it is impossible to copy an unknown quantum state without altering it.
-    \item Any attempt to measure or duplicate the quantum state results in a disturbance detectable during verification.
-\end{itemize}
+% \subsection*{Unforgeability}
+% \begin{itemize}
+%     \item Due to the \textit{no-cloning theorem}, it is impossible to copy an unknown quantum state without altering it.
+%     \item Any attempt to measure or duplicate the quantum state results in a disturbance detectable during verification.
+% \end{itemize}
 
-\section*{Key Principles Underpinning Quantum Money}
-\begin{enumerate}
-    \item \textbf{No-Cloning Theorem:} The no-cloning theorem states that an unknown quantum state cannot be perfectly copied. This makes quantum money inherently secure, as counterfeiters cannot reproduce the quantum states encoded in legitimate currency.
-    \item \textbf{Measurement Disturbance:} Observing or measuring a quantum state generally alters it. This ensures that any unauthorized attempt to inspect the quantum money will render it invalid, as the encoded states will no longer match their original form.
-    \item \textbf{Randomness and Superposition:} Quantum money utilizes superposition to encode information. For example, a single qubit in superposition may represent both $0$ and $1$ simultaneously until measured. The randomness of these states makes predicting or reproducing them without knowledge of the original encoding impossible.
-    \item \textbf{Entanglement (Optional Feature):} Some implementations of quantum money involve quantum entanglement, where pairs of quantum states are interconnected. Changes to one entangled state directly affect its pair, adding another layer of security against forgery.
-\end{enumerate}
+% \section*{Key Principles Underpinning Quantum Money}
+% \begin{enumerate}
+%     \item \textbf{No-Cloning Theorem:} The no-cloning theorem states that an unknown quantum state cannot be perfectly copied. This makes quantum money inherently secure, as counterfeiters cannot reproduce the quantum states encoded in legitimate currency.
+%     \item \textbf{Measurement Disturbance:} Observing or measuring a quantum state generally alters it. This ensures that any unauthorized attempt to inspect the quantum money will render it invalid, as the encoded states will no longer match their original form.
+%     \item \textbf{Randomness and Superposition:} Quantum money utilizes superposition to encode information. For example, a single qubit in superposition may represent both $0$ and $1$ simultaneously until measured. The randomness of these states makes predicting or reproducing them without knowledge of the original encoding impossible.
+%     \item \textbf{Entanglement (Optional Feature):} Some implementations of quantum money involve quantum entanglement, where pairs of quantum states are interconnected. Changes to one entangled state directly affect its pair, adding another layer of security against forgery.
+% \end{enumerate}
 
 \section*{Benefits of Quantum Money}
 \begin{itemize}
@@ -877,29 +877,33 @@ At its core, quantum money relies on two key principles of quantum mechanics: th
     \item \textbf{Enhanced Privacy:} The unique encoding of each quantum bill could allow for privacy-preserving transactions, as the details of the transaction need not be linked to the bill's verification.
 \end{itemize}
 
-\section*{Challenges and Open Questions}
-\begin{enumerate}
-    \item \textbf{Practical Implementation:} Generating and maintaining stable quantum states in real-world conditions is technically challenging. Quantum systems are highly sensitive to environmental noise, requiring robust error-correction mechanisms.
-    \item \textbf{Scalability:} For quantum money to replace traditional systems, it must scale to accommodate billions of users and transactions.
-    \item \textbf{Theft and Security:} While quantum money cannot be forged, it can still be stolen, much like traditional physical or digital assets. Developing secure storage and transfer mechanisms is a priority.
-    \item \textbf{Centralized vs. Decentralized Systems:} Most current proposals involve a centralized authority for issuing and verifying quantum money. However, decentralized quantum money systems (akin to blockchain technology) are an area of active research.
-\end{enumerate}
-
-\section*{Applications Beyond Money}
-The principles underlying quantum money have broader applications, such as:
+\subsection{Quantum Money From Group Actions}
+A public-key quantum money scheme consists of two QPT algorithms: 
 \begin{itemize}
-    \item \textbf{Quantum Tokens:} Used in secure communication or access control.
-    \item \textbf{Quantum Cryptography:} Building secure voting systems or decentralized platforms.
-    \item \textbf{Quantum Key Distribution (QKD):} While distinct from quantum money, QKD relies on similar quantum principles to ensure the security of communication channels.
+\item $\gen(1^\lambda)$: This algorithm takes a security parameter $\lambda$ as input and outputs a pair $(s, \rho_s)$, where $s$ is a binary string called the serial number, and $\rho_s$ is a quantum state called the banknote. The pair $(s, \rho_s)$, or simply $\rho_s$, is sometimes denoted by $\$$.
+\item $\ver(s, \rho_s)$ This algorithm takes a serial number and an alleged banknote as input and outputs either $1$ (accept) or $0$ (reject).
 \end{itemize}
 
-\section*{Conclusion}
-Quantum money represents a paradigm shift in secure transactions, leveraging the foundational principles of quantum mechanics to create currency that is inherently secure against forgery. While still a theoretical concept, advances in quantum technology and cryptography are rapidly bringing us closer to practical implementations. If realized, quantum money could redefine financial systems, offering unparalleled security and efficiency in the digital age.
+The quantum money scheme is said to be \textit{correct} if genuine banknotes generated by $\gen$ are accepted by $\ver$ with high probability. More formally:
+\[ \Pr[\ver(s, \rho_s) = 1 : (s, \rho_s) \gets \gen(1^\lambda)] \ge 1 - \negl(\lambda). \]
+where the probability is taken over the randomness of $\gen$ and $\ver$. The scheme $(\gen, \ver)$ is said to be secure if, given a genuine bill $(s, \rho_s)$, no QPT algorithm $\mathcal{A}$ can produce two (possibly entangled) bills $(s, \rho_1)$ and $(s, \rho_2)$ that are both accepted by $\ver$ with non-negligible probability. More formally:
+\[ \Pr\left[ \ver(s, \rho_1) = \ver(s, \rho_2) = 1 : \substack{(s, \rho_s) \gets \gen(1^\lambda) \\ (\rho_1, \rho_2) \gets \mathcal{A}(s, \rho_s)} \right] \le \negl(\lambda). \]
+
+We now briefly outline the quantum money construction from \cite{zhandry2024quantum}, which is based on abelian group actions. Let $\{(G_\lambda, X_\lambda, *)\}_{\lambda \in J}$, where $J \subset \N$, be a collection of cryptographic group actions for abelian groups $G_\lambda$, and let $x_\lambda \in X_\lambda$ be a fixed element. The $\gen$ and $\ver$ algorithms are as follows:
+\begin{itemize}
+\item $\gen(1^\lambda)$. Begin with the state $\ket{0}\ket{x_\lambda}$, and apply the quantum Fourier transform over $G_\lambda$ to the first register producing the superposition
+    \[ \frac{1}{\sqrt{\abs{G_\lambda}}} \sum_{g \in G_\lambda} \ket{g}\ket{x_\lambda}. \]
+    Next, apply the unitary transformation $\ket{h}\ket{y} \mapsto \ket{h}\ket{h * y}$ to this state, followed by the quantum Fourier transform on the first register. This results in
+    \[ \frac{1}{\abs{G_\lambda}} \sum_{h \in G_\lambda} \sum_{g \in G_\lambda} \chi(g, h) \ket{h}\ket{g * x_\lambda} = \frac{1}{\sqrt{\abs{G_\lambda}}} \sum_{h \in G_\lambda} \ket{h} \ket{G^{(h)} * x_\lambda} \]
+    where $\ket{G^{(h)} * x_\lambda}$ is defined as in \eqref{eq:x-fourier-basis}. Measure the first register to obtain a random $h \in G_\lambda$, collapsing the state to $\ket{G^{(h)} * x_\lambda}$. Return the pair $(h, \ket{G^{(h)} * x_\lambda})$.
+
+\item $\ver(h, \ket{\psi})$. First, check whether $\ket{\psi}$ has support in $X_\lambda$. If not, return $0$. Then, apply $\comph$ to the state $\ket{\psi}\ket{0}$, and measure the second register to obtain some $h' \in G_\lambda$. If $h' = h$, return $1$; otherwise return $0$.
+\end{itemize}
+
+From this point forward, to simplify the notation, we make the security parameter $\lambda$ implicit, and use $G$ for $G_\lambda$, $X$ for $X_\lambda$, and so on. 
 
 
 
-
-\section{Applicaions}
 
 
 \section*{Quantum Hartley Transform (QHT)}
@@ -935,25 +939,42 @@ the QHT transforms the state into:
     \item \textbf{Efficient Implementation}: Like the Quantum Fourier Transform (QFT), the QHT can be implemented with \( O(\log^2 N) \) gates for \( N = 2^n \).
 \end{enumerate}
 
-\subsection*{Comparison with the Quantum Fourier Transform (QFT)}
-The QFT and QHT differ in their transformation kernels:
+% \subsection*{Comparison with the Quantum Fourier Transform (QFT)}
+% The QFT and QHT differ in their transformation kernels:
+% \begin{itemize}
+%     \item \textbf{QFT}:
+%     \[
+%     |x\rangle \xrightarrow{\text{QFT}} \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} e^{2\pi i x k / N} |k\rangle.
+%     \]
+%     \item \textbf{QHT}:
+%     \[
+%     |x\rangle \xrightarrow{\text{QHT}} \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} \left[\cos\left(\frac{2\pi x k}{N}\right) + \sin\left(\frac{2\pi x k}{N}\right)\right] |k\rangle.
+%     \]
+% \end{itemize}
+
+
+\subsection*{Efficient implementation of Heartly transform}
+
+********
+
+\section{Quantum Money With The Hartley Transform}
+\label{sec:qm_hartley}
+
+The quantum money scheme above can be instantiated using the quantum Hartley transform instead of the quantum Fourier transform. However, this substitution breaks the verification algorithm. In the next sections, we will show how quantum walks can address this issue. To understand where the problem arises, we first present the $\gen$ and $\ver$ algorithms for the money scheme, similar to the previous description but with $\qht_G$ replacing $\qft_G$. For simplicity, we assume $G = \Z_N$. Let $x \in \Z_N$ be a fixed element.
+
 \begin{itemize}
-    \item \textbf{QFT}:
-    \[
-    |x\rangle \xrightarrow{\text{QFT}} \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} e^{2\pi i x k / N} |k\rangle.
-    \]
-    \item \textbf{QHT}:
-    \[
-    |x\rangle \xrightarrow{\text{QHT}} \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} \left[\cos\left(\frac{2\pi x k}{N}\right) + \sin\left(\frac{2\pi x k}{N}\right)\right] |k\rangle.
-    \]
+\item $\gen$. Begin with the state $\ket{0}\ket{x}$, and apply the quantum Hartley transform over $\Z_N$ to the first register producing the superposition
+    \[ \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \ket{g}\ket{x}. \]
+    Next, apply the unitary $\ket{h}\ket{y} \mapsto \ket{h}\ket{h * y}$ to this state, followed by a $\qht_N$ on the first register. This results in
+    \[ \frac{1}{N} \sum_{h \in \Z_N} \sum_{g \in \Z_N} \cas\Big(\frac{2\pi gh}{N}\Big) \ket{h}\ket{g * x} = \frac{1}{\sqrt{N}} \sum_{h \in \Z_N} \ket{h} \ket{\Z_N^{(h)} * x}_H \]
+    where
+    \[ \ket{\Z_N^{(h)} * x}_H = \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \cas\Big(\frac{2\pi gh}{N}\Big) \ket{g * x}. \]
+    Measure the first register to obtain a random $h \in \Z_N$, collapsing the state to $\ket{\Z_N^{(h)} * x}_H$. Return the pair $(h, \ket{\Z_N^{(h)} * x}_H)$.
+
+\item $\ver(h, \ket{\psi})$. First, check whether $\ket{\psi}$ has support in $X$. If not, return $0$. Then, apply $\comph$ to the state $\ket{0} \ket{\psi}$, and measure the first register to obtain some $h' \in \Z_N$. If $h' = h$, return $1$; otherwise return $0$.
 \end{itemize}
 
-\subsection*{Applications of the QHT}
-\begin{itemize}
-    \item \textbf{Signal Processing}: Analysis of real-valued signals in quantum systems.
-    \item \textbf{Quantum Algorithms}: Used in problems where real and symmetric basis representations simplify computations.
-    \item \textbf{Data Compression}: Efficient representation of signals with high symmetry.
-\end{itemize}
+\section*{Verification using quantum walks}
 
 
 \bibliographystyle{plain}
