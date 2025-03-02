@@ -980,6 +980,98 @@ The quantum money scheme above can be instantiated using the quantum Hartley tra
 \bibliographystyle{plain}
 \bibliography{references}
 
+
+$\gen(1^\lambda)$
+$\ver(s, \rho_s)$
+
+\[ \Pr[\ver(s, \rho_s) = 1 : (s, \rho_s) \gets \gen(1^\lambda)] \ge 1 - \negl(\lambda). \]
+\[ \Pr\left[ \ver(s, \rho_1) = \ver(s, \rho_2) = 1 : \substack{(s, \rho_s) \gets \gen(1^\lambda) \\ (\rho_1, \rho_2) \gets \mathcal{A}(s, \rho_s)} \right] \le \negl(\lambda). \]
+
+
+$\ket{0}\ket{x_\lambda}$
+\[ \frac{1}{\sqrt{\abs{G_\lambda}}} \sum_{g \in G_\lambda} \ket{g}\ket{x_\lambda}. \]
+
+\[ \frac{1}{\abs{G_\lambda}} \sum_{h \in G_\lambda} \sum_{g \in G_\lambda} \chi(g, h) \ket{h}\ket{g * x_\lambda} = \frac{1}{\sqrt{\abs{G_\lambda}}} \sum_{h \in G_\lambda} \ket{h} \ket{G^{(h)} * x_\lambda} \]
+$\ket{G^{(h)} * x_\lambda}$
+
+$(h, \ket{G^{(h)} * x_\lambda})$
+
+
+$\ket{0}\ket{x}$
+\[ \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \ket{g}\ket{x}. \]
+$\ket{h}\ket{y} \mapsto \ket{h}\ket{h * y}$
+\[ \frac{1}{N} \sum_{h \in \Z_N} \sum_{g \in \Z_N} \cas\Big(\frac{2\pi gh}{N}\Big) \ket{h}\ket{g * x} = \frac{1}{\sqrt{N}} \sum_{h \in \Z_N} \ket{h} \ket{\Z_N^{(h)} * x}_H \]
+\[ \ket{\Z_N^{(h)} * x}_H = \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \cas\Big(\frac{2\pi gh}{N}\Big) \ket{g * x}. \]
+
+\[ \ket{\phi} = \frac{1}{\sqrt{N}} \sum_{u \in \Z_N} \ket{u} \ket{\Z_N^{(h)} * x}_H. \]
+
+\[ \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \Big( \cos\Big( \frac{2\pi gh}{N} \Big) \ket{h} + \sin\Big( \frac{2\pi gh}{N} \Big) \ket{-h} \Big) \ket{g * x}. \]
+
+\[ \ket{\phi} = \frac{1}{\sqrt{N}} \sum_{u \in \Z_N} \ket{u} \ket{\Z_N^{(h)} * x}_H. \]
+
+$Q = \{q_1, q_2, \dots, q_k\} \subset G$
+
+\[ A = \sum_{a \in G} \lambda_a \ket{\hat{a}} \bra{\hat{a}}, \]
+
+\[ \lambda_a = \sum_{q \in Q} \chi(a, q). \]
+
+
+\[ A = \sum_{h \in G} \lambda_h \ket{G^{(h)} * x} \bra{G^{(h)} * x}, \]
+
+
+$\lambda_h = \sum_{q \in Q} \chi(h, q)$
+
+\begin{equation}
+    \label{eq:adjmat-fb}
+    e^{-iAt} = \qft_G^* \sum_{a \in G} e^{-i\lambda_a t} \ket{a} \bra{a} \qft_G.
+\end{equation}
+
+
+\[ e^{-iAt} = \sum_{h \in G} e^{-i\lambda_h t} \ket{G^{(h)} * x} \bra{G^{(h)} * x}. \]
+
+$t = \poly(\log\abs{G})$
+
+
+
+\begin{align*}
+    T
+    & := \sum_{y \in X} \sum_{b \in \{0, 1\}} (\ket{y}\bra{y} \otimes \ket{b}\bra{b}) \otimes \ket{\phi_{yb}} \\
+    & = \sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{y} \ket{b} \ket{\phi_{yb}} \bra{y} \bra{b}.
+\end{align*}
+
+
+\[ \ket{\phi_{y0}} = \frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q * y} \ket{0}. \]
+
+
+\[ \frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q} \ket{y, 0} \ket{0, 0}. \]
+
+
+\begin{align*}
+    2\ket{0} \bra{0} \otimes TT^* - \mathds{1}
+    & = 2\ket{0} \bra{0} \otimes \sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{y, b} \ket{\phi_{yb}} \bra{y, b} \bra{\phi_{yb}} - \mathds{1} \\
+    & = 2\sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{0} \ket{y, b} \ket{\phi_{yb}} \bra{0} \bra{y, b} \bra{\phi_{yb}} - \mathds{1} \\
+    & = U_T \Big( 2\sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{0} \ket{y, b} \ket{0, 0} \bra{0} \bra{y, b} \bra{0, 0} - \mathds{1} \Big) U_T^* \\
+    & = U_T (2 \ket{0} \bra{0} \otimes \mathds{1}_{X, b} \otimes \ket{0, 0} \bra{0, 0} - \mathds{1}) U_T^*.
+\end{align*}
+
+
+\[ (2\ket{0} \bra{0} \otimes TT^* - \mathds{1}) \ket{0} \ket{\psi} = \ket{0} (2TT^* - \mathds{1}) \ket{\psi}. \]
+
+
+
+$\ket{\Z_N^{(h)} * x}_H$
+
+
+\begin{align*}
+    e^{iAt} \ket{\Z_N^{(h)} * x}_H
+    & = \sum_{g \in \Z_N} e^{i\lambda_gt} \ket{\Z_N^{(g)} * x} \braket{\Z_N^{(g)} * x}{\Z_N^{(h)} * x}_H \\
+    & = \sum_{g \in \Z_N} e^{i\lambda_gt} \ket{\Z_N^{(g)} * x} \bra{\Z_N^{(g)} * x} \Big( \frac{1 - i}{2} \ket{\Z_N^{(h)} * x} + \frac{1 + i}{2} \ket{\Z_N^{(-h)} * x} \Big) \\
+    & = e^{i\lambda_{h}t} \frac{1 - i}{2} \ket{\Z_N^{(h)} * x} + \frac{1 + i}{2} e^{i\lambda_{-h}t} \ket{\Z_N^{(-h)} * x} \\
+    & = e^{i\lambda_{h}t} \ket{\Z_N^{(h)} * x}_H,
+\end{align*}
+
+\[ \abs[\Big]{\theta - \frac{uh}{N}} \le \frac{1}{\poly(\log N)}. \]
+
 \end{document}
 
 

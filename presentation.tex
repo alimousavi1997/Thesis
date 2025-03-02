@@ -1,0 +1,224 @@
+\documentclass{beamer}
+
+% Packages
+\usepackage{graphicx}    % For including images
+\usepackage{amsmath}     % For mathematical symbols
+\usepackage{braket}      % For Dirac notation
+\usepackage[absolute,overlay]{textpos}
+
+
+\theoremstyle{definition}
+\newtheorem{algorithm}{Algorithm}
+\newtheorem{construction}[theorem]{Construction}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+\newcommand{\cas}{\mathrm{cas}}
+\newcommand{\cht}{\mathsf{H}}
+\newcommand{\qht}{\mathsf{QHT}}
+\newcommand{\cft}{\mathsf{F}}
+\newcommand{\qft}{\mathsf{QFT}}
+\newcommand{\comph}{\mathsf{cmpIndex}}
+\newcommand{\gen}{\mathsf{Gen}}
+\newcommand{\ver}{\mathsf{Ver}}
+
+
+
+
+% Title Information
+\title{Quantum Notation and Quantum Computing}
+\author{Seyed Ali Mousavi}
+\date{\today}
+
+\begin{document}
+
+% Title Slide
+\begin{frame}
+    \titlepage
+\end{frame}
+
+
+
+
+
+\begin{frame}{Courses Taken}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+       \begin{itemize}
+        \item CAS 701,  Logic \& Discrete Mathematics
+        \item COMPSCI 6TE3, Continuous optimization
+        \item CAS 721, Combinatorics \& Computing
+        \item CAS 741, Development of Scientific Computation Software
+       \end{itemize}
+    \end{textblock*}
+    
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Seminars}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+       \begin{itemize}
+        \item 
+       \end{itemize}
+    \end{textblock*}
+    
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Application: Quantum Money}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+            
+        A public-key quantum money scheme consists of two QPT algorithms: 
+        \begin{itemize}
+        \item $\gen(1^\lambda)$: This algorithm takes a security parameter $\lambda$ as input and outputs a pair $(s, \rho_s)$, where $s$ is a binary string called the serial number, and $\rho_s$ is a quantum state called the banknote. The pair $(s, \rho_s)$, or simply $\rho_s$, is sometimes denoted by $\$$.
+        \item    This algorithm takes a serial number and an alleged banknote as input and outputs either $1$ (accept) or $0$ (reject).
+        \end{itemize}
+
+    \end{textblock*}
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Quantum Money From Group Actions}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+            
+        
+        \begin{itemize}
+        \item $\gen(1^\lambda)$. Begin with the state $\ket{0}\ket{x_\lambda}$, and apply the quantum Fourier transform over $G_\lambda$ to the first register producing the superposition
+        \[ \frac{1}{\sqrt{{|X_\lambda|}}} \sum_{g \in G_\lambda} \ket{g}\ket{x_\lambda}. \]
+        Next, apply the unitary transformation $\ket{h}\ket{y} \mapsto \ket{h}\ket{h * y}$ to this state, followed by the quantum Fourier transform on the first register. This results in
+        \[ \frac{1}{{|G_\lambda|}} \sum_{h \in G_\lambda} \sum_{g \in G_\lambda} \chi(g, h) \ket{h}\ket{g * x_\lambda} = \frac{1}{\sqrt{{|G_\lambda|}}} \sum_{h \in G_\lambda} \ket{h} \ket{G^{(h)} * x_\lambda} \]
+        where $\ket{G^{(h)} * x_\lambda}$ is defined as in \eqref{eq:x-fourier-basis}. Measure the first register to obtain a random $h \in G_\lambda$, collapsing the state to $\ket{G^{(h)} * x_\lambda}$. Return the pair $(h, \ket{G^{(h)} * x_\lambda})$.
+
+        \item $\ver(h, \ket{\psi})$. First, check whether $\ket{\psi}$ has support in $X_\lambda$. If not, return $0$. Then, apply $\comph$ to the state $\ket{\psi}\ket{0}$, and measure the second register to obtain some $h' \in G_\lambda$. If $h' = h$, return $1$; otherwise return $0$.
+        \end{itemize}
+
+        
+       
+        
+    \end{textblock*}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Quantum Money With The Hartley Transform}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+            
+        
+       
+        \begin{itemize}
+            \item $\gen$. Begin with the state $\ket{0}\ket{x}$, and apply the quantum Hartley transform over $\mathbb{Z}_N$ to the first register producing the superposition
+            \[ \frac{1}{\sqrt{N}} \sum_{g \in \mathbb{Z}_N} \ket{g}\ket{x}. \]
+            Next, apply the unitary $\ket{h}\ket{y} \mapsto \ket{h}\ket{h * y}$ to this state, followed by a $\qht_N$ on the first register. This results in
+            \[ \frac{1}{N} \sum_{h \in \mathbb{Z}_N} \sum_{g \in \mathbb{Z}_N} \cas\Big(\frac{2\pi gh}{N}\Big) \ket{h}\ket{g * x} = \frac{1}{\sqrt{N}} \sum_{h \in \mathbb{Z}_N} \ket{h} \ket{\mathbb{Z}_N^{(h)} * x}_H \]
+            where
+            \[ \ket{\mathbb{Z}_N^{(h)} * x}_H = \frac{1}{\sqrt{N}} \sum_{g \in \mathbb{Z}_N} \cas\Big(\frac{2\pi gh}{N}\Big) \ket{g * x}. \]
+            Measure the first register to obtain a random $h \in \mathbb{Z}_N$, collapsing the state to $\ket{\mathbb{Z}_N^{(h)} * x}_H$. Return the pair $(h, \ket{\mathbb{Z}_N^{(h)} * x}_H)$.
+
+        \end{itemize}
+        
+       
+        
+    \end{textblock*}
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Group Action Quantum Walks}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+            
+        Let $G$ be an abelian group and let $Q = \{q_1, q_2, \dots, q_k\} \subset G$ be a symmetric set, i.e., $q \in Q$ if and only if $-q \in Q$. The Cayley graph associated to $G$ and $Q$ is a graph $\Gamma = (V, E)$, where the vertex set is $V = G$, and the edge set $E$ consists of pairs $(a, b) \in G \times G$ such that there exists $q \in Q$ with $b = q + a$. The adjacency matrix of $\Gamma$ can be expressed as
+        \[ A = \sum_{a \in G} \lambda_a \ket{\hat{a}} \bra{\hat{a}}, \]
+        where $\ket{\hat{a}}$ is the quantum Fourier transform of $\ket{a}$. The eigenvalues $\lambda$ are given by
+        \[ \lambda_a = \sum_{q \in Q} \chi(a, q). \]
+        Note that the eigenvectors $\ket{\hat{a}}$ of $A$ depend only on $G$ and not on the set $Q$.
+    \end{textblock*}
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Group Action Quantum Walks}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+               
+        Cayley graphs can also be constructed using group actions. Given a regular group action $(G, X, *)$ with a fixed element $x \in X$ and a set  $Q = \{q_1, q_2, \dots, q_k\} \subset G$, let $\Gamma = (X, E)$ be a graphs with vertex set $X$ and edge set consisting of pairs $(x, y) \in X \times X$ such that $y = q * x$ for some $q \in Q$. The adjacency matrix of $\Gamma$ is
+        \[ A = \sum_{h \in G} \lambda_h \ket{G^{(h)} * x} \bra{G^{(h)} * x}, \]
+        where $\lambda_h = \sum_{q \in Q} \chi(h, q)$. Again, the eigenvectors $\ket{G^{(h)} * x}$ depend only on $G$. This construction of Cayley graphs from group actions generalizes the previous construction. Specifically, if we set $X = G$ and the action $*$ as group operation, we recover the original construction.
+
+        Since the action $(G, X, *)$ is regular, the two constructions yield the same graph up to isomorphism. In the first graph, the vertex set is $G$, and the rows and columns of the adjacency matrix are indexed by the elements of $G$, whereas in the second graph, the vertex set is $X$, and the rows and columns of the adjacency matrix are indexed by the elements of $X$. The isomorphism between the two graphs is induced by the bijection
+        \[
+        \setlength{\arraycolsep}{1mm}
+        \begin{array}{rlll}
+            \phi: & G & \longrightarrow & X \\
+            & g & \longmapsto & g * x.
+        \end{array}
+        \]
+    \end{textblock*}
+
+\end{frame}
+
+
+
+\begin{frame}{Introduction to Quantum Notation}
+
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        The money state $\ket{\mathbb{Z}_N^{(h)} * x}_H$ is an eigenstate of $W$ with eigenvalue $e^{i\lambda_h t}$.
+        \vspace{1cm}
+    
+        We have :
+        \begin{align*}
+            e^{iAt} \ket{\mathbb{Z}_N^{(h)} * x}_H
+            & = \sum_{g \in \mathbb{Z}_N} e^{i\lambda_gt} \ket{\mathbb{Z}_N^{(g)} * x}\braket{\mathbb{Z}_N^{(g)} * x|\mathbb{Z}_N^{(h)} * x}_H \\
+            & = \sum_{g \in \mathbb{Z}_N} e^{i\lambda_gt} \ket{\mathbb{Z}_N^{(g)} * x} \bra{\mathbb{Z}_N^{(g)} * x} \Big( \frac{1 - i}{2} \ket{\mathbb{Z}_N^{(h)} * x} + \frac{1 + i}{2} \ket{\mathbb{Z}_N^{(-h)} * x} \Big) \\
+            & = e^{i\lambda_{h}t} \frac{1 - i}{2} \ket{\mathbb{Z}_N^{(h)} * x} + \frac{1 + i}{2} e^{i\lambda_{-h}t} \ket{\mathbb{Z}_N^{(-h)} * x} \\
+            & = e^{i\lambda_{h}t} \ket{\mathbb{Z}_N^{(h)} * x}_H,
+        \end{align*}
+        where the second equality follows from the identity in \eqref{eq:ht-ft}, and the last equality follows from the fact that $\lambda_h = \lambda_{-h}$.
+    \end{textblock*}
+
+
+    % % Positioning text exactly at (1cm, 1.5cm)
+    % \begin{textblock*}{10cm}(1cm,3cm) % (Width of box, X-position, Y-position)
+    %  This text is placed exactly at (1cm, 15cm) from the top-left.  
+    %  \[
+    %  \ket{\mathbb{Z}_N^{(h)} * x}_H
+    %  \]
+    %  \end{textblock*}
+ 
+ \end{frame}
+
+
+
+% End
+\end{document}
+
+
+    
