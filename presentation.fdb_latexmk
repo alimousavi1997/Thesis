@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1740940353.61795 "c:/Users/seyed/Desktop/Thesis/presentation.tex" "presentation.pdf" "presentation" 1740940354.71687 0
-  "C:/Users/seyed/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1740934288 81247 50d52f6487769ef97fe2dc7d59ae1563 ""
+["pdflatex"] 1741060639.10069 "c:/Users/seyed/Desktop/Thesis/presentation.tex" "presentation.pdf" "presentation" 1741060640.38191 0
+  "C:/Users/seyed/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1741058058 81247 50d52f6487769ef97fe2dc7d59ae1563 ""
   "C:/Users/seyed/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1725386351 24225045 07b726749965e6b9d55ff195f2ff5d7f ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1233951848 1004 54797486969f23fa377b128694d548df ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1233951848 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -18,7 +18,6 @@
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmss10.tfm" 1136765053 1316 b636689f1933f24d1294acdf6041daaa ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmss12.tfm" 1136765053 1324 37b971caf729d7edd9cbb9f9b0ea76eb ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmss8.tfm" 1136765053 1296 d77f431d10d47c8ea2cc18cf45346274 ""
-  "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmssbx10.tfm" 1136765053 1272 e2d13f0df30bf3ad990bb9d028e37f34 ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmsy10.tfm" 1136765053 1124 6c73e740cf17375f03eec0ee63599741 ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmsy6.tfm" 1136765053 1116 933a60c408fc0a863a92debe84b2d294 ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/tfm/public/cm/cmsy8.tfm" 1136765053 1120 8b7d695260f3cff42e636090a8002094 ""
@@ -32,7 +31,6 @@
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss10.pfb" 1247596666 24457 5cbb7bdf209d5d1ce9892a9b80a307cc ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss12.pfb" 1247596666 24393 3b7eb51a67a0a62aec5849271bdb9c2e ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss8.pfb" 1247596667 24420 52dbb8e8aa0069a1b987309557f8d303 ""
-  "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmssbx10.pfb" 1247596666 28902 2f5c04fd2884d1878057baa5aad22765 ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmssi10.pfb" 1247596666 25150 e0d09798d232ab9d00c5c0a8df6cc22d ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmssi8.pfb" 1247596667 25168 c89d909bac101e478326bb9e00519ca3 ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1247596667 32569 5e5ddc8df908dea60932f3c484a54c0d ""
@@ -202,11 +200,11 @@
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/tex/latex/translator/translator.sty" 1622471510 8765 56d370785f0143111ff9898b5adfe08e ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1700127522 55487 80a65caedd3722f4c20a14a69e785d8f ""
-  "c:/Users/seyed/Desktop/Thesis/presentation.tex" 1740940353 8936 0d738c029bad8b4c7aba91377dc42196 ""
-  "presentation.aux" 1740940354 1587 5542631439a0afde58d5ca6558618f97 "pdflatex"
-  "presentation.nav" 1740940354 1011 83c4ff004b77303d878240d0bcc95e05 "pdflatex"
-  "presentation.out" 1740940354 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "presentation.tex" 1740940353 8936 0d738c029bad8b4c7aba91377dc42196 ""
+  "c:/Users/seyed/Desktop/Thesis/presentation.tex" 1741060638 16516 252f20188b06e901db5ae9bb65334266 ""
+  "presentation.aux" 1741060640 3255 a83708074b398f0963d373f289592225 "pdflatex"
+  "presentation.nav" 1741060640 1946 cc1d57bc897673374b837eab8153475a "pdflatex"
+  "presentation.out" 1741060639 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "presentation.tex" 1741060638 16516 252f20188b06e901db5ae9bb65334266 ""
   (generated)
   "presentation.aux"
   "presentation.log"
