@@ -31,8 +31,9 @@
 
 
 % Title Information
-\title{Quantum Notation and Quantum Computing}
+\title{Quantum Walks and Applications to Quantum Money}
 \author{Seyed Ali Mousavi}
+\institute{Supervised by Dr. Jake Doliskani}
 \date{\today}
 
 \begin{document}
@@ -46,16 +47,22 @@
 
 
 
-\begin{frame}{Courses Taken}
+\begin{frame}{Program and Courses Taken}
+
+   
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
        \begin{itemize}
+        \item Program: M.A.Sc in Software Engineering
+        \vspace{1cm}
         \item CAS 701,  Logic \& Discrete Mathematics
         \item COMPSCI 6TE3, Continuous optimization
         \item CAS 721, Combinatorics \& Computing
         \item CAS 741, Development of Scientific Computation Software
        \end{itemize}
     \end{textblock*}
+
+    \title{SDSD}
     
 
 
@@ -71,7 +78,7 @@
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
        \begin{itemize}
-        \item 
+        \item I have participated in 6 seminars during my program.
        \end{itemize}
     \end{textblock*}
     
@@ -83,12 +90,11 @@
 
 \begin{frame}{Poster}
     
-    \begin{textblock*}{12cm}(0.5cm,1.5cm)
-       \begin{itemize}
-        \item 
-       \end{itemize}
-    \end{textblock*}
-    
+    \begin{figure}
+        \centering
+        \includegraphics[width=1\textwidth]{poster.png}
+        \caption{Presented at Nov. 6, 2024}
+    \end{figure}
 
 \end{frame}
 
@@ -194,65 +200,65 @@
 
 
 
-\begin{frame}{An efficient new algorithm for QHT}
-    
-    \begin{textblock*}{12cm}(0.5cm,1.5cm)
-       
-        \begin{align}
-            % \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \ket{y}
-            % & = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi a y}{N} \Big) (\ket{y} + (-1)^a \ket{y + N/2}) \nonumber \\
-            & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \frac{1}{\sqrt{2}} (\ket{0} + (-1)^a \ket{1}) \ket{y}, \label{eq:qht-alt} 
-        \end{align}
-
-        We now show how to compute $\qht_N$ recursively.
-
-        \begin{align*}
-            \ket{0}\ket{t}\ket{b}
-            & \mapsto \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi t y}{N / 2} \Big) \ket{0} \ket{y} \ket{b} \\%& (\mathds{1} \otimes \qht_{N / 2} \otimes \mathds{1}) \\
-            & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) \ket{0} \ket{y} \ket{b} \\
-            & \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) (\ket{0} + \ket{1}) \ket{y}\ket{b}. %& (H \otimes \mathds{1}) 
-        \end{align*}
-        
-    \end{textblock*}
-    
-
-\end{frame}
-
-
-
-
 % \begin{frame}{An efficient new algorithm for QHT}
     
 %     \begin{textblock*}{12cm}(0.5cm,1.5cm)
-%         MM
-%         \begin{algorithm}[$\mathbb{QHT}_N$] \
-%             \label{alg:qht-N}
-%             \begin{description}[font = \normalfont\itshape, itemsep = 0mm, parsep = 0mm, topsep = 1mm]
-%                 \item [Input:] Quantum state \( \ket{\psi} \in \mathbb{C}^N \), where \( N = 2^n \).
-%                 \item [Output:] Quantum state \( \mathbb{QHT}_N \ket{\psi} \).
-%             \end{description}
-    
-%             \begin{enumerate}[itemsep = 0mm, parsep = 1mm, topsep = 1mm]
-%                 \item Initialize an ancilla qubit to \( 0 \) to obtain the state \( \ket{0} \ket{\psi} \).
-%                 \item Compute \( \mathds{1} \otimes \mathbb{QHT}_{N / 2} \otimes \mathds{1} \) recursively.
-%                 \item Apply \( H \otimes \mathds{1} \).
-%                 \item Apply the controlled negation:
-%                       \[
-%                           \ket{0} \ket{y} \mapsto \ket{0} \ket{y}, \quad \ket{1} \ket{y} \mapsto \ket{1} \ket{N / 2 - y}.
-%                       \]
-%                 \item Apply the unitary \( U_R \).
-%                 \item Apply \( H \otimes \mathds{1} \).
-%                 \item Apply \textsc{cnot} to the first and last qubits.
-%                 \item Apply \( \mathds{1} \otimes H \).
-%                 \item Trace out the first qubit.
-%             \end{enumerate}
-%         \end{algorithm}
+       
+%         \begin{align}
+%             % \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \ket{y}
+%             % & = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi a y}{N} \Big) (\ket{y} + (-1)^a \ket{y + N/2}) \nonumber \\
+%             & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \frac{1}{\sqrt{2}} (\ket{0} + (-1)^a \ket{1}) \ket{y}, \label{eq:qht-alt} 
+%         \end{align}
+
+%         We now show how to compute $\qht_N$ recursively.
+
+%         \begin{align*}
+%             \ket{0}\ket{t}\ket{b}
+%             & \mapsto \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi t y}{N / 2} \Big) \ket{0} \ket{y} \ket{b} \\%& (\mathds{1} \otimes \qht_{N / 2} \otimes \mathds{1}) \\
+%             & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) \ket{0} \ket{y} \ket{b} \\
+%             & \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) (\ket{0} + \ket{1}) \ket{y}\ket{b}. %& (H \otimes \mathds{1}) 
+%         \end{align*}
         
-            
-%     % \end{textblock*}
+%     \end{textblock*}
     
 
 % \end{frame}
+
+
+
+
+\begin{frame}{An efficient new algorithm for QHT}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+
+        
+        \begin{algorithm}[${QHT}_N$] 
+            \begin{itemize}
+                \item   Input: quantum state $\ket{\psi} \in \mathbb{C}^N$, where $N = 2^n$
+                \item   Output: quantum state $\qht_N\ket{\psi}$ 
+            \end{itemize}
+        \end{algorithm}
+    \end{textblock*}
+
+        \begin{textblock*}{12cm}(0.5cm,4cm)
+            1- Initialize an ancilla qubit to $0$ to obtain the state $\ket{0}\ket{\psi}$ \\
+            2-  Compute ${1} \otimes \qht_{N / 2} \otimes {1}$ recursively.\\
+            3-  Apply $H \otimes {1}$.\\
+            4-  Apply  the controlled negation $\ket{0}\ket{y} \mapsto \ket{0}\ket{y}, \ket{1}\ket{y} \mapsto \ket{1}\ket{N / 2 -y}$ to the first two registers.\\
+            5-  Apply the unitary $U_R$.\\
+            6-  Apply $H \otimes {1}$\\
+            7-  Apply \textsc{cnot} to the first and last qubits.\\
+            8-  Apply ${1} \otimes H$.\\
+            9-  Trace out the first qubit
+        \end{textblock*}
+        
+
+        
+            
+    
+    
+
+\end{frame}
 
 
 
@@ -351,7 +357,13 @@
 \begin{frame}{Quantum Money With The Hartley Transform}
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
-        In the original scheme, using the quantum Fourier transform, we could directly obtain $h$ from the money state $\ket{\mathbb{Z}_N^{(h)} * x}$ and compare it to the given $h$. However, this approach does not work when we use the Hartley transform. To address this, we design an algorithm for computing $h$ that utilizes quantum walks. 
+        \begin{itemize}
+            \item  In the original scheme, using the quantum Fourier transform, we could directly obtain $h$ from the money state $\ket{\mathbb{Z}_N^{(h)} * x}$ and compare it to the given $h$. However, this approach does not work when we use the Hartley transform. 
+            \vspace{1cm}
+            \item  To address this, we design an algorithm for computing $h$ that utilizes quantum walks. 
+
+        \end{itemize}
+        
         
        
         
@@ -406,8 +418,17 @@
 
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
 
-        Given a state $\ket{\mathbb{Z}_N^{(h)} * x}_H$, we show how to compute $h$ using continuous-time quantum walks. For any $q \in \mathbb{Z}_N$, define a Cayley graph $\Gamma = (\mathbb{Z}_N, E)$ with the generating set $Q = \{-q, q\}$. Let $A$ denote the adjacency matrix of $\Gamma$. The eigenvectors and corresponding eigenvalues of $A$ are $\ket{\mathbb{Z}_N^{(h)} * x}$ and $\lambda_h = 2\cos(2\pi uh / N)$, respectively, for $h \in \mathbb{Z}_N$. the unitary $W = e^{iAt}$ can be efficiently simulated to exponential accuracy. We need the following lemma.
-        
+        \begin{itemize}
+            \item Given a state $\ket{\mathbb{Z}_N^{(h)} * x}_H$, we show how to compute $h$ using continuous-time quantum walks.
+            \vspace{0.5cm}
+            \item For any $q \in \mathbb{Z}_N$, define a Cayley graph $\Gamma = (\mathbb{Z}_N, E)$ with the generating set $Q = \{-q, q\}$.
+            \vspace{0.5cm}
+            \item Let $A$ denote the adjacency matrix of $\Gamma$. The eigenvectors and corresponding eigenvalues of $A$ are $\ket{\mathbb{Z}_N^{(h)} * x}$ and $\lambda_h = 2\cos(2\pi uh / N)$, respectively, for $h \in \mathbb{Z}_N$.
+            \vspace{0.5cm}
+            \item the unitary $W = e^{iAt}$ can be efficiently simulated to exponential accuracy.
+        \end{itemize}
+
+
     \end{textblock*}
 
  \end{frame}
