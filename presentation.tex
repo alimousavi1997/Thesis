@@ -101,6 +101,43 @@
 
 
 
+\begin{frame}{Quantum Computation - Preliminaries and Notation}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        \begin{itemize}
+            \item Consider a finite Hilbert space $\mathcal{H}$ with an orthonormal set of basis states $\{ \lvert s_i \rangle \}$ for $s \in \mathcal{S}$. The states $s \in \mathcal{S}$ may be interpreted as the possible classical states of the system described by $\mathcal{H}$. \\
+            \vspace{1cm}
+            \item In general, the state of the system, $\lvert \alpha \rangle$, is a unit vector in the Hilbert space $\mathcal{H}$ and can be written as $\lvert \alpha \rangle = \sum_{s \in \mathcal{S}} a_s \lvert s \rangle$, where $\sum_{s \in \mathcal{S}} |a_s|^2 = 1$. \\
+            \vspace{1cm}
+            \item $\langle \alpha \rvert$ denotes the conjugate transpose of $\lvert \alpha \rangle$. The expression $\langle \beta \rvert \alpha \rangle$ denotes the inner product of $\lvert \alpha \rangle$ and $\lvert \beta \rangle$.
+
+        \end{itemize}
+            
+    \end{textblock*}
+\end{frame}
+
+
+
+
+\begin{frame}{Quantum Computation - Quantum Postulates}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        \begin{itemize}
+            \item \textbf{Unitary evolution}: Quantum physics requires that the evolution of quantum states is unitary; that is, the state $\lvert \alpha \rangle$ is mapped to $U \lvert \alpha \rangle$, where $U$ satisfies $U \cdot U^{\dagger} = I$, and $U^{\dagger}$ denotes the conjugate transpose of $U$.
+            \vspace{0.5cm}
+            \item \textbf{Measurement}: We will describe here only a measurement in the orthonormal basis $\lvert s \rangle$. The output of the measurement of the state $\lvert \alpha \rangle$ is an element $s \in \mathcal{S}$, with probability $|\langle s \vert \alpha \rangle|^2$. Moreover, the new state of the system after the measurement is $\lvert s$.
+            \vspace{0.5cm}
+            \item \textbf{Combining two quantum systems}: If $\mathcal{H}_A$ and $\mathcal{H}_B$ are the Hilbert spaces of two systems, $A$ and $B$, then the joint system is described by the tensor product of the Hilbert spaces, $\mathcal{H}_A \otimes \mathcal{H}_B$. If the basis states for $\mathcal{H}_A$ and $\mathcal{H}_B$ are $\{ \lvert a_i \rangle \}$ and $\{ \lvert v_i \rangle \}$ respectively, then the basis states of $\mathcal{H}_A \otimes \mathcal{H}_B$ are $\{ \lvert a_i \rangle \otimes \lvert v_i \rangle \}$.
+
+
+            
+        \end{itemize}
+            
+    \end{textblock*}
+\end{frame}
+
+
+
 
 \begin{frame}{The Hartley Transform}
     
@@ -253,11 +290,6 @@
         \end{textblock*}
         
 
-        
-            
-    
-    
-
 \end{frame}
 
 
@@ -374,19 +406,178 @@
 
 
 
-
-
-\begin{frame}{Group Action Quantum Walks}
+\begin{frame}{Quantum Walks}
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
+
+        \begin{itemize}
+            \item Quantum walks are quantum analogs of classical random walks and play
+            a fundamental role in quantum algorithms
+            \item  Two types: continuous-time and discrete-time
+            \item Quantum walks leverage interference to explore graphs more efficiently than classical walks
+            \item For a graph $\Gamma$, a continuous-time classical walk on $\Gamma$ is:
+            \[
+            \frac{d}{dt} q(t) = Lq(t)
+            \]
+            \item In the quantum setting,  the dynamics of the walk is given by the Schr\"{o}dinger equation:
+            \[
+                i\frac{d}{dt}\ket{\psi(t)} = L\ket{\psi(t)}
+            \]
             
-        Let $G$ be an abelian group and let $Q = \{q_1, q_2, \dots, q_k\} \subset G$ be a symmetric set, i.e., $q \in Q$ if and only if $-q \in Q$. The Cayley graph associated to $G$ and $Q$ is a graph $\Gamma = (V, E)$, where the vertex set is $V = G$, and the edge set $E$ consists of pairs $(a, b) \in G \times G$ such that there exists $q \in Q$ with $b = q + a$. The adjacency matrix of $\Gamma$ can be expressed as
-        \[ A = \sum_{a \in G} \lambda_a \ket{\hat{a}} \bra{\hat{a}}, \]
-        where $\ket{\hat{a}}$ is the quantum Fourier transform of $\ket{a}$. The eigenvalues $\lambda$ are given by
-        \[ \lambda_a = \sum_{q \in Q} \chi(a, q). \]
-        Note that the eigenvectors $\ket{\hat{a}}$ of $A$ depend only on $G$ and not on the set $Q$.
+        \end{itemize}
+            
+    \end{textblock*}
+\end{frame}
+
+
+
+
+\begin{frame}{Continuous-Time Quantum Walks}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+
+        \begin{itemize}
+            \item The solution to this differential
+            equation can be written in closed form as:
+            \[
+                \ket{\psi(t)} = e^{-iLt} \ket{\psi(0)}.
+            \]
+            \item In practice, we often (including this work) use the adjacency matrix $A$ of $\Gamma$ as the Hamiltonian of the walk
+            
+        \end{itemize}
+            
+    \end{textblock*}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Discrete-Time Quantum Walks}
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        \begin{itemize}
+           
+            
+            \item If the $\Gamma$ has $N$ vertices, the discrete time quantum walk on $\Gamma$ is defined by a unitary operator on the finite Hilbert space $\mathbb{C}^N \times \mathbb{C}^N$ as follows:
+            \item Define the states:
+            \[ \ket{\phi_j} = \frac{1}{\sqrt{\deg(j)}} \sum_{k = 1}^N \ket{j, k}, \]
+            \item project and swap operators:
+            \[ \Pi = \sum_{j = 1}^N \ket{\phi_j} \bra{\phi_j}, \quad S = \sum_{j, k = 1}^N \ket{j, k} \bra{k, j}. \]
+            \item Then, a step of the quantum walk is defined by the unitary:
+             \[
+             W = S(2\Pi - 1)
+             \]
+
+        \end{itemize}
+    \end{textblock*}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}{Quantum Walks on Cayley Graphs}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        
+        \textit{Cayley Graphs:} \\
+        \vspace{0.3cm}
+        Let $G$ be an abelian group and let $Q = \{q_1, q_2, \dots, q_k\} \subset G$ be a symmetric set, i.e., $q \in Q$ if and only if $-q \in Q$. The Cayley graph associated to $G$ and $Q$ is a graph $\Gamma = (V, E)$, where the vertex set is $V = G$, and the edge set $E$ consists of pairs $(a, b) \in G \times G$ such that there exists $q \in Q$ with $b = q + a$. \\
+      
     \end{textblock*}
 
+\end{frame}
+
+
+
+\begin{frame}{Quantum Walks on Cayley Graphs}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        
+        \textit{Cayley Graphs:} \\
+        \vspace{0.3cm}
+        
+        The adjacency matrix of the Cayley graph $\Gamma = (V,E)$ can be expressed as:
+        \[ A = \sum_{a \in G} \lambda_a \ket{\hat{a}} \bra{\hat{a}}, \]
+        where $\ket{\hat{a}} = \operatorname{QFT} \ket{a}$ is the quantum Fourier transform of $\ket{a}$. \\
+         \vspace{0.5cm}
+        The eigenvalues $\lambda_a$ are given by:
+        \[ \lambda_a = \sum_{q \in Q} \chi(a, q). \]
+        Note that the eigenvectors $\ket{\hat{a}}$ of $A$ depend only on $G$ and not on the set $Q$.
+    
+    \end{textblock*}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Quantum Walks on Cayley Graphs}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        
+        \textit{Cayley Graphs:} \\
+        \vspace{0.3cm}
+        proofs:
+    \end{textblock*}
+\end{frame}
+
+
+
+
+\begin{frame}{Group Actions}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        Cayley graphs can also be constructed using \textit{group actions}.\\
+        \vspace{0.5cm}
+        \textit{Group Actions:}
+        \vspace{0.5cm}
+                
+        For a group $G$ and a set $X$, we say that $G$ \textit{acts on} $X$ if there is a mapping $*: G \times X \to X$ that satisfies the following properties:
+        \begin{enumerate}
+            \item Compatibility: for every $a, b \in G$ and every $x \in X$, $g * (h * x) = (gh) * x$,
+            \item Identity: for the identity $1 \in G$ and every $x \in X$, $1 * x = x$. 
+        \end{enumerate}
+
+        \vspace{0.5 cm}
+        \begin{itemize}
+            \item  We use the notation $(G, X, *)$ to denote a group $G$ acting on a set $X$ through the action $*$.
+            \item  A group action is called \textit{regular} if for every $x, y \in X$ there exists a unique $g \in G$ such that $g * x = y$.
+        \end{itemize}
+
+
+    \end{textblock*}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Cayley Graphs with Group Actions}
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+
+    
+     Given a regular group action $(G, X, *)$ with a fixed element $x \in X$ and a set  $Q = \{q_1, q_2, \dots, q_k\} \subset G$, let $\Gamma = (X, E)$ be a graphs with vertex set $X$ and edge set consisting of pairs $(x, y) \in X \times X$ such that $y = q * x$ for some $q \in Q$. The adjacency matrix of $\Gamma$ is
+    \[ A = \sum_{h \in G} \lambda_h \ket{G^{(h)} * x} \bra{G^{(h)} * x}, \]
+    where $\lambda_h = \sum_{q \in Q} \chi(h, q)$. Again, the eigenvectors $\ket{G^{(h)} * x}$ depend only on $G$.
+        
+    \end{textblock*}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Cayley Graphs with Group Actions}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        proofs:
+
+    \end{textblock*}
 
 \end{frame}
 
@@ -398,7 +589,7 @@
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
                
-        Cayley graphs can also be constructed using group actions. Given a regular group action $(G, X, *)$ with a fixed element $x \in X$ and a set  $Q = \{q_1, q_2, \dots, q_k\} \subset G$, let $\Gamma = (X, E)$ be a graphs with vertex set $X$ and edge set consisting of pairs $(x, y) \in X \times X$ such that $y = q * x$ for some $q \in Q$. The adjacency matrix of $\Gamma$ is
+        Given a regular group action $(G, X, *)$ with a fixed element $x \in X$ and a set  $Q = \{q_1, q_2, \dots, q_k\} \subset G$, let $\Gamma = (X, E)$ be a graphs with vertex set $X$ and edge set consisting of pairs $(x, y) \in X \times X$ such that $y = q * x$ for some $q \in Q$. The adjacency matrix of $\Gamma$ is
         \[ A = \sum_{h \in G} \lambda_h \ket{G^{(h)} * x} \bra{G^{(h)} * x}, \]
         where:
         \begin{itemize}
@@ -421,7 +612,7 @@
         \begin{itemize}
             \item Given a state $\ket{\mathbb{Z}_N^{(h)} * x}_H$, we show how to compute $h$ using continuous-time quantum walks.
             \vspace{0.5cm}
-            \item For any $q \in \mathbb{Z}_N$, define a Cayley graph $\Gamma = (\mathbb{Z}_N, E)$ with the generating set $Q = \{-q, q\}$.
+            \item For any $q \in \mathbb{Z}_N$, define a Cayley graph $\Gamma = (\mathbb{Z}_N, E)$ with the generating set $Q = \{-u, u\}$.
             \vspace{0.5cm}
             \item Let $A$ denote the adjacency matrix of $\Gamma$. The eigenvectors and corresponding eigenvalues of $A$ are $\ket{\mathbb{Z}_N^{(h)} * x}$ and $\lambda_h = 2\cos(2\pi uh / N)$, respectively, for $h \in \mathbb{Z}_N$.
             \vspace{0.5cm}
@@ -451,6 +642,30 @@
             & = e^{i\lambda_{h}t} \ket{\mathbb{Z}_N^{(h)} * x}_H,
         \end{align*}
         where the last equality follows from the fact that $\lambda_h = \lambda_{-h}$.
+    \end{textblock*}
+
+ \end{frame}
+
+
+
+ 
+\begin{frame}{Computing the serial Number}
+
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        Lemma: The money state $\ket{\mathbb{Z}_N^{(h)} * x}_H$ is an eigenstate of $W$ with eigenvalue $e^{i\lambda_h t}$.
+        \vspace{1cm}
+
+        $e^{iAt} \ket{\mathbb{Z}_N^{(h)} * x}_H$ = $e^{i\lambda_{h}t} \ket{\mathbb{Z}_N^{(h)} * x}_H$
+        
+        \vspace{1cm}
+        If we choose $t = \operatorname{poly}(\log N)$, it follows from Lemma that we can run the phase estimation algorithm with the unitary $W$ and the eigenstate $\ket{\mathbb{Z}_N^{(h)} * x}_H$ to compute an estimate $\tilde{\lambda}_h$ of $\lambda_h$ such that %$\abs{\tilde{\lambda}_h - \lambda_h} \le 1 / poly(log N)$. 
+        % \operatorname{poly}(\log N)
+        \[
+        |\tilde{\lambda}_h - \lambda_h| \leq \frac{1}{\operatorname{poly}(\log N)}
+        \]
+        
+
+        
     \end{textblock*}
 
  \end{frame}
