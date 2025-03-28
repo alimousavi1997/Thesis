@@ -460,7 +460,7 @@
             
             \item If the $\Gamma$ has $N$ vertices, the discrete time quantum walk on $\Gamma$ is defined by a unitary operator on the finite Hilbert space $\mathbb{C}^N \times \mathbb{C}^N$ as follows:
             \item Define the states:
-            \[ \ket{\phi_j} = \frac{1}{\sqrt{\deg(j)}} \sum_{k = 1}^N \ket{j, k}, \]
+            \[ \ket{\phi_j} = \frac{1}{\sqrt{\deg(j)}} \sum_{k = 1}^N \sqrt{P_{jk}}\ket{j, k}, \]
             \item project and swap operators:
             \[ \Pi = \sum_{j = 1}^N \ket{\phi_j} \bra{\phi_j}, \quad S = \sum_{j, k = 1}^N \ket{j, k} \bra{k, j}. \]
             \item Then, a step of the quantum walk is defined by the unitary:
@@ -521,7 +521,20 @@
         
         \textit{Cayley Graphs:} \\
         \vspace{0.3cm}
-        proofs:
+        \textit{Proof}:
+        \[
+        A\ket{\hat{a}} = A.\frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y)\ket{y} = \frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y).A\ket{y}
+        \]
+        \[
+        = \frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y).\sum_{q \in Q}\ket{qy}
+        \]
+        Consider $\beta = qy$. Then:
+        \[
+         = \frac{1}{\sqrt{|G|}}\sum_{q \in Q}\chi(a,q)\sum_{\beta}\chi(a,\beta)\ket{\beta} = \sum_{q \in Q}\chi(a,q) . \ket{\hat{a}}
+        \]
+        \[
+         = \lambda_a\ket{\hat{a}}
+        \]
     \end{textblock*}
 \end{frame}
 
@@ -560,8 +573,10 @@
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
 
     
-     Given a regular group action $(G, X, *)$ with a fixed element $x \in X$ and a set  $Q = \{q_1, q_2, \dots, q_k\} \subset G$, let $\Gamma = (X, E)$ be a graphs with vertex set $X$ and edge set consisting of pairs $(x, y) \in X \times X$ such that $y = q * x$ for some $q \in Q$. The adjacency matrix of $\Gamma$ is
-    \[ A = \sum_{h \in G} \lambda_h \ket{G^{(h)} * x} \bra{G^{(h)} * x}, \]
+    Given a regular group action $(G, X, *)$ with a fixed element $x \in X$ and a set  $Q = \{q_1, q_2, \dots, q_k\} \subset G$, let $\Gamma = (X, E)$ be a graphs with vertex set $X$ and edge set consisting of pairs $(x, y) \in X \times X$ such that $y = q * x$ for some $q \in Q$. The adjacency matrix of $\Gamma$ is
+    \[
+    A = \sum_{h \in G} \lambda_h \ket{G^{(h)} * x} \bra{G^{(h)} * x}, 
+    \]
     where $\lambda_h = \sum_{q \in Q} \chi(h, q)$. Again, the eigenvectors $\ket{G^{(h)} * x}$ depend only on $G$.
         
     \end{textblock*}
@@ -575,11 +590,184 @@
 \begin{frame}{Cayley Graphs with Group Actions}
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
-        proofs:
+        \textit{Proof}:
+
+        \[
+        A\ket{G^{(h)}*x} = \frac{1}{\sqrt{|G|}}.\sum_{g \in G}\chi(g,h) A.\ket{g*x}
+        \]
+
+        \[
+        = A\ket{G^{(h)}*x} = \frac{1}{\sqrt{|G|}}.\sum_{g \in G}\chi(g,h)\sum_{q \in Q}\ket{q*(g*x)}
+        \]
+        Consider $\beta = qg$. Then:
+        \[
+        = = \frac{1}{\sqrt{|G|}}\sum_{q \in Q}\sum_{\beta \in G}\chi(\beta,h)\chi(q,h)\ket{\beta * x}
+        \]
+
+        \[
+        = \sum_{q \in Q}\chi(q,h).\ket{G^{(h)}*x} = \lambda_h \ket{G^{(h)}*x}
+        \]
 
     \end{textblock*}
 
 \end{frame}
+
+
+
+
+
+
+\begin{frame}{The cmpIndex Algorithm}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        Given a state $\ket{G^{(h)} * x}$, there is an efficient algorithm for computing $h$.
+        Specifically, there is a unitary operator that performs the transformation $\ket{G^{(h)} * x} \ket{0} \mapsto \ket{G^{(h)} * x} \ket{h}$:
+
+        \[
+        \ket{G^{(h)} * x}\ket{0} \mapsto \ket{G^{(h)} * x} \frac{1}{\sqrt{|G|}}\sum_{k \in G}\ket{k}
+        \]
+        And then apply the unitary $\sum_{k \in G}U_k \otimes \ket{k}\bra{k}$:
+
+        \[
+        \mapsto \frac{1}{\sqrt{|G|}}\sum_{k \in G}\ket{G^{(h)}*x}\chi(-k,h)\ket{k}
+        \]
+
+       
+        Finally, applying the inverse quantum Fourier transform to the second register yields:
+       
+
+        \[
+           \mapsto  \ket{G^{(h)}*x}\ket{h}
+        \]
+    \end{textblock*}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Simulating continuous-time walks}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+      
+        \[
+        \ket{\phi_{j0}} := \frac{1}{\sqrt{d}}\sum_{l \in F_j}(\sqrt{\frac{H^*_{jl}}{K}}\ket{0} + \sqrt{1-\frac{|H^*_{jl}|}{K}}\ket{1})
+        \]
+
+        \[
+        \ket{\phi_{j1}} := \ket{0}\ket{1}
+        \]
+
+        \[
+        T := \sum_{j=0}^{N-1}\sum_{b \in {\{0,1\}}}(\ket{j}\bra{j}\otimes\ket{b}\bra{b})\otimes\ket{\phi_{jb}}
+        \]
+
+        \[
+        W = iS(2TT^* - 1)
+        \]
+
+        \[
+        S\ket{j_1,b_1}\ket{j_2,b_2} = \ket{j_2,b_2}\ket{j_1,b_1}
+        \]
+
+
+
+    \end{textblock*}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Simulating continuous-time walks}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+      
+       \[
+       e^{-iAt} = \operatorname{QFT_G}(\sum_{a \in G}e^{-i\lambda_at}\ket{a}\bra{a})\operatorname{QFT^*_G}
+       \]
+
+
+
+
+    \end{textblock*}
+
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}{Simulating group action quantum walks}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+
+        \[
+        e^{-iAt} = \sum_{h \in G}\ket{G^{(h)}*x}\bra{G^{(h)}*x}
+        \]
+
+        \[
+        T := \sum_{y \in X}\sum_{b \in {\{0,1\}}}(\ket{j}\bra{j}\otimes\ket{b}\bra{b})\otimes\ket{\phi_{yb}}
+        \]
+
+        \[
+        = \sum_{y \in X}\sum_{b \in {\{0,1\}}}\ket{y}\ket{b}\ket{\phi_{yb}}\bra{y}\bra{b}
+        \]
+
+        \[
+            \ket{\phi_{y0}} = \frac{1}{\sqrt{|Q|}}\sum_{q \in Q}\ket{q*y}\ket{0}
+        \]
+        
+
+    \end{textblock*}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Simulating group action quantum walks}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+
+        % \begin{align*}
+        %     2\ket{0} \bra{0} \otimes TT^* - 1
+        %     & = 2\ket{0} \bra{0} \otimes \sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{y, b} \ket{\phi_{yb}} \bra{y, b} \bra{\phi_{yb}} - 1 \\
+            
+        %     & = U_T (2 \ket{0} \bra{0} \otimes 1_{X, b} \otimes \ket{0, 0} \bra{0, 0} - 1) U_T^*.
+        
+        % \end{align*}
+
+        \[
+        2\ket{0} \bra{0} \otimes TT^* - 1 = 2\ket{0} \bra{0} \otimes \sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{y, b} \ket{\phi_{yb}} \bra{y, b} \bra{\phi_{yb}} - 1 
+        \]
+
+        \[
+        = 2\sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{0} \ket{y, b} \ket{\phi_{yb}} \bra{0} \bra{y, b} \bra{\phi_{yb}} - 1 
+        \]
+
+        \[
+        = U_T \Big( 2\sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{0} \ket{y, b} \ket{0, 0} \bra{0} \bra{y, b} \bra{0, 0} - 1 \Big) U_T^* 
+        \]
+
+        \[
+        = U_T (2 \ket{0} \bra{0} \otimes 1_{X, b} \otimes \ket{0, 0} \bra{0, 0} - 1) U_T^*
+        \]
+
+        Now, for any state $\ket{\psi}$:
+
+        \[
+        (2\ket{0}\bra{0}\otimes TT^* - 1)\ket{0}\ket{\psi} = \ket{0}(2TT^*-1)\ket{\psi}
+        \]
+
+    \end{textblock*}
+
+\end{frame}
+
 
 
 
