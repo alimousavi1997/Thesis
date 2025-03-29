@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1743188631.31467 "c:/Users/seyed/Desktop/Thesis/presentation.tex" "presentation.pdf" "presentation" 1743188639.10672 0
+["pdflatex"] 1743267315.83314 "c:/Users/seyed/Desktop/Thesis/presentation.tex" "presentation.pdf" "presentation" 1743267323.13725 0
   "C:/Users/seyed/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1741058058 81247 50d52f6487769ef97fe2dc7d59ae1563 ""
   "C:/Users/seyed/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1725386351 24225045 07b726749965e6b9d55ff195f2ff5d7f ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1233951848 1004 54797486969f23fa377b128694d548df ""
@@ -209,12 +209,11 @@
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/tex/latex/translator/translator.sty" 1622471510 8765 56d370785f0143111ff9898b5adfe08e ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1700127522 55487 80a65caedd3722f4c20a14a69e785d8f ""
-  "c:/Users/seyed/Desktop/Thesis/presentation.tex" 1743188626 29679 40a6f9256cfec8161afe3ced6c60dac4 ""
-  "poster.png" 1741101125 577818 4d002acd45f7fc0201df19e0112ad035 ""
-  "presentation.aux" 1743188638 5226 bda1d510538644d09397765d8dab9391 "pdflatex"
-  "presentation.nav" 1743188638 3434 e5558aebbdf7ca98c531725246282832 "pdflatex"
-  "presentation.out" 1743188634 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "presentation.tex" 1743188626 29679 40a6f9256cfec8161afe3ced6c60dac4 ""
+  "c:/Users/seyed/Desktop/Thesis/presentation.tex" 1743267313 32505 e1b90608097fe9e8e8ce2851112715e4 ""
+  "presentation.aux" 1743267322 5617 e7b163908d15d650a81bfaa25b6bb3e6 "pdflatex"
+  "presentation.nav" 1743267322 3713 b4326b9ee767cc9bf869da055cd3b169 "pdflatex"
+  "presentation.out" 1743267319 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "presentation.tex" 1743267313 32505 e1b90608097fe9e8e8ce2851112715e4 ""
   (generated)
   "presentation.aux"
   "presentation.log"
