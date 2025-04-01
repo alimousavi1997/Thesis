@@ -4,6 +4,7 @@
 \usepackage[margin = 1in]{geometry}
 \usepackage{article_macros}
 \usepackage{authblk}
+\usepackage{tikz}
 
 
 
@@ -333,8 +334,70 @@ In contrast, the discrete-time quantum walk is generally more straightforward to
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Group Actions}
+
+
+
+
+  
+\begin{tikzpicture}[shorten >=1pt, auto, node distance=2cm,
+    thick,main node/.style={circle,draw,font=\sffamily\small\bfseries}]
+
+    % Define nodes explicitly
+    \node[main node] (0) at (90:2cm) {0};
+    \node[main node] (1) at (45:2cm) {1};
+    \node[main node] (2) at (0:2cm) {2};
+    \node[main node] (3) at (-45:2cm) {3};
+    \node[main node] (4) at (-90:2cm) {4};
+    \node[main node] (5) at (-135:2cm) {5};
+    \node[main node] (6) at (180:2cm) {6};
+
+    % Node N-1 explicitly
+    \node[main node] (N-1) at (135:2cm) {N-1};
+
+    % Ellipsis between node 6 and N-1
+    \node at (157.5:2cm) {\dots};
+
+    % Draw edges explicitly
+    \draw (0) -- (1) -- (2) -- (3) -- (4) -- (5) -- (6);
+    \draw (6) -- (157.5:1.8cm); % connecting dots visually
+    % \draw (157.5:1.8cm) -- (N-1); % connecting dots visually
+    \draw (N-1) -- (0); % close the cycle
+
+\end{tikzpicture}
+
+  
+
+
+
+\begin{tikzpicture}[thick, 
+    main node/.style={circle, draw, font=\sffamily\small\bfseries},
+    adjacent node/.style={circle, draw, font=\sffamily\small},
+    scale=1]
+
+    % Central node g
+    \node[main node] (g) at (0,0) {$g$};
+
+    % Define number of adjacent vertices
+    \def \K {5}
+    \def \radius {2cm}
+    \def \angle {360/\K}
+
+    % Draw adjacent nodes
+    \foreach \i in {1,...,\K}{
+        \node[adjacent node] (q\i) at ({90+\angle*(\i-1)}:\radius) {$g*q_{\i}$};
+        \draw (g) -- (q\i);
+    }
+
+    % Optional dots if there are many vertices (e.g., q_k)
+    \node at ({90+\angle*(\K)}:\radius) {\dots};
+
+\end{tikzpicture}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Group actions provide a framework for understanding how groups interact with sets, formalizing the concept of applying transformations systematically. They capture the symmetries and structure-preserving transformations of objects, making them fundamental in mathematics and its applications. Group actions describe transformations through a set of rules that ensure consistency and compatibility with the underlying group operations. This concept is pivotal in cryptography, where the symmetries and operations of groups underpin many secure systems.
 

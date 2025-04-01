@@ -6,6 +6,8 @@
 \usepackage{braket}      % For Dirac notation
 \usepackage[absolute,overlay]{textpos}
 \usepackage{amsmath}
+\usepackage{tikz}
+
 % \usepackage{amsmath, amssymb, dsfont}
 % \usepackage{algorithm}
 % \usepackage{algorithmicx}
@@ -47,56 +49,30 @@
 
 
 
-% \begin{frame}{Program and Courses Taken}
-
-   
+\begin{frame}{Quantum Computation - Preliminaries and Notation}
     
-%     \begin{textblock*}{12cm}(0.5cm,1.5cm)
-%        \begin{itemize}
-%         \item Program: M.A.Sc in Software Engineering
-%         \vspace{1cm}
-%         \item CAS 701,  Logic \& Discrete Mathematics
-%         \item COMPSCI 6TE3, Continuous optimization
-%         \item CAS 721, Combinatorics \& Computing
-%         \item CAS 741, Development of Scientific Computation Software
-%        \end{itemize}
-%     \end{textblock*}
-
-%     \title{SDSD}
-    
-
-
-% \end{frame}
-
-
-
-
-
-
-
-% \begin{frame}{Seminars}
-    
-%     \begin{textblock*}{12cm}(0.5cm,1.5cm)
-%        \begin{itemize}
-%         \item I have participated in 6 seminars during my program.
-%        \end{itemize}
-%     \end{textblock*}
-    
-
-% \end{frame}
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        In this talk, we explore the interplay between quantum computation, group theory, and cryptography through the lens of quantum walks. The presentation is organized as follows:
+        
+        \vspace{0.5cm}
+        \begin{enumerate}
+            \item \textbf{Quantum Computation Preliminaries} \\
+            \vspace{0.1cm}
+            
+            \item \textbf{Quantum Walks} \\
+            \vspace{0.1cm}
+         
+            \item \textbf{Quantum Money Schemes} \\
+            \vspace{0.1cm}
+            \item \textbf{Verification of our New Quantum Money scheme using Quantum Walks} \\
+          
+        \end{enumerate}
+            
+    \end{textblock*}
+\end{frame}
 
 
 
-
-% \begin{frame}{Poster}
-    
-%     \begin{figure}
-%         \centering
-%         \includegraphics[width=1\textwidth]{poster.png}
-%         \caption{Presented at Nov. 6, 2024}
-%     \end{figure}
-
-% \end{frame}
 
 
 
@@ -189,9 +165,89 @@
 
 
 
+
 \begin{frame}{Example of a Continuous Quantum Walk}
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        \centering
+        \begin{tikzpicture}[scale=1, every node/.style={circle, draw=black, fill=white, minimum size=10pt, inner sep=2pt}]
+            % Draw nodes
+            \node (-3) at (-3,0) {-3};
+            \node (-2) at (-2,0) {-2};
+            \node (-1) at (-1,0) {-1};
+            \node (0)  at (0,0)  {0};
+            \node (1)  at (1,0)  {1};
+            \node (2)  at (2,0)  {2};
+            \node (3)  at (3,0)  {3};
+        
+            % Draw edges
+            \draw (-3) -- (-2);
+            \draw (-2) -- (-1);
+            \draw (-1) -- (0);
+            \draw (0)  -- (1);
+            \draw (1)  -- (2);
+            \draw (2)  -- (3);
+        
+            % Add fading dashed arrows to suggest infinite continuation
+            \draw[dashed, ->] (-3,0) -- (-3.8,0);
+            \draw[dashed, ->] (3,0) -- (3.8,0);
+        \end{tikzpicture}
+        
+        \begin{itemize}
+        \vspace{0.5cm}
+        \item \textbf{Graph:} Infinite line with vertices labeled by integers \( n \in \mathbb{Z} \).
+        \item \textbf{Adjacency Matrix:} Each vertex is connected to its neighbors \( n \pm 1 \).
+        \[
+        A_{i,j} = \begin{cases}
+            1 & \text{if } |i - j| = 1 \\
+            0 & \text{otherwise}
+        \end{cases}
+        \]
+
+        \item \textbf{Hilbert Space:} Spanned by basis states \( |n\rangle \), representing positions.
+        \item \textbf{Time Evolution:} Governed by Schrödinger equation
+        \[
+        i \frac{d}{dt} |\psi(t)\rangle = A |\psi(t)\rangle
+        \quad \Rightarrow \quad
+        |\psi(t)\rangle = e^{-iAt} |\psi(0)\rangle
+        \]
+    \end{itemize}
+            
+    \end{textblock*}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Example of a Continuous Quantum Walk}
+
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
+
+       
+
+        \begin{itemize}
+            \item \textbf{Initial State:} Particle starts at the origin:
+            \[
+            |\psi(0)\rangle = |0\rangle
+            \]
+            
+            \item \textbf{Evolved State:}
+            \[
+            |\psi(t)\rangle = \sum_{n \in \mathbb{Z}} \psi_n(t) |n\rangle
+            \quad \text{where } \psi_n(t) = i^n J_n(2t)
+            \]
+        
+            \item \textbf{Key Features:}
+            \begin{itemize}
+                \item Probability: \( |\psi_n(t)|^2 \)
+                \item Wave-like, oscillatory distribution due to interference
+                \item Faster spread than classical walk: standard deviation grows linearly in \( t \)
+                \item No coin space needed — evolution depends only on graph structure
+            \end{itemize}
+        \end{itemize}
 
                    
     \end{textblock*}
@@ -226,6 +282,67 @@
 \begin{frame}{Example of a Discrete-Time Quantum Walk}
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        \begin{itemize}
+            \item \textbf{Hilbert Space:} $\mathcal{H} = \mathcal{H}_C \otimes \mathcal{H}_P$
+            \begin{itemize}
+                \item $\mathcal{H}_C$: 2D coin space with basis $\{|0\rangle, |1\rangle\}$
+                \item $\mathcal{H}_P$: Infinite-dimensional position space with basis $\{|n\rangle : n \in \mathbb{Z}\}$
+            \end{itemize}
+        
+            \item \textbf{Coin Operator:} Apply a unitary $C$ (e.g., Hadamard) to $\mathcal{H}_C$
+            \[
+            H = \frac{1}{\sqrt{2}} \begin{bmatrix}
+                1 & 1 \\
+                1 & -1
+            \end{bmatrix}
+            \]
+        
+            \item \textbf{Shift Operator:} Moves the walker based on coin state:
+            \[
+            S|0\rangle|n\rangle = |0\rangle|n + 1\rangle, \quad
+            S|1\rangle|n\rangle = |1\rangle|n - 1\rangle
+            \]
+        
+            \item \textbf{One Step:} Apply the unitary operator
+            \[
+            U = S \cdot (C \otimes I)
+            \]
+        \end{itemize}
+
+
+                   
+    \end{textblock*}
+\end{frame}
+
+
+
+
+\begin{frame}{Example of a Discrete-Time Quantum Walk}
+    
+    \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        \begin{itemize}
+            \item \textbf{Initial State:} $|\psi(0)\rangle = |0\rangle \otimes |0\rangle$
+        
+            \item \textbf{After One Step:}
+            \[
+            |\psi(1)\rangle = \frac{1}{\sqrt{2}} \left( |0\rangle|1\rangle + |1\rangle|-1\rangle \right)
+            \]
+        
+            \item \textbf{Key Properties:}
+            \begin{itemize}
+                \item Superposition leads to \textbf{parallel exploration} of paths.
+                \item Repeated application of $U$ creates \textbf{interference patterns}.
+                \item Spread is faster than classical: $\sigma(t) \sim t$ vs. $\sqrt{t}$.
+            \end{itemize}
+        
+            \vspace{0.5cm}
+            \item \textbf{Measurement:}
+            \begin{itemize}
+                \item Measuring after each step yields a classical random walk.
+                \item \textbf{Quantum behavior requires delaying measurement.}
+            \end{itemize}
+        \end{itemize}
+
 
                    
     \end{textblock*}
@@ -239,6 +356,17 @@
 \begin{frame}{Continuous vs Discrete Quantum Walks }
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
+        \vspace{0.5cm}
+
+        \begin{itemize}
+            \item \textbf{CTQW}: Easier to analyze due to direct spectral decomposition.
+            \vspace{0.3cm}
+            \item \textbf{CTQW}: Harder to implement on quantum circuits (requires simulating \( e^{-iAt} \)).
+            \vspace{0.3cm}
+            \item \textbf{DTQW}: More complex to analyze (involves coin and shift operators).
+            \vspace{0.3cm}
+            \item \textbf{DTQW}: Easier to implement on gate-based quantum hardware.
+        \end{itemize}
 
                    
     \end{textblock*}
@@ -271,15 +399,39 @@
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
 
-        \begin{figure}
-            \begin{figure}[h!]
-                \centering
-                \includegraphics[width=0.5\textwidth]{fig_1.png}  % Replace with your file name
-                \caption{Cayley graph of $\mathbb{Z}_N$ with generators $\{\pm 1\}$}
-                \label{fig:cayley_z6}
-            \end{figure}
-        \end{figure}
+      
         
+        \begin{figure}[h!]
+            \centering
+            \begin{tikzpicture}[shorten >=1pt, auto, node distance=2cm,
+                thick, main node/.style={circle,draw,font=\sffamily\small\bfseries}]
+
+                % Define nodes explicitly
+                \node[main node] (0) at (90:2cm) {0};
+                \node[main node] (1) at (45:2cm) {1};
+                \node[main node] (2) at (0:2cm) {2};
+                \node[main node] (3) at (-45:2cm) {3};
+                \node[main node] (4) at (-90:2cm) {4};
+                \node[main node] (5) at (-135:2cm) {5};
+                \node[main node] (6) at (180:2cm) {6};
+
+                % Node N-1 explicitly
+                \node[main node] (N-1) at (135:2cm) {N-1};
+
+                % Ellipsis between node 6 and N-1
+                \node at (157.5:2cm) {\dots};
+
+                % Draw edges explicitly
+                \draw (0) -- (1) -- (2) -- (3) -- (4) -- (5) -- (6);
+                \draw (6) -- (157.5:1.8cm); % connecting dots visually
+                \draw (N-1) -- (0); % close the cycle
+
+            \end{tikzpicture}
+            \caption{Cayley graph of $\mathbb{Z}_N$ with generators $\{\pm 1\}$}
+            \label{fig:cyclic-graph}
+        \end{figure}
+
+                
        
     \end{textblock*}
 
@@ -429,15 +581,37 @@
 \begin{frame}{Cayley Graphs with Group Actions}
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
 
-        \begin{figure}
-            \begin{figure}[h!]
-                \centering
-                \includegraphics[width=0.5\textwidth]{fig_2.png}  % Replace with your file name
-                \caption{Cayley graph of a group $G$ with generators $\{q_1, q_2, ... , q_k\}$}
-                \label{fig:cayley_z6}
-            \end{figure}
-        \end{figure}
 
+        \begin{figure}[H]
+            \centering
+            \begin{tikzpicture}[thick, 
+                main node/.style={circle, draw, font=\sffamily\small\bfseries},
+                adjacent node/.style={circle, draw, font=\sffamily\small},
+                scale=1]
+        
+                % Central node g
+                \node[main node] (g) at (0,0) {$g$};
+        
+                % Define number of adjacent vertices
+                \def \K {5}
+                \def \radius {2cm}
+                \def \angle {360/\K}
+        
+                % Draw adjacent nodes
+                \foreach \i in {1,...,\K}{
+                    \node[adjacent node] (q\i) at ({90+\angle*(\i-1)}:\radius) {$g*q_{\i}$};
+                    \draw (g) -- (q\i);
+                }
+        
+                % Optional dots if there are many vertices (e.g., q_k)
+                \node at ({90+\angle*(\K)}:\radius) {\dots};
+        
+            \end{tikzpicture}
+            \caption{Cayley graph of a group $G$ with generators $\{q_1, q_2, ... , q_k\}$}
+
+            \label{fig:group-action-orbit}
+        \end{figure}
+        
     
     \end{textblock*}
 \end{frame}
@@ -501,37 +675,6 @@
 
 
 
-
-\begin{frame}{The cmpIndex Algorithm}
-    
-    \begin{textblock*}{12cm}(0.5cm,1.5cm)
-        Given a state $\ket{G^{(h)} * x}$, there is an efficient algorithm for computing $h$.
-        Specifically, there is a unitary operator that performs the transformation $\ket{G^{(h)} * x} \ket{0} \mapsto \ket{G^{(h)} * x} \ket{h}$:
-
-        \[
-        \ket{G^{(h)} * x}\ket{0} \mapsto \ket{G^{(h)} * x} \frac{1}{\sqrt{|G|}}\sum_{k \in G}\ket{k}
-        \]
-        And then apply the unitary $\sum_{k \in G}U_k \otimes \ket{k}\bra{k}$:
-
-        \[
-        \mapsto \frac{1}{\sqrt{|G|}}\sum_{k \in G}\ket{G^{(h)}*x}\chi(-k,h)\ket{k}
-        \]
-
-       
-        Finally, applying the inverse quantum Fourier transform to the second register yields:
-       
-
-        \[
-           \mapsto  \ket{G^{(h)}*x}\ket{h}
-        \]
-    \end{textblock*}
-
-\end{frame}
-
-
-
-
-
 \begin{frame}{Simulating continuous-time walks}
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
@@ -541,7 +684,7 @@
         \]
 
         \[
-        \ket{\phi_{j1}} := \ket{0}\ket{1}
+        \ket{\phi_{j1}} := \ket{0}\ket{1} 
         \]
 
         \[
@@ -619,35 +762,7 @@
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
 
-        % \begin{align*}
-        %     2\ket{0} \bra{0} \otimes TT^* - 1
-        %     & = 2\ket{0} \bra{0} \otimes \sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{y, b} \ket{\phi_{yb}} \bra{y, b} \bra{\phi_{yb}} - 1 \\
-            
-        %     & = U_T (2 \ket{0} \bra{0} \otimes 1_{X, b} \otimes \ket{0, 0} \bra{0, 0} - 1) U_T^*.
-        
-        % \end{align*}
-
-        \[
-        2\ket{0} \bra{0} \otimes TT^* - 1 = 2\ket{0} \bra{0} \otimes \sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{y, b} \ket{\phi_{yb}} \bra{y, b} \bra{\phi_{yb}} - 1 
-        \]
-
-        \[
-        = 2\sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{0} \ket{y, b} \ket{\phi_{yb}} \bra{0} \bra{y, b} \bra{\phi_{yb}} - 1 
-        \]
-
-        \[
-        = U_T \Big( 2\sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{0} \ket{y, b} \ket{0, 0} \bra{0} \bra{y, b} \bra{0, 0} - 1 \Big) U_T^* 
-        \]
-
-        \[
-        = U_T (2 \ket{0} \bra{0} \otimes 1_{X, b} \otimes \ket{0, 0} \bra{0, 0} - 1) U_T^*
-        \]
-
-        Now, for any state $\ket{\psi}$:
-
-        \[
-        (2\ket{0}\bra{0}\otimes TT^* - 1)\ket{0}\ket{\psi} = \ket{0}(2TT^*-1)\ket{\psi}
-        \]
+       
 
     \end{textblock*}
 
@@ -655,24 +770,6 @@
 
 
 
-
-
-
-\begin{frame}{Group Action Quantum Walks}
-    
-    \begin{textblock*}{12cm}(0.5cm,1.5cm)
-               
-        Given a regular group action $(G, X, *)$ with a fixed element $x \in X$ and a set  $Q = \{q_1, q_2, \dots, q_k\} \subset G$, let $\Gamma = (X, E)$ be a graphs with vertex set $X$ and edge set consisting of pairs $(x, y) \in X \times X$ such that $y = q * x$ for some $q \in Q$. The adjacency matrix of $\Gamma$ is
-        \[ A = \sum_{h \in G} \lambda_h \ket{G^{(h)} * x} \bra{G^{(h)} * x}, \]
-        where:
-        \begin{itemize}
-            \item $\lambda_h = \sum_{q \in Q} \chi(h, q)$
-            \item the eigenvectors $\ket{G^{(h)} * x}$ depend only on $G$
-        \end{itemize}
-
-    \end{textblock*}
-
-\end{frame}
 
 
 
@@ -729,7 +826,13 @@
             
         
         \begin{itemize}
-        \item $\ver(h, \ket{\psi})$. First, check whether $\ket{\psi}$ has support in $X_\lambda$. If not, return $0$. Then, apply $\comph$ to the state $\ket{\psi}\ket{0}$, and measure the second register to obtain some $h' \in G_\lambda$. If $h' = h$, return $1$; otherwise return $0$.
+        \item $\ver(h, \ket{\psi})$. First, check whether $\ket{\psi}$ has support in $X_\lambda$. If not, return $0$. Then, apply \textit{cmpIndex} to the state $\ket{\psi}\ket{0}$, and measure the second register to obtain some $h' \in G_\lambda$. If $h' = h$, return $1$; otherwise return $0$.
+        
+        \vspace{1.5cm}
+        cmpIndex Algorithm:
+        \vspace{0.3cm}
+        \item  Given a state $\ket{G^{(h)} * x}$, there is an efficient algorithm for computing $h$.
+        Specifically, there is a unitary operator that performs the transformation $\ket{G^{(h)} * x} \ket{0} \mapsto \ket{G^{(h)} * x} \ket{h}$:
         \end{itemize}
 
         
@@ -835,41 +938,6 @@
 
 
 
-\begin{frame}{Computing the serial Number}
-
-    \begin{textblock*}{12cm}(0.5cm,1.5cm)
-        Lemma: The money state $\ket{\mathbb{Z}_N^{(h)} * x}_H$ is an eigenstate of $W$ with eigenvalue $e^{i\lambda_h t}$.
-        % \vspace{1cm}
-        
-
-        \textit{Proof:}
-        \begin{align*}
-            e^{iAt} \ket{\mathbb{Z}_N^{(h)} * x}_H
-            & = \sum_{g \in \mathbb{Z}_N} e^{i\lambda_gt} \ket{\mathbb{Z}_N^{(g)} * x}\braket{\mathbb{Z}_N^{(g)} * x|\mathbb{Z}_N^{(h)} * x}_H 
-        \end{align*}
-
-
-        \[
-        =\sum_{g \in \mathbb{Z}_N} e^{i\lambda_gt} \ket{\mathbb{Z}_N^{(g)} * x} \bra{\mathbb{Z}_N^{(g)} * x} \Big( \frac{1 - i}{2} \ket{\mathbb{Z}_N^{(h)} * x} + \frac{1 + i}{2} \ket{\mathbb{Z}_N^{(-h)} * x} \Big) 
-        \]
-
-        \[
-        =e^{i\lambda_{h}t} \frac{1 - i}{2} \ket{\mathbb{Z}_N^{(h)} * x} + \frac{1 + i}{2} e^{i\lambda_{-h}t} \ket{\mathbb{Z}_N^{(-h)} * x} 
-        \]
-
-
-        \[
-        =e^{i\lambda_{h}t} \ket{\mathbb{Z}_N^{(h)} * x}_H,
-        \]
-
-
-        where the last equality follows from the fact that $\lambda_h = \lambda_{-h}$.
-    \end{textblock*}
-
- \end{frame}
-
-
-
  
 \begin{frame}{Computing the serial Number}
 
@@ -912,18 +980,6 @@
 \end{frame}
 
 
-\begin{frame}{An efficient new algorithm for QHT}
-    
-    \begin{textblock*}{12cm}(0.5cm,1.5cm)
-        Let $\ket{a} = \ket{t}\ket{b}$, where $b$ is the least significant bit of $a$, so that $a = 2t + b$. Applying $\qft_{N / 2}$ to the first register, we obtain the state
-        \[ \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \omega_N^{2ty} \ket{y} \ket{b}. \]
-        Next, we apply the phase unitary $P(y, b): \ket{y} \ket{b} \mapsto \omega_N^{by} \ket{y} \ket{b}$, and finally, we apply a Hadamard transform to the last qubit. The result is the state in \eqref{eq:qft_alt}.  
-
-    \end{textblock*}
-    
-
-\end{frame}
-
 
 
 \begin{frame}{An efficient new algorithm for QHT}
@@ -962,7 +1018,7 @@
         We now show how to compute $\qht_N$ recursively.
 
         \begin{align*}
-            \ket{0}\ket{t}\ket{b}
+            \ket{0}\ket{a} = \ket{0}\ket{t}\ket{b}
             & \mapsto \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi t y}{N / 2} \Big) \ket{0} \ket{y} \ket{b} \\%& (\mathds{1} \otimes \qht_{N / 2} \otimes \mathds{1}) \\
             & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) \ket{0} \ket{y} \ket{b} \\
             & \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) (\ket{0} + \ket{1}) \ket{y}\ket{b}. %& (H \otimes \mathds{1}) 
