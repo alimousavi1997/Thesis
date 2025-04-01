@@ -209,6 +209,8 @@ A set of gates is considered \textbf{universal} if any unitary operation can be 
 
 The concept of a \textit{quantum walk} is a quantum analog of the classical random walk and plays a significant role in quantum algorithms. There are two main types of quantum walks: \textit{continuous-time} and \textit{discrete-time} quantum walks, both of which exhibit behaviors that are significantly different from classical random walks.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Continuous-Time Quantum Walks}
 
 
@@ -266,63 +268,117 @@ The continuous-time quantum walk introduces several key differences from its cla
 
 
 
-*********Examples and further discussions here*********
+\subsection*{Example: Continuous-Time Quantum Walk on the Line}
+
+To illustrate the behavior of continuous-time quantum walks, consider the example of a particle evolving on the \textit{infinite one-dimensional lattice}, also known as the \textit{integer line}. In this graph, the vertices are labeled by integers \( \mathbb{Z} \), and each vertex \( n \in \mathbb{Z} \) is connected to its immediate neighbors \( n-1 \) and \( n+1 \). The adjacency matrix \( A \) for this graph has entries:
+\[
+A_{i,j} =
+\begin{cases}
+1 & \text{if } |i - j| = 1, \\
+0 & \text{otherwise}.
+\end{cases}
+\]
+
+Let the walker initially be located at the origin, so the initial state is \( |\psi(0)\rangle = |0\rangle \). The quantum evolution of the system is governed by the Schrödinger equation:
+\[
+i \frac{d}{dt} |\psi(t)\rangle = A |\psi(t)\rangle,
+\]
+with the solution:
+\[
+|\psi(t)\rangle = e^{-iAt} |\psi(0)\rangle.
+\]
+
+For this specific graph, the amplitude of being at position \( n \) at time \( t \) has an elegant closed-form expression:
+\[
+\psi_n(t) = i^n J_n(2t),
+\]
+where \( J_n \) is the \textit{Bessel function of the first kind} of order \( n \). The corresponding probability of finding the walker at vertex \( n \) at time \( t \) is:
+\[
+p_n(t) = |\psi_n(t)|^2 = |J_n(2t)|^2.
+\]
+
+This probability distribution displays quintessential quantum behavior: it is \textbf{non-Gaussian}, \textbf{oscillatory}, and \textbf{spreads faster} than in the classical case. In contrast to the diffusive behavior of classical walks, where the standard deviation grows as \( \sigma(t) \propto \sqrt{t} \), the quantum walk exhibits \textit{ballistic spread} with \( \sigma(t) \propto t \).
+
+These interference-driven properties make CTQWs particularly powerful for applications in quantum information and quantum algorithms, where the speed and spread of information are crucial.
 
 
-% Overall, the transition from classical continuous-time Markov chains to continuous-time quantum walks highlights fundamental differences between classical and quantum dynamics, particularly the role of interference and the constraints of unitary evolution in quantum systems. These differences underscore the potential of quantum walks in quantum computing and algorithm design.
 
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Discrete-Time Quantum Walks}
-*******************
-The discrete-time coined quantum walk (DTQW) is a quantum analog of classical random walks, leveraging the principles of quantum mechanics to achieve unique computational and dynamical properties. It is defined on a graph or lattice, with the walker's state described by both its position and an internal "coin" state. The walker's position \( n \) on a one-dimensional lattice (line) is represented by a vector \( |n\rangle \) in an infinite-dimensional Hilbert space \( \mathcal{H}_P \), where the computational basis for \( \mathcal{H}_P \) is 
 
+
+
+Discrete-time quantum walks (DTQWs) serve as the discrete counterpart of quantum random walks and are particularly useful for algorithmic constructions in quantum computing. Unlike continuous-time quantum walks, DTQWs require an additional coin degree of freedom to preserve unitarity in the evolution. In this section, we explore the discrete-time coined quantum walk on the infinite one-dimensional lattice (integer line), which provides a clear and tractable example of how interference and superposition govern quantum behavior.
+
+\subsubsection*{Hilbert Space and Coin Space}
+
+The state space of the system is the tensor product \( \mathcal{H} = \mathcal{H}_C \otimes \mathcal{H}_P \), where:
+\begin{itemize}
+    \item \( \mathcal{H}_C \) is the 2-dimensional Hilbert space of the quantum coin, with basis states \( \{|0\rangle, |1\rangle\} \), often interpreted as ``spin up'' and ``spin down''.
+    \item \( \mathcal{H}_P \) is the position Hilbert space, spanned by \( \{|n\rangle : n \in \mathbb{Z}\} \), representing the particle's location on the integer line.
+\end{itemize}
+
+\subsubsection*{Coin and Shift Operators}
+
+The walk consists of two operations applied in sequence:
+\begin{enumerate}
+    \item \textbf{Coin operator \( C \)}: A unitary operator acting on \( \mathcal{H}_C \), typically chosen to create superposition. A common choice is the \textit{Hadamard coin}:
+    \[
+    H = \frac{1}{\sqrt{2}} \begin{bmatrix}
+    1 & 1 \\
+    1 & -1
+    \end{bmatrix}.
+    \]
+    \item \textbf{Shift operator \( S \)}: A unitary operator on \( \mathcal{H}_C \otimes \mathcal{H}_P \) that moves the walker depending on the coin state:
+    \[
+    S|0\rangle|n\rangle = |0\rangle|n + 1\rangle, \quad
+    S|1\rangle|n\rangle = |1\rangle|n - 1\rangle.
+    \]
+\end{enumerate}
+
+One full step of the walk is implemented by applying the unitary operator:
 \[
-\{ |n\rangle : n \in \mathbb{Z} \}.
+U = S (C \otimes I_P),
+\]
+where \( I_P \) is the identity operator on \( \mathcal{H}_P \). Repeated application of \( U \) evolves the quantum state over time:
+\[
+|\psi(t)\rangle = U^t |\psi(0)\rangle.
 \]
 
-The walker's internal state, or "coin," is represented by a two-dimensional Hilbert space \( \mathcal{H}_C \) with basis states \( |0\rangle \) and \( |1\rangle \). The coin state determines the direction of the walker's movement, and the total state of the system resides in the tensor product space 
+\subsubsection*{Example: Hadamard Walk from the Origin}
 
+Suppose the initial state of the system is localized at the origin with coin state \( |0\rangle \):
 \[
-\mathcal{H} = \mathcal{H}_C \otimes \mathcal{H}_P,
+|\psi(0)\rangle = |0\rangle \otimes |0\rangle.
 \]
-
-combining the coin and position spaces.
-
-The dynamics of the walk are governed by two key operators: the coin operator and the shift operator. The coin is represented by a unitary matrix \( C \) acting on \( \mathcal{H}_C \). Common choices include the Hadamard matrix, which creates superpositions of the coin states. The Hadamard coin operator \( H \) is defined as 
-
+Applying the Hadamard operator and then the shift, the system evolves after one step into a superposition:
 \[
-H = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}.
+|\psi(1)\rangle = \frac{1}{\sqrt{2}} \left( |0\rangle|1\rangle + |1\rangle|-1\rangle \right).
 \]
+The particle is now in a coherent superposition of being at positions \( +1 \) and \( -1 \), determined by its coin state.
 
-The shift operator \( S \) moves the walker based on the coin state. For example, if the coin state is \( |0\rangle \), the walker moves to \( |n+1\rangle \), and if the coin state is \( |1\rangle \), the walker moves to \( |n-1\rangle \). The shift operator is explicitly given by 
+This process continues iteratively. For example, the second and third steps yield:
+\begin{align*}
+|\psi(2)\rangle &= \frac{1}{2} \left( -|1\rangle|-2\rangle + (|0\rangle + |1\rangle)|0\rangle + |0\rangle|2\rangle \right), \\
+|\psi(3)\rangle &= \frac{1}{2\sqrt{2}} \left( |1\rangle|-3\rangle - |0\rangle|-1\rangle + (2|0\rangle + |1\rangle)|1\rangle + |0\rangle|3\rangle \right).
+\end{align*}
 
-\[
-S = \sum_{n} |n+1\rangle \langle n| \otimes |0\rangle \langle 0| + |n-1\rangle \langle n| \otimes |1\rangle \langle 1|.
-\]
+\subsubsection*{Quantum vs Classical Behavior}
 
-The evolution of the system is described by the unitary operator 
+The key difference between quantum and classical random walks lies in the presence of \textit{interference} and \textit{superposition}:
+\begin{itemize}
+    \item In classical random walks, probabilities are updated step-by-step based on stochastic transitions, leading to a binomial distribution that approximates a Gaussian as time progresses.
+    \item In contrast, discrete-time quantum walks generate probability amplitudes that can interfere constructively or destructively depending on the history of the evolution.
+\end{itemize}
 
-\[
-U = S \cdot (I \otimes C),
-\]
-
-where \( I \) is the identity operator on \( \mathcal{H}_P \). The state of the walker at time \( t+1 \) is given by 
-
-\[
-|\psi(t+1)\rangle = U |\psi(t)\rangle.
-\]
-
-Consider a quantum walk on a one-dimensional lattice. The walker's state evolves in superposition, allowing it to explore multiple paths simultaneously. Interference between these paths leads to faster spreading compared to classical random walks.
-
-Key features of DTQW include superposition, where the walker exists in a superposition of positions and coin states, enabling parallel exploration of multiple paths; interference, where quantum interference enhances or suppresses certain paths, leading to non-classical behavior; and quadratic speedup, where quantum walks spread faster than classical random walks, often quadratically, which is advantageous for algorithmic applications.
-
-DTQWs are used in quantum algorithms, such as quantum search and graph traversal, and in simulating physical systems like energy transport in photosynthesis. They also serve as a framework for universal quantum computation. The discrete-time quantum walk is a powerful tool in quantum computing, offering a rich interplay between quantum mechanics and graph theory. Its ability to exploit superposition and interference enables applications in algorithm design, simulation, and computation, making it a cornerstone of quantum information science.
-
-*********Examples and further discussions here*********
+As a result, the probability distribution of the DTQW is not symmetric or Gaussian, and it spreads much faster than its classical counterpart. Specifically, the standard deviation of a DTQW grows linearly with time \( \sigma(t) \sim t \), while in the classical case it grows as \( \sqrt{t} \).
 
 
+If a position measurement is performed after every step, the quantum walk collapses into a classical random walk due to decoherence. However, by deferring measurement and allowing the system to evolve unitarily over many steps, quantum correlations between paths persist, yielding a rich interference pattern in the final probability distribution.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Comparison of Models}
 
 From a computational standpoint, both continuous-time and discrete-time quantum walks offer distinct advantages. The continuous-time quantum walk is often considered more natural because it does not require expanding the state space, making it simpler to define and typically easier to analyze. For example, while the exponential speedup demonstrated by continuous-time quantum walks is widely believed to extend to the discrete-time model, the dynamics of the latter are more complex. To date, no rigorous analysis has been provided to confirm this extension.
@@ -337,67 +393,6 @@ In contrast, the discrete-time quantum walk is generally more straightforward to
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Group Actions}
 
-
-
-
-  
-\begin{tikzpicture}[shorten >=1pt, auto, node distance=2cm,
-    thick,main node/.style={circle,draw,font=\sffamily\small\bfseries}]
-
-    % Define nodes explicitly
-    \node[main node] (0) at (90:2cm) {0};
-    \node[main node] (1) at (45:2cm) {1};
-    \node[main node] (2) at (0:2cm) {2};
-    \node[main node] (3) at (-45:2cm) {3};
-    \node[main node] (4) at (-90:2cm) {4};
-    \node[main node] (5) at (-135:2cm) {5};
-    \node[main node] (6) at (180:2cm) {6};
-
-    % Node N-1 explicitly
-    \node[main node] (N-1) at (135:2cm) {N-1};
-
-    % Ellipsis between node 6 and N-1
-    \node at (157.5:2cm) {\dots};
-
-    % Draw edges explicitly
-    \draw (0) -- (1) -- (2) -- (3) -- (4) -- (5) -- (6);
-    \draw (6) -- (157.5:1.8cm); % connecting dots visually
-    % \draw (157.5:1.8cm) -- (N-1); % connecting dots visually
-    \draw (N-1) -- (0); % close the cycle
-
-\end{tikzpicture}
-
-  
-
-
-
-\begin{tikzpicture}[thick, 
-    main node/.style={circle, draw, font=\sffamily\small\bfseries},
-    adjacent node/.style={circle, draw, font=\sffamily\small},
-    scale=1]
-
-    % Central node g
-    \node[main node] (g) at (0,0) {$g$};
-
-    % Define number of adjacent vertices
-    \def \K {5}
-    \def \radius {2cm}
-    \def \angle {360/\K}
-
-    % Draw adjacent nodes
-    \foreach \i in {1,...,\K}{
-        \node[adjacent node] (q\i) at ({90+\angle*(\i-1)}:\radius) {$g*q_{\i}$};
-        \draw (g) -- (q\i);
-    }
-
-    % Optional dots if there are many vertices (e.g., q_k)
-    \node at ({90+\angle*(\K)}:\radius) {\dots};
-
-\end{tikzpicture}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Group actions provide a framework for understanding how groups interact with sets, formalizing the concept of applying transformations systematically. They capture the symmetries and structure-preserving transformations of objects, making them fundamental in mathematics and its applications. Group actions describe transformations through a set of rules that ensure consistency and compatibility with the underlying group operations. This concept is pivotal in cryptography, where the symmetries and operations of groups underpin many secure systems.
 
