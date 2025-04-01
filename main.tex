@@ -633,7 +633,35 @@ A Cayley graph is a graphical representation of a group based on a chosen set of
 \section*{Definition of Cayley Graphs}
 
 A \textit{Cayley graph} is a graph that encodes the structure of a group with respect to a chosen generating set. Formally, let \( G \) be a group and \( S \) be a subset of \( G \) that serves as a generating set, meaning every element of \( G \) can be expressed as a finite product of elements from \( S \). The Cayley graph \( \Gamma(G, S) \) is defined as follows. The vertex set of the graph consists of the elements of \( G \), where each vertex corresponds to a unique group element. The edge set is constructed by drawing a directed edge from vertex \( g \) to vertex \( gs \) for each \( g \in G \) and \( s \in S \). If the generating set \( S \) is symmetric, meaning that whenever \( s \in S \), its inverse \( s^{-1} \) is also in \( S \), then the Cayley graph is undirected; otherwise, it is a directed graph.
-For example, For the cyclic group \( G = \mathbb{Z}_n = \{0,1,2,\dots, n-1\} \) with the generating set \( S = \{\pm 1\} \), the Cayley graph forms a cycle graph. In this graph, each vertex \( j \) is connected to \( j+1 \mod n \) and \( j-1 \mod n \), creating a cyclic structure.
+For example, For the cyclic group \( G = \mathbb{Z}_n = \{0,1,2,\dots, n-1\} \) with the generating set \( S = \{\pm 1\} \), the Cayley graph forms a cycle graph. In this graph, each vertex \( j \) is connected to \( j+1 \mod n \) and \( j-1 \mod n \), creating a cyclic structure.\\
+
+
+The adjacency matrix of $\Gamma$ can be expressed as
+\[
+A = \sum_{a \in G} \lambda_a |\hat{a}\rangle \langle \hat{a}|,
+\]
+where $|\hat{a}\rangle$ is the quantum Fourier transform of $|a\rangle$. The eigenvalues $\lambda$ are given by
+\[
+\lambda_a = \sum_{q \in Q} \chi(a, q).
+\]
+Note that the eigenvectors $|\hat{a}\rangle$ of $A$ depend only on $G$ and not on the set $Q$.
+
+To see this, we have
+\[
+        A\ket{\hat{a}} = A.\frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y)\ket{y} = \frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y).A\ket{y}
+        \]
+        \[
+        = \frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y).\sum_{q \in Q}\ket{qy}
+        \]
+        Consider $\beta = qy$. Then:
+        \[
+         = \frac{1}{\sqrt{|G|}}\sum_{q \in Q}\chi(a,q)\sum_{\beta}\chi(a,\beta)\ket{\beta} = \sum_{q \in Q}\chi(a,q) . \ket{\hat{a}}
+        \]
+        \[
+         = \lambda_a\ket{\hat{a}}
+        \]
+
+
 
 
 \section*{Quantum walks on Cayley graphs}
@@ -730,32 +758,7 @@ The solution to the quantum walk is given by:
 This means the probability amplitude at a vertex \( g \) spreads over time according to the unitary evolution operator \( e^{-i H t} \).
 
 
-\section*{Spectral Decomposition of the Adjacency Matrix of a Cayley Graph}
-
-The spectral decomposition of the adjacency matrix of a Cayley graph involves expressing the adjacency matrix in terms of its eigenvalues and eigenvectors. This decomposition is particularly useful for understanding the behavior of quantum walks, graph connectivity, expansion properties, and random walks on the graph.
-
-Spectral decomposition expresses \( A \) in terms of its eigenvalues and eigenvectors:
-\[
-A = \sum_{j} \lambda_j P_j,
-\]
-where:
-\begin{itemize}
-    \item \( \lambda_j \) are the eigenvalues of \( A \).
-    \item \( P_j \) are the projection matrices onto the corresponding eigenspaces.
-\end{itemize}
-
-Since Cayley graphs are highly structured, their eigenvalues and eigenvectors often have explicit formulas based on group representation theory and Fourier analysis on groups.
-
-For a finite group \( G \), the Fourier transform on groups helps diagonalize \( A \). The eigenvalues of \( A \) are computed as:
-\[
-\lambda_\rho = \sum_{s \in S} \rho(s),
-\]
-where \( \rho \) is an irreducible representation of \( G \). The set of eigenvalues depends on the sum over generators in the group's representation.
-
-For Abelian groups (e.g., \( \mathbb{Z}_n \)), the irreducible representations are characters, simplifying the spectral decomposition.
-
-For non-Abelian groups, the decomposition involves matrix-valued representations.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Example: Cyclic Group \( \mathbb{Z}_n \)}
 
 Consider the Cayley graph of \( \mathbb{Z}_n \) with generator set \( S = \{\pm 1\} \), which forms a cycle graph. The adjacency matrix is:
@@ -779,64 +782,230 @@ with eigenvectors given by the discrete Fourier transform (DFT) basis:
 This result generalizes to other Abelian groups, where the eigenvectors are given by the Fourier basis of the group.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Simulating continuous-time walks}
+Childs~\cite{childs2010relationship} and Berry, Childs, and Kothari~\cite{berry2015hamiltonian} showed that continuous-time quantum walks can be simulated using discrete-time quantum walks. Since our approach relies on their methods, we begin by outlining the relevant notation and framework.
 
+Let \( H \) be a Hamiltonian of dimension \( N = 2^n \), and define \( \opnorm{H}_{\mathrm{max}} = \max_{i, j} \abs{H_{ij}} \). To facilitate the simulation, we expand the Hilbert space from \( \C^N \) to \( \C^{2N} \otimes \C^{2N} \) by appending an ancilla qubit initialized to \( \ket{0} \) and duplicating the resulting space.
+
+To define the discrete-time walk operator, we first construct an orthonormal set of states:
+\begin{align}
+    \ket{\phi_{j0}} & := \frac{1}{\sqrt{d}} \sum_{\ell \in F_j} \ket{\ell} \left( \sqrt{\frac{H_{j\ell}^*}{K}} \ket{0} + \sqrt{1 - \frac{\abs{H_{j\ell}^*}}{K}} \ket{1} \right), \label{eq:walk-sim} \\
+    \ket{\phi_{j1}} & := \ket{0} \ket{1}, \nonumber
+\end{align}
+where \( F_j \) denotes the set of nonzero entries in column \( j \) of \( H \), and \( K \ge \opnorm{H}_{\mathrm{max}} \) is a fixed constant.
+
+Based on these states, we define the isometry \( T : \C^{2N} \to \C^{2N} \otimes \C^{2N} \) as follows:
+\begin{equation}
+    \label{eq:walk-isom}
+    T := \sum_{j = 0}^{N - 1} \sum_{b \in \{0, 1\}} (\ket{j}\bra{j} \otimes \ket{b}\bra{b}) \otimes \ket{\phi_{jb}}.
+\end{equation}
+
+The discrete-time quantum walk operator is then defined as
+\[
+W = iS(2TT^* - \mathds{1}),
+\]
+where \( S \) is the swap operator acting as
+\[
+S \ket{j_1} \ket{b_1} \ket{j_2} \ket{b_2} = \ket{j_2} \ket{b_2} \ket{j_1} \ket{b_1},
+\]
+for all \( 0 \le j_1, j_2 < N \) and \( b_1, b_2 \in \{0, 1\} \).
+
+To efficiently simulate the continuous-time evolution \( e^{-iHt} \), it suffices to implement the isometry \( T \), its adjoint \( T^* \), and the walk operator \( W \) efficiently. Assuming black-box (oracle) access to the entries of \( H \), the following result holds:
+
+\begin{theorem}[{\cite[Theorem 1]{berry2015hamiltonian}}]
+\label{thm:sparse-sim}
+Let \( H \) be a \( d \)-sparse Hamiltonian acting on \( n \) qubits. Then the unitary \( e^{-iHt} \) can be approximated to within error \( \epsilon \) using
+\[
+O\left( \tau \frac{\log(\tau / \epsilon)}{\log\log(\tau / \epsilon)} \right)
+\]
+queries to \( H \), and
+\[
+O\left( \tau \left[ n + \log^{5 / 2}(\tau / \epsilon) \right] \frac{\log(\tau / \epsilon)}{\log\log(\tau / \epsilon)} \right)
+\]
+additional elementary gates, where \( \tau = d \cdot \opnorm{H}_{\mathrm{max}} \cdot t \).
+\end{theorem}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Quantum walks from Group Actions}
-The spectral decomposition of the adjacency matrix of a Cayley graph generated by a general group action $G$ provides insights into the structure and properties of the graph. This decomposition leverages the symmetries of the group $G$ and representation theory to analyze the eigenvalues and eigenvectors of the adjacency matrix.
-
-  
-Let $G$ be a finite group, and let $X$ be a set on which $G$ acts via a group action $G \times X \to X$. A Cayley graph can be constructed based on this action, where
-the vertices are the elements of the set $X$, and For each $g \in G$ and $x \in X$, there is an edge between $x$ and $g *	x$, where $g * x$ is the action of $g$ on $x$.
 
 
-If the generating set $S \subset G$ is symmetric (i.e., $s \in S \implies s^{-1} \in S$), then the Cayley graph is undirected. Otherwise, it may be directed.
+Let \( G \) be an abelian group, and let \( Q = \{q_1, q_2, \dots, q_k\} \subset G \) be a symmetric generating set, meaning that \( q \in Q \) if and only if \( -q \in Q \). The Cayley graph associated with \( G \) and \( Q \) is defined as \( \Gamma = (V, E) \), where the vertex set is \( V = G \), and the edge set consists of all pairs \( (a, b) \in G \times G \) such that \( b = q + a \) for some \( q \in Q \).
 
-
-
-The adjacency matrix $A$ of the Cayley graph is a matrix that encodes the edges of the graph:
-
+The adjacency matrix \( A \) of \( \Gamma \) admits a spectral decomposition:
 \[
-A_{x,y} =
-\begin{cases}
-1, & \text{if there exists } g \in G \text{ such that } y = g * x, \\
-0, & \text{otherwise}.
-\end{cases}
+A = \sum_{a \in G} \lambda_a \ket{\hat{a}} \bra{\hat{a}},
+\]
+where \( \ket{\hat{a}} \) denotes the quantum Fourier transform of \( \ket{a} \), and the eigenvalues \( \lambda_a \) are given by
+\[
+\lambda_a = \sum_{q \in Q} \chi(a, q).
+\]
+Importantly, the eigenvectors \( \ket{\hat{a}} \) depend solely on the group \( G \), not on the choice of the generating set \( Q \).
+
+Cayley graphs can also be generalized through group actions. Let \( (G, X, *) \) be a regular group action with a fixed element \( x \in X \), and let \( Q = \{q_1, q_2, \dots, q_k\} \subset G \) be a subset as before. Define the Cayley graph \( \Gamma = (X, E) \), where the vertex set is \( X \), and the edge set consists of all pairs \( (x, y) \in X \times X \) such that \( y = q * x \) for some \( q \in Q \).
+
+The adjacency matrix of this graph can be written as:
+\[
+A = \sum_{h \in G} \lambda_h \ket{G^{(h)} * x} \bra{G^{(h)} * x},
+\]
+where
+\[
+\lambda_h = \sum_{q \in Q} \chi(h, q), \quad \text{and} \quad \ket{G^{(h)} * x} = \frac{1}{\sqrt{|G|}} \sum_{g \in G} \chi(g, h) \ket{g * x}.
 \]
 
-The adjacency matrix is symmetric if the group action preserves symmetry, which happens if $G$ is acting via an involution, i.e., if for every generator $g \in G$, its inverse is also a generator. It also inherits the symmetries of the group action. That is, the group $G$ acts on the vertices of the graph, and the adjacency matrix commutes with the action of the group. This means that the adjacency matrix $A$ is highly structured, and its eigenvalues can be computed using the representation theory of the group $G$.
+As in the previous case, the eigenvectors \( \ket{G^{(h)} * x} \) are determined solely by the structure of the group \( G \). This construction generalizes the standard Cayley graph: setting \( X = G \) and the group action \( * \) as group multiplication recovers the original definition.
 
 
-The eigenvalues of the adjacency matrix correspond to the eigenvalues of these blocks $\rho(A)$, and the multiplicities of the eigenvalues are related to the dimensions of the corresponding irreducible representations.
-
-The spectral decomposition of the adjacency matrix $A$ can be written as:
+To see this, we have:
 
 \[
-A = \sum_{i} \lambda_{i} v_{i} v_{i}^{\top},
-\]
+    A\ket{G^{(h)}*x} = \frac{1}{\sqrt{|G|}}.\sum_{g \in G}\chi(g,h) A.\ket{g*x}
+    \]
 
-where:
+    \[
+    = A\ket{G^{(h)}*x} = \frac{1}{\sqrt{|G|}}.\sum_{g \in G}\chi(g,h)\sum_{q \in Q}\ket{q*(g*x)}
+    \]
+    Consider $\beta = qg$. Then:
+    \[
+    = = \frac{1}{\sqrt{|G|}}\sum_{q \in Q}\sum_{\beta \in G}\chi(\beta,h)\chi(q,h)\ket{\beta * x}
+    \]
 
-- $\lambda_{i}$ are the eigenvalues,
-- $v_{i}$ are the corresponding eigenvectors (which lie in the spaces corresponding to the irreducible representations),
-- $v_{i} v_{i}^{\top}$ is the outer product of the eigenvector $v_{i}$ with itself.
+    \[
+    = \sum_{q \in Q}\chi(q,h).\ket{G^{(h)}*x} = \lambda_h \ket{G^{(h)}*x}
+    \]
 
-The eigenvectors $v_{i}$ are related to the characters of the group $G$. Specifically, the characters of irreducible representations of $G$ help determine the eigenvalues of $A$. If $\chi_{\rho}$ denotes the character of the irreducible representation $\rho$, then the eigenvalues are given by:
-
+    Since the group action \( (G, X, *) \) is regular, the two Cayley graph constructions are isomorphic. In the first construction, the vertex set is \( G \), and the adjacency matrix is indexed by elements of \( G \). In the second construction, the vertex set is \( X \), with the adjacency matrix indexed by elements of \( X \). The isomorphism between these graphs is given by the bijection
 \[
-\lambda_{\rho} = \frac{1}{|G|} \sum_{g \in G} \chi_{\rho}(g) A(g),
+\setlength{\arraycolsep}{1mm}
+\begin{array}{rcll}
+\phi: & G & \longrightarrow & X \\
+      & g & \longmapsto     & g * x,
+\end{array}
 \]
 
-where $A(g)$ is the action of $g$ as represented in the adjacency matrix.
+which maps each group element \( g \in G \) to the corresponding point in its orbit under the action.
 
 
+    % Assuming the group action is a cryptographic group action, the isomorphism $\phi$ is a one-way function: given $g \in G$, it is easy to compute $g * x$, whereas given $(x, g * x)$, it is hard to compute $g$. Therefore, although these graphs are mathematically the same, computational problems based on them require fundamentally different techniques. A notable example is the implementation of quantum walks on these graphs.\footnote{Implementations of continuous-time quantum walks in the context of cryptographic group actions have previously appeared in \cite{booher2024failing, doliskani2023sample}, in the setting of supersingular isogeny graphs. These walks can be interpreted as group-action walks.} From this point onward, assume $Q$ is a small set, i.e., $\abs{Q} = \poly(\log \abs{G})$. In the first graph, we can efficiently implement the walks $e^{-iAt}$ even for values of $t$ that are exponentially large in $\log \abs{G}$. This follows from the fact that
+    % \begin{equation}
+    %     \label{eq:adjmat-fb}
+    %     e^{-iAt} = \qft_G \sum_{a \in G} e^{-i\lambda_a t} \ket{a} \bra{a} \qft_G^*.
+    % \end{equation}
+    % The quantum Fourier transform $\qft_G$ and its inverse can be applied in $\poly(\log \abs{G})$ operations. The diagonal unitary in the middle, which is a phase computation $\ket{a} \mapsto e^{-i\lambda_a t} \ket{a}$, is also efficient because $\lambda_a$ can be computed classically to arbitrary precision in $\poly(\log \abs{G})$ time.
+    
+    % The situation for group actions is less straightforward. While the states $\ket{G^{(h)} * x}$ are analogous to the states $\ket{\hat{h}}$, the involvement of the action $*$ in the former introduces computational challenges. Specifically, it becomes hard to apply transformations beyond the action $\ket{y} \mapsto \ket{a * y}$ for $a \in G$. Consequently, no decomposition analogous to \eqref{eq:adjmat-fb} exists in the context of group actions. Instead, we are left with the spectral expression
+    % \[ e^{-iAt} = \sum_{h \in G} e^{-i\lambda_h t} \ket{G^{(h)} * x} \bra{G^{(h)} * x}. \]
+    % Despite this limitation, the sparsity and structure of the matrix $A$ allow us to demonstrate in the next section that for $t = \poly(\log \abs{G})$, the walk $e^{-iAt}$ can still be efficiently approximated to polynomial accuracy.   
+
+
+    When the group action \( (G, X, *) \) is assumed to be cryptographic, the isomorphism \( \phi \) becomes a one-way function: given \( g \in G \), it is efficient to compute \( g * x \), but given the pair \( (x, g * x) \), it is computationally hard to recover \( g \). As a result, while the two Cayley graphs are mathematically isomorphic, computational tasks associated with them may require fundamentally different approaches. A particularly illustrative example is the implementation of quantum walks on these graphs.\footnote{Continuous-time quantum walks have been explored in the context of cryptographic group actions in~\cite{booher2024failing, doliskani2023sample}, specifically in supersingular isogeny graphs. These walks can be viewed as group-action quantum walks.}
+
+    From this point forward, we assume the generating set \( Q \) is small, i.e., \( \abs{Q} = \poly(\log \abs{G}) \). In the first construction (where \( X = G \)), the walk \( e^{-iAt} \) can be efficiently implemented even for values of \( t \) that are exponentially large in \( \log \abs{G} \). This is a consequence of the identity:
+    \begin{equation}
+        \label{eq:adjmat-fb}
+        e^{-iAt} = \qft_G \left( \sum_{a \in G} e^{-i\lambda_a t} \ket{a} \bra{a} \right) \qft_G^*,
+    \end{equation}
+    where \( \qft_G \) and its inverse can be implemented in \( \poly(\log \abs{G}) \) time. Moreover, the diagonal phase unitary \( \ket{a} \mapsto e^{-i\lambda_a t} \ket{a} \) is also efficient to implement, since the eigenvalues \( \lambda_a \) can be computed classically to arbitrary precision in \( \poly(\log \abs{G}) \) time.
+
+    In contrast, the group-action setting presents greater computational difficulty. Although the states \( \ket{G^{(h)} * x} \) play a role analogous to the Fourier basis states \( \ket{\hat{h}} \), the presence of the action \( * \) makes the situation more subtle. In particular, implementing general transformations over these states is difficult; we are typically limited to operations of the form \( \ket{y} \mapsto \ket{a * y} \) for \( a \in G \). As a result, no efficient decomposition similar to~\eqref{eq:adjmat-fb} is known in the group-action setting. Instead, the best we can express is the spectral decomposition:
+    \[
+    e^{-iAt} = \sum_{h \in G} e^{-i\lambda_h t} \ket{G^{(h)} * x} \bra{G^{(h)} * x}.
+    \]
+
+    Despite this limitation, the adjacency matrix \( A \) retains a high degree of sparsity and algebraic structure. In the next section, we will show that for \( t = \poly(\log \abs{G}) \), the walk \( e^{-iAt} \) can still be efficiently approximated to polynomial accuracy.
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    
+\paragraph{Simulating group action quantum walks.}
+Assume \( t = \poly(\log \abs{G}) \). We show that the continuous-time walk \( W = e^{-iAt} \) can be efficiently simulated using the discrete-time quantum walk framework developed in~\cite{childs2010relationship, berry2015hamiltonian}. Recall the isometry \( T \) defined in Equation~\eqref{eq:walk-isom}, where the states \( \ket{\phi_b} \) are as given in Equation~\eqref{eq:walk-sim}. To carry out the simulation, it suffices to show that the isometry \( T \), its adjoint \( T^* \), and the discrete-time walk operator
 \[
-*************Further discussions Here***************
+W = iS(2TT^* - \mathds{1})
+\]
+can all be efficiently implemented in the group-action setting.
+
+Let \( \Gamma = (X, E) \) be the Cayley graph associated with the group action \( (G, X, *) \), and let \( A \) denote its adjacency matrix. The Hamiltonian \( H \) of interest is simply \( A \), indexed by elements of \( X \). In this context, the isometry \( T \) takes the form:
+\begin{align*}
+T
+& := \sum_{y \in X} \sum_{b \in \{0, 1\}} (\ket{y}\bra{y} \otimes \ket{b}\bra{b}) \otimes \ket{\phi_{yb}} \\
+& = \sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{y} \ket{b} \ket{\phi_{yb}} \bra{y} \bra{b}.
+\end{align*}
+
+
+Because of the structure of $\Gamma$, the states \eqref{eq:walk-sim} simplify as follows. First, since the set $Q$ is symmetric, the graph $\Gamma$ is undirected and the adjacency matrix $A$ is symmetric with non-negative entries; the nonzero entries of $A$ are all equal to $1$. Therefore, we can set $K = \opnorm{A}_{\mathrm{max}} = 1$. As a result, for $y \in X$, the state $\ket{\phi_{y0}}$ becomes
+\[ \ket{\phi_{y0}} = \frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q * y} \ket{0}. \]
+We now describe how to implement the isometry \( T \) by constructing efficient unitaries \( U_0 \) and \( U_1 \), where each \( U_b \) acts as
+\[
+U_b : \ket{0} \ket{y, b} \ket{0, 0} \mapsto \ket{0} \ket{y, b} \ket{\phi_{yb}}, \quad b \in \{0, 1\},
+\]
+with the first register serving as an ancilla.
+
+The unitary \( U_1 \) is straightforward to implement, since \( \ket{\phi_{y1}} = \ket{0} \ket{1} \) is independent of \( y \). We now focus on the construction of \( U_0 \).
+
+Because \( Q \subset G \) is a small set (i.e., \( \abs{Q} = \poly(\log \abs{G}) \)), we can construct an efficient unitary \( V_Q : \C^Q \to \C^Q \) such that
+\[
+V_Q \ket{0} = \frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q}.
+\]
+Applying \( V_Q \otimes \mathds{1} \) to the state \( \ket{0} \ket{y, 0} \ket{0, 0} \) produces:
+\[
+\frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q} \ket{y, 0} \ket{0, 0}.
 \]
 
+Next, we apply the unitary \( V_1 \), defined by:
+\[
+V_1 : \ket{q} \ket{y, 0} \ket{0, 0} \mapsto \ket{q} \ket{y, 0} \ket{q * y, 0}.
+\]
 
+Following this, we uncompute the first register to recover \( \ket{0} \ket{y, 0} \ket{\phi_{y0}} \). This is achieved by applying the unitary \( V_2 \), defined as:
+\[
+V_2 : \ket{q} \ket{y, 0} \ket{q * y, 0} \mapsto \ket{0} \ket{y, 0} \ket{q * y, 0}.
+\]
+Since \( Q \) is small, we can efficiently determine \( q \) from the pair \( (y, q * y) \) by exhaustively checking each \( q \in Q \). Thus, \( V_2 \) (and therefore \( U_0 \)) can be implemented efficiently.
+
+
+To implement \( U_0^* : \ket{0} \ket{y, 0} \ket{\phi_{y0}} \mapsto \ket{0} \ket{y, 0} \ket{0, 0} \), we sequentially apply \( V_2^* \), followed by \( V_1^* \), and finally \( V_Q^* \otimes \mathds{1} \). Since each of these unitaries can be implemented efficiently, it follows that \( U_0^* \) is also efficient.
+
+We now construct the isometry \( T \) using a conditional unitary \( U_T \), which applies either \( U_0 \) or \( U_1 \) depending on the value of the qubit \( b \). That is,
+\[
+U_T = \text{Controlled-}U_b \quad \text{with control on } b \in \{0,1\}.
+\]
+
+Next, we demonstrate that the walk unitary
+\[
+W = iS(2TT^* - \mathds{1})
+\]
+can be applied efficiently. This reduces to implementing the reflection \( 2TT^* - \mathds{1} \), which we analyze as follows:
+\begin{align*}
+2\ket{0}\bra{0} \otimes TT^* - \mathds{1}
+&= 2\ket{0}\bra{0} \otimes \sum_{y \in X} \sum_{b \in \{0,1\}} \ket{y,b} \ket{\phi_{yb}} \bra{y,b} \bra{\phi_{yb}} - \mathds{1} \\
+&= 2\sum_{y \in X} \sum_{b \in \{0,1\}} \ket{0} \ket{y,b} \ket{\phi_{yb}} \bra{0} \bra{y,b} \bra{\phi_{yb}} - \mathds{1} \\
+&= U_T \left( 2 \sum_{y \in X} \sum_{b \in \{0,1\}} \ket{0} \ket{y,b} \ket{0,0} \bra{0} \bra{y,b} \bra{0,0} - \mathds{1} \right) U_T^* \\
+&= U_T \left( 2\ket{0}\bra{0} \otimes \mathds{1}_{X,b} \otimes \ket{0,0}\bra{0,0} - \mathds{1} \right) U_T^*.
+\end{align*}
+
+Since \( U_T \), \( U_T^* \), and the operator \( 2\ket{0}\bra{0} \otimes \mathds{1}_{X,b} \otimes \ket{0,0}\bra{0,0} - \mathds{1} \) can all be implemented efficiently, it follows that the reflection \( 2\ket{0}\bra{0} \otimes TT^* - \mathds{1} \) is also efficient.
+
+Finally, for any input state \( \ket{\psi} \), the reflection acts as:
+\[
+\left(2\ket{0}\bra{0} \otimes TT^* - \mathds{1} \right) \ket{0} \ket{\psi} = \ket{0} \left(2TT^* - \mathds{1} \right) \ket{\psi},
+\]
+confirming that the full walk operator \( W \) can be implemented efficiently in the group-action setting.
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Applicaions}
 \section{Quantum Money}
-
-
 \section*{Introduction to Quantum Money}
 Quantum money is a revolutionary concept in cryptography that uses quantum mechanics to create a form of currency that is provably secure against forgery. Originally introduced by physicist Stephen Wiesner in the 1970s, quantum money represents one of the earliest proposed applications of quantum information science. By encoding information into quantum states, quantum money exploits the fundamental principles of quantum mechanics to provide security features unattainable by classical systems.
 
@@ -870,6 +1039,8 @@ Quantum money is a revolutionary concept in cryptography that uses quantum mecha
 %     \item \textbf{Entanglement (Optional Feature):} Some implementations of quantum money involve quantum entanglement, where pairs of quantum states are interconnected. Changes to one entangled state directly affect its pair, adding another layer of security against forgery.
 % \end{enumerate}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Benefits of Quantum Money}
 \begin{itemize}
     \item \textbf{Unforgeable:} Classical currency, both physical and digital, can be counterfeited with enough effort and resources. Quantum money, however, is fundamentally unforgeable due to the laws of quantum physics.
@@ -877,6 +1048,9 @@ Quantum money is a revolutionary concept in cryptography that uses quantum mecha
     \item \textbf{Enhanced Privacy:} The unique encoding of each quantum bill could allow for privacy-preserving transactions, as the details of the transaction need not be linked to the bill's verification.
 \end{itemize}
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Quantum Money From Group Actions}
 A public-key quantum money scheme consists of two QPT algorithms: 
 \begin{itemize}
@@ -895,7 +1069,11 @@ We now briefly outline the quantum money construction from \cite{zhandry2024quan
     \[ \frac{1}{\sqrt{\abs{G_\lambda}}} \sum_{g \in G_\lambda} \ket{g}\ket{x_\lambda}. \]
     Next, apply the unitary transformation $\ket{h}\ket{y} \mapsto \ket{h}\ket{h * y}$ to this state, followed by the quantum Fourier transform on the first register. This results in
     \[ \frac{1}{\abs{G_\lambda}} \sum_{h \in G_\lambda} \sum_{g \in G_\lambda} \chi(g, h) \ket{h}\ket{g * x_\lambda} = \frac{1}{\sqrt{\abs{G_\lambda}}} \sum_{h \in G_\lambda} \ket{h} \ket{G^{(h)} * x_\lambda} \]
-    where $\ket{G^{(h)} * x_\lambda}$ is defined as in \eqref{eq:x-fourier-basis}. Measure the first register to obtain a random $h \in G_\lambda$, collapsing the state to $\ket{G^{(h)} * x_\lambda}$. Return the pair $(h, \ket{G^{(h)} * x_\lambda})$.
+    where,
+    \[
+    \ket{G^{(h)}*x_\lambda} = \frac{1}{\sqrt{|G_\lambda|}}\sum_{g \in G_\lambda}\chi(g,h)\ket{g*x_\lambda}
+    \]
+    . Measure the first register to obtain a random $h \in G_\lambda$, collapsing the state to $\ket{G^{(h)} * x_\lambda}$. Return the pair $(h, \ket{G^{(h)} * x_\lambda})$.
 
 \item $\ver(h, \ket{\psi})$. First, check whether $\ket{\psi}$ has support in $X_\lambda$. If not, return $0$. Then, apply $\comph$ to the state $\ket{\psi}\ket{0}$, and measure the second register to obtain some $h' \in G_\lambda$. If $h' = h$, return $1$; otherwise return $0$.
 \end{itemize}
@@ -905,7 +1083,7 @@ From this point forward, to simplify the notation, we make the security paramete
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Quantum Hartley Transform (QHT)}
 
 The \textbf{Quantum Hartley Transform (QHT)} is a linear unitary transform that operates on quantum states. It transforms the basis states \( |x\rangle \) as follows:
@@ -928,6 +1106,8 @@ the QHT transforms the state into:
 |\psi'\rangle = \text{QHT} |\psi\rangle = \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} \left( \sum_{x=0}^{N-1} \psi_x \, \text{cas}\left(\frac{2\pi x k}{N}\right) \right) |k\rangle.
 \]
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Properties of the QHT}
 \begin{enumerate}
     \item \textbf{Unitary Transformation}: The QHT matrix \( U_{\text{QHT}} \) is unitary:
@@ -952,125 +1132,233 @@ the QHT transforms the state into:
 %     \]
 % \end{itemize}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Efficient implementation of Heartly transform}
 
-********
+% Our algorithm for the quantum Hartley transform, $\qht_N$, is inspired by the recursive algorithm for computing the quantum Fourier transform ($\qft_N$). Let us briefly explain how the algorithm for $\qft_N$ works. For simplicity, we assume $N = 2^n$, so that elements of $\Z_N$ are represented using exactly $n$ qubits. The generalization to arbitrary $N$ can be achieved by following the same recursive approach. Given $a \in \Z_N$, the expression for $\qft_N$ is written as follows:
 
-\section{Quantum Money With The Hartley Transform}
-\label{sec:qm_hartley}
-
-The quantum money scheme above can be instantiated using the quantum Hartley transform instead of the quantum Fourier transform. However, this substitution breaks the verification algorithm. In the next sections, we will show how quantum walks can address this issue. To understand where the problem arises, we first present the $\gen$ and $\ver$ algorithms for the money scheme, similar to the previous description but with $\qht_G$ replacing $\qft_G$. For simplicity, we assume $G = \Z_N$. Let $x \in \Z_N$ be a fixed element.
-
-\begin{itemize}
-\item $\gen$. Begin with the state $\ket{0}\ket{x}$, and apply the quantum Hartley transform over $\Z_N$ to the first register producing the superposition
-    \[ \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \ket{g}\ket{x}. \]
-    Next, apply the unitary $\ket{h}\ket{y} \mapsto \ket{h}\ket{h * y}$ to this state, followed by a $\qht_N$ on the first register. This results in
-    \[ \frac{1}{N} \sum_{h \in \Z_N} \sum_{g \in \Z_N} \cas\Big(\frac{2\pi gh}{N}\Big) \ket{h}\ket{g * x} = \frac{1}{\sqrt{N}} \sum_{h \in \Z_N} \ket{h} \ket{\Z_N^{(h)} * x}_H \]
-    where
-    \[ \ket{\Z_N^{(h)} * x}_H = \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \cas\Big(\frac{2\pi gh}{N}\Big) \ket{g * x}. \]
-    Measure the first register to obtain a random $h \in \Z_N$, collapsing the state to $\ket{\Z_N^{(h)} * x}_H$. Return the pair $(h, \ket{\Z_N^{(h)} * x}_H)$.
-
-\item $\ver(h, \ket{\psi})$. First, check whether $\ket{\psi}$ has support in $X$. If not, return $0$. Then, apply $\comph$ to the state $\ket{0} \ket{\psi}$, and measure the first register to obtain some $h' \in \Z_N$. If $h' = h$, return $1$; otherwise return $0$.
-\end{itemize}
-
-\section*{Verification using quantum walks}
+Our algorithm for the quantum Hartley transform, \( \qht_N \), is modeled after the recursive structure of the quantum Fourier transform algorithm \( \qft_N \). To motivate this, we begin by reviewing the standard approach for computing \( \qft_N \). For clarity, we assume \( N = 2^n \), allowing each element of \( \Z_N \) to be represented using exactly \( n \) qubits. The same recursive framework can be extended to handle general values of \( N \). For any \( a \in \Z_N \), the quantum Fourier transform is defined as:
 
 
-\bibliographystyle{plain}
-\bibliography{references}
+\begin{align*}
+    \qft_N\ket{a}
+    & = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \omega_N^{ay}\ket{y} \\
+    & = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \omega_N^{ay} \ket{y} + (-1)^a \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \omega_N^{ay} \ket{y + N/2} \\
+    & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \omega_N^{ay} \frac{1}{\sqrt{2}} (\ket{0} + (-1)^a \ket{1}) \ket{y}, \numberthis\label{eq:qft_alt}
+\end{align*}
 
 
-$\gen(1^\lambda)$
-$\ver(s, \rho_s)$
+In the final expression, we have isolated the first qubit for clarity. Let \( \ket{a} = \ket{t}\ket{b} \), where \( b \) denotes the least significant bit of \( a \), implying that \( a = 2t + b \) for some \( t \in \Z_{N / 2} \). Applying \( \qft_{N / 2} \) to the first register yields the state:
 
-\[ \Pr[\ver(s, \rho_s) = 1 : (s, \rho_s) \gets \gen(1^\lambda)] \ge 1 - \negl(\lambda). \]
-\[ \Pr\left[ \ver(s, \rho_1) = \ver(s, \rho_2) = 1 : \substack{(s, \rho_s) \gets \gen(1^\lambda) \\ (\rho_1, \rho_2) \gets \mathcal{A}(s, \rho_s)} \right] \le \negl(\lambda). \]
-
-
-$\ket{0}\ket{x_\lambda}$
-\[ \frac{1}{\sqrt{\abs{G_\lambda}}} \sum_{g \in G_\lambda} \ket{g}\ket{x_\lambda}. \]
-
-\[ \frac{1}{\abs{G_\lambda}} \sum_{h \in G_\lambda} \sum_{g \in G_\lambda} \chi(g, h) \ket{h}\ket{g * x_\lambda} = \frac{1}{\sqrt{\abs{G_\lambda}}} \sum_{h \in G_\lambda} \ket{h} \ket{G^{(h)} * x_\lambda} \]
-$\ket{G^{(h)} * x_\lambda}$
-
-$(h, \ket{G^{(h)} * x_\lambda})$
+\[ \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \omega_N^{2ty} \ket{y} \ket{b}. \]
+Next, we apply the phase unitary \( P(y, b) \), defined by \( \ket{y} \ket{b} \mapsto \omega_N^{by} \ket{y} \ket{b} \), followed by a Hadamard transform on the final qubit. This results in the state given in Equation~\eqref{eq:qft_alt}.
 
 
-$\ket{0}\ket{x}$
-\[ \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \ket{g}\ket{x}. \]
-$\ket{h}\ket{y} \mapsto \ket{h}\ket{h * y}$
-\[ \frac{1}{N} \sum_{h \in \Z_N} \sum_{g \in \Z_N} \cas\Big(\frac{2\pi gh}{N}\Big) \ket{h}\ket{g * x} = \frac{1}{\sqrt{N}} \sum_{h \in \Z_N} \ket{h} \ket{\Z_N^{(h)} * x}_H \]
-\[ \ket{\Z_N^{(h)} * x}_H = \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \cas\Big(\frac{2\pi gh}{N}\Big) \ket{g * x}. \]
-
-\[ \ket{\phi} = \frac{1}{\sqrt{N}} \sum_{u \in \Z_N} \ket{u} \ket{\Z_N^{(h)} * x}_H. \]
-
-\[ \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \Big( \cos\Big( \frac{2\pi gh}{N} \Big) \ket{h} + \sin\Big( \frac{2\pi gh}{N} \Big) \ket{-h} \Big) \ket{g * x}. \]
-
-\[ \ket{\phi} = \frac{1}{\sqrt{N}} \sum_{u \in \Z_N} \ket{u} \ket{\Z_N^{(h)} * x}_H. \]
-
-$Q = \{q_1, q_2, \dots, q_k\} \subset G$
-
-\[ A = \sum_{a \in G} \lambda_a \ket{\hat{a}} \bra{\hat{a}}, \]
-
-\[ \lambda_a = \sum_{q \in Q} \chi(a, q). \]
-
-
-\[ A = \sum_{h \in G} \lambda_h \ket{G^{(h)} * x} \bra{G^{(h)} * x}, \]
-
-
-$\lambda_h = \sum_{q \in Q} \chi(h, q)$
-
+We now describe our algorithm for efficiently computing the quantum Hartley transform \( \qht_N \). The key idea is to leverage the recursive structure of \( \qht_N \), analogous to the strategy used for \( \qft_N \). To facilitate this, we begin by rewriting the summation in Equation~\eqref{eq:qht-N} to expose its recursive form. Our approach is as follows:
 \begin{equation}
-    \label{eq:adjmat-fb}
-    e^{-iAt} = \qft_G^* \sum_{a \in G} e^{-i\lambda_a t} \ket{a} \bra{a} \qft_G.
+    \label{eq:cas-expand}
+	\frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \ket{y}
+    = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \ket{y} + \frac{1}{\sqrt{N}} \sum_{y = N / 2}^{N - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \ket{y}.
 \end{equation}
 
 
-\[ e^{-iAt} = \sum_{h \in G} e^{-i\lambda_h t} \ket{G^{(h)} * x} \bra{G^{(h)} * x}. \]
 
-$t = \poly(\log\abs{G})$
-
-
-
+The second summation on the right-hand side can be expressed as:
 \begin{align*}
-    T
-    & := \sum_{y \in X} \sum_{b \in \{0, 1\}} (\ket{y}\bra{y} \otimes \ket{b}\bra{b}) \otimes \ket{\phi_{yb}} \\
-    & = \sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{y} \ket{b} \ket{\phi_{yb}} \bra{y} \bra{b}.
+	\sum_{y = N / 2}^{N - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \ket{y}
+    & = \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi a y}{N} + \pi a \Big) \ket{y + N/2} \\
+    & = (-1)^a \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \ket{y + N/2},
 \end{align*}
+The second equality follows from the angle-sum identity for the \( \cas \) function,
+\[
+\cas(\alpha + \beta) = \cos(\alpha)\cas(\beta) + \sin(\alpha)\cas(-\beta),
+\]
+along with the fact that \( \cos(\pi a) = (-1)^a \) for all integers \( a \). Substituting this into Equation~\eqref{eq:cas-expand} yields:
+\begin{align}
+	\frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \ket{y}
+    & = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi a y}{N} \Big) (\ket{y} + (-1)^a \ket{y + N/2}) \nonumber \\
+    & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \frac{1}{\sqrt{2}} (\ket{0} + (-1)^a \ket{1}) \ket{y}, \label{eq:qht-alt} 
+\end{align}
+In the final equality, the most significant qubit has been isolated to emphasize its contribution to the overall transformation.
 
-
-\[ \ket{\phi_{y0}} = \frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q * y} \ket{0}. \]
-
-
-\[ \frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q} \ket{y, 0} \ket{0, 0}. \]
-
-
+We now demonstrate how to compute \( \qht_N \) recursively. For a given \( a \in \Z_N \), we decompose the basis state as \( \ket{a} = \ket{t}\ket{b} \), where \( b \) denotes the least significant bit, such that \( a = 2t + b \) for some \( t \in \Z_{N/2} \). Assuming the existence of an efficient quantum circuit for computing \( \qht_{N/2} \), we proceed to construct \( \qht_N \) in a recursive fashion. To begin the transformation on \( \ket{a} \), we introduce an ancilla qubit initialized to \( \ket{0} \), yielding the joint state \( \ket{0}\ket{t}\ket{b} \). We then proceed as follows:
 \begin{align*}
-    2\ket{0} \bra{0} \otimes TT^* - \mathds{1}
-    & = 2\ket{0} \bra{0} \otimes \sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{y, b} \ket{\phi_{yb}} \bra{y, b} \bra{\phi_{yb}} - \mathds{1} \\
-    & = 2\sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{0} \ket{y, b} \ket{\phi_{yb}} \bra{0} \bra{y, b} \bra{\phi_{yb}} - \mathds{1} \\
-    & = U_T \Big( 2\sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{0} \ket{y, b} \ket{0, 0} \bra{0} \bra{y, b} \bra{0, 0} - \mathds{1} \Big) U_T^* \\
-    & = U_T (2 \ket{0} \bra{0} \otimes \mathds{1}_{X, b} \otimes \ket{0, 0} \bra{0, 0} - \mathds{1}) U_T^*.
+	\ket{0}\ket{t}\ket{b}
+    & \mapsto \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi t y}{N / 2} \Big) \ket{0} \ket{y} \ket{b} & (\mathds{1} \otimes \qht_{N / 2} \otimes \mathds{1}) \\
+    & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) \ket{0} \ket{y} \ket{b} \\
+    & \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) (\ket{0} + \ket{1}) \ket{y}\ket{b}. & (H \otimes \mathds{1})
 \end{align*}
+Next, we apply a controlled negation operation, where the ancilla qubit is flipped if and only if the least significant bit \( b \) is equal to 1.
+\[
+    V: \ket{0}\ket{y} \mapsto \ket{0}\ket{y}, \quad \ket{1}\ket{y} \mapsto \ket{1}\ket{N / 2 -y},
+\]
+\[
+    \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) \ket{0} \ket{y} \ket{b} + \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) \ket{1} \ket{-y} \ket{b}.
+\]
+By performing a change of variables in the second summation and using the identity \( \cas\left(\frac{4\pi t (N / 2 - y)}{N}\right) = \cas\left(-\frac{4\pi t y}{N}\right) \), we obtain the state:
+\[
+    \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \Big( \cas\Big( \frac{4\pi t y}{N} \Big) \ket{0} + \cas\Big( -\frac{4\pi t y}{N} \Big) \ket{1} \Big) \ket{y} \ket{b}.
+\]
 
-
-\[ (2\ket{0} \bra{0} \otimes TT^* - \mathds{1}) \ket{0} \ket{\psi} = \ket{0} (2TT^* - \mathds{1}) \ket{\psi}. \]
-
-
-
-$\ket{\Z_N^{(h)} * x}_H$
-
-
+We define the single-qubit rotation \( R(\theta) \) as the unitary operator acting on a single qubit given by:\begin{equation}
+    \label{eq:sine-rot}
+    R(y, b) = 
+    \begin{bmatrix}
+        \cos(2\pi b y / N) & \sin(2\pi b y / N) \\
+        -\sin(2\pi b y / N) & \cos(2\pi b y / N)
+    \end{bmatrix},
+\end{equation}
+Now, consider the unitary \( U_R \) defined by
+\[
+U_R : \ket{c}\ket{y}\ket{b} \mapsto \left(R(y, b)\ket{c}\right)\ket{y}\ket{b},
+\]
+where \( R(y, b) \) is a single-qubit rotation depending on \( y \) and \( b \). Applying \( U_R \) followed by the controlled negation \( V \), we obtain the state:
 \begin{align*}
-    e^{iAt} \ket{\Z_N^{(h)} * x}_H
-    & = \sum_{g \in \Z_N} e^{i\lambda_gt} \ket{\Z_N^{(g)} * x} \braket{\Z_N^{(g)} * x}{\Z_N^{(h)} * x}_H \\
-    & = \sum_{g \in \Z_N} e^{i\lambda_gt} \ket{\Z_N^{(g)} * x} \bra{\Z_N^{(g)} * x} \Big( \frac{1 - i}{2} \ket{\Z_N^{(h)} * x} + \frac{1 + i}{2} \ket{\Z_N^{(-h)} * x} \Big) \\
-    & = e^{i\lambda_{h}t} \frac{1 - i}{2} \ket{\Z_N^{(h)} * x} + \frac{1 + i}{2} e^{i\lambda_{-h}t} \ket{\Z_N^{(-h)} * x} \\
-    & = e^{i\lambda_{h}t} \ket{\Z_N^{(h)} * x}_H,
+    \ket{\phi_1}
+    & = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \Big( \cas\Big( \frac{2\pi ay}{N} \Big) \ket{0} + \cas\Big(-\frac{2\pi a(N /2 - y)}{N} \Big) \ket{1} \Big) \ket{y} \ket{b} \\
+    & = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi ay}{N} \Big) \Big( \ket{0} + (-1)^b \ket{1} \Big) \ket{y} \ket{b},
 \end{align*}
+Here, we have used the identity \( \cas\left(-\pi a + \frac{2\pi a y}{N}\right) = (-1)^a \cas\left(\frac{2\pi a y}{N}\right) \), along with the fact that \( (-1)^a = (-1)^b \). Applying the Hadamard transform to the first qubit yields:
+\[
+    \ket{\psi} = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi ay}{N} \Big) \ket{b} \ket{y} \ket{b}
+\]
+Next, we uncompute the first qubit by applying a \textsc{CNOT} gate with the last qubit as control. We then apply a Hadamard transform followed by a swap operation, resulting in the state:
+\begin{align*}
+    \ket{\psi}
+    & \mapsto \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi ay}{N} \Big) \ket{0} \ket{y} \ket{b} & (\textsc{cnot}) \\
+    & \mapsto \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi ay}{N} \Big) \ket{0} \ket{y} \frac{1}{\sqrt{2}}(\ket{0} + (-1)^b \ket{1}) & (\mathds{1} \otimes H) \\
+    & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi ay}{N} \Big) \ket{0} \ket{y} \frac{1}{\sqrt{2}}(\ket{0} + (-1)^a \ket{1}). & ((-1)^b = (-1)^a) \\
+\end{align*}
+The final summation matches precisely with Equation~\eqref{eq:qht-alt}, which defines the quantum Hartley transform of \( \ket{a} \). Thus, we have successfully implemented the transformation:
+\[
+\ket{a} \mapsto \qht_N \ket{a}.
+\]
+\[ \ket{0}\ket{a} \mapsto \ket{0} \qht_N\ket{a}. \]
+The complete procedure is summarized in the following algorithm.
 
-\[ \abs[\Big]{\theta - \frac{uh}{N}} \le \frac{1}{\poly(\log N)}. \]
+\begin{algorithm}[$\qht_N$] \
+    \label{alg:qht-N}
+    \begin{description}[font = \normalfont\itshape, itemsep = 0mm, parsep = 0mm, topsep = 1mm]
+        \item [Input:] quantum state $\ket{\psi} \in \C^N$, where $N = 2^n$
+        \item [Output:] quantum state $\qht_N\ket{\psi}$
+    \end{description}
+
+    \begin{enumerate}[itemsep = 0mm, parsep = 1mm, topsep = 1mm]
+        \item Initialize an ancilla qubit to $0$ to obtain the state $\ket{0}\ket{\psi}$
+        \item Compute $\mathds{1} \otimes \qht_{N / 2} \otimes \mathds{1}$ recursively.
+        \item Apply $H \otimes \mathds{1}$.
+        \item\label{stp:ngt} Apply the controlled negation $\ket{0}\ket{y} \mapsto \ket{0}\ket{y}, \ket{1}\ket{y} \mapsto \ket{1}\ket{N / 2 -y}$ to the first two registers.
+        \item Apply the unitary $U_R$.
+        \item Apply $H \otimes \mathds{1}$
+        \item Apply \textsc{cnot} to the first and last qubits.
+        \item Apply $\mathds{1} \otimes H$.
+        \item Trace out the first qubit
+    \end{enumerate}
+\end{algorithm}
+
+
+\begin{theorem}
+    \label{thm:qht-cost}
+    Algorithm \ref{alg:qht-N} is correct and can be implemented using $\approx \log^2 N + O(\log N)$ elementary gates.
+\end{theorem}
+
+
+\begin{proof}
+    The correctness of the algorithm follows from the preceding discussion. Except for the unitary \( U_R \) and the negation unitary in Step~\ref{stp:ngt}, all steps of the algorithm can be implemented using \( O(1) \) elementary gates. The negation operation in Step~\ref{stp:ngt} can be realized using approximately \( \lceil \log N \rceil \) elementary gates.
+    
+    To implement the unitary \( U_R \), which requires constructing the conditional rotation operator \( R(y, b) \) for arbitrary \( y \) and \( b \), we make use of the two-qubit controlled rotations:
+    \[
+    R_j = \ket{0}\bra{0} \otimes \mathds{1} + \ket{1}\bra{1} \otimes
+    \begin{bmatrix}
+    \cos\left(\frac{2\pi 2^j}{N}\right) & \sin\left(\frac{2\pi 2^j}{N}\right) \\
+    -\sin\left(\frac{2\pi 2^j}{N}\right) & \cos\left(\frac{2\pi 2^j}{N}\right)
+    \end{bmatrix},
+    \]
+    for \( j = 0, 1, \dots, n - 1 \). When \( b = 0 \), we have \( R(y, 0) = \mathds{1} \), and when \( b = 1 \), the operator \( R(y, 1) \) is the product of those \( R_j \) for which the \( j \)th bit of \( y \) is 1. Therefore, for a binary string \( y \) of length \( k = \lceil \log y \rceil \), we can implement \( U_R \) using at most \( k \) gates from the set \( \{R_j\} \).
+    
+    Let \( T(N) \) denote the gate complexity of Algorithm~\ref{alg:qht-N} for an input of dimension \( N \). Assuming access to the \( R_j \) gates as elementary operations, the recurrence relation becomes
+    \[
+    T(N) \approx T(N / 2) + 2\log N + O(1).
+    \]
+    Solving this recurrence yields \( T(N) \approx \log^2 N + O(\log N) \), as claimed.
+    \end{proof}
+    
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Quantum Money With The Hartley Transform}
+\label{sec:qm_hartley}
+
+The quantum money scheme described earlier can also be instantiated using the quantum Hartley transform in place of the quantum Fourier transform. However, this substitution disrupts the original verification procedure. In the following sections, we demonstrate how quantum walks can be employed to resolve this issue. To pinpoint the source of the problem, we begin by restating the \( \gen \) and \( \ver \) algorithms for this Hartley-based scheme, mirroring the structure of the Fourier-based version but replacing \( \qft_G \) with \( \qht_G \). For simplicity, we take \( G = \Z_N \), and fix an element \( x \in \Z_N \).
+
+\begin{itemize}
+    \item \textbf{\( \gen \)}: Start with the state \( \ket{0}\ket{x} \), and apply the quantum Hartley transform over \( \Z_N \) to the first register, resulting in the superposition
+    \[
+    \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \ket{g}\ket{x}.
+    \]
+    Next, apply the unitary transformation \( \ket{h}\ket{y} \mapsto \ket{h}\ket{h * y} \), followed by a Hartley transform \( \qht_N \) on the first register. This yields the state
+    \[
+    \frac{1}{N} \sum_{h \in \Z_N} \sum_{g \in \Z_N} \cas\left(\frac{2\pi gh}{N}\right) \ket{h}\ket{g * x}
+    = \frac{1}{\sqrt{N}} \sum_{h \in \Z_N} \ket{h} \ket{\Z_N^{(h)} * x}_H,
+    \]
+    where
+    \[
+    \ket{\Z_N^{(h)} * x}_H = \frac{1}{\sqrt{N}} \sum_{g \in \Z_N} \cas\left(\frac{2\pi gh}{N}\right) \ket{g * x}.
+    \]
+    Measure the first register to obtain a random \( h \in \Z_N \), collapsing the state to \( \ket{\Z_N^{(h)} * x}_H \). Return the pair \( (h, \ket{\Z_N^{(h)} * x}_H) \).
+
+    \item \textbf{\( \ver(h, \ket{\psi}) \)}: First, check whether \( \ket{\psi} \) has support in \( X \). If not, return \( 0 \). Otherwise, apply \( \comph \) to the state \( \ket{0} \ket{\psi} \), and measure the first register to obtain some \( h' \in \Z_N \). Return \( 1 \) if \( h' = h \), and \( 0 \) otherwise.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Verification using quantum walks}
+
+
+Given a state of the form $\ket{\Z_N^{(h)} * x}_H$, we demonstrate how the value of $h$ can be extracted using continuous-time quantum walks. For any $u \in \Z_N$, consider the Cayley graph $\Gamma = (\Z_N, E)$ generated by $Q = {-u, u}$, as introduced in Section \ref{sec:ga-qwalk}. Let $A$ denote the adjacency matrix of $\Gamma$. The eigenvectors of $A$ are given by $\ket{\Z_N^{(h)} * x}$, with corresponding eigenvalues $\lambda_h = 2\cos(2\pi uh / N)$ for each $h \in \Z_N$. According to Theorem \ref{thm:sparse-sim} and the discussion that follows, the unitary evolution operator $W = e^{iAt}$ can be simulated efficiently to exponential precision. To proceed, we first state the following lemma.
+
+
+
+
+\begin{lemma}
+    \label{lem:h-eigen}
+    The money state $\ket{\Z_N^{(h)} * x}_H$ is an eigenstate of $W$ with eigenvalue $e^{i\lambda_h t}$.
+\end{lemma}
+\begin{proof}
+    We have 
+    \begin{align*}
+        e^{iAt} \ket{\Z_N^{(h)} * x}_H
+        & = \sum_{g \in \Z_N} e^{i\lambda_gt} \ket{\Z_N^{(g)} * x} \braket{\Z_N^{(g)} * x}{\Z_N^{(h)} * x}_H \\
+        & = \sum_{g \in \Z_N} e^{i\lambda_gt} \ket{\Z_N^{(g)} * x} \bra{\Z_N^{(g)} * x} \Big( \frac{1 - i}{2} \ket{\Z_N^{(h)} * x} + \frac{1 + i}{2} \ket{\Z_N^{(-h)} * x} \Big) \\
+        & = e^{i\lambda_{h}t} \frac{1 - i}{2} \ket{\Z_N^{(h)} * x} + \frac{1 + i}{2} e^{i\lambda_{-h}t} \ket{\Z_N^{(-h)} * x} \\
+        & = e^{i\lambda_{h}t} \ket{\Z_N^{(h)} * x}_H,
+    \end{align*}
+    where the second equality follows from the identity in \eqref{eq:ht-ft}, and the last equality follows from the fact that $\lambda_h = \lambda_{-h}$.
+\end{proof}
+
+
+By setting \( t = \poly(\log N) \), Lemma~\ref{lem:h-eigen} ensures that phase estimation can be performed using the unitary \( W \) and the eigenstate \( \ket{\Z_N^{(h)} * x}_H \), yielding an approximation \( \tilde{\lambda}_h \) of \( \lambda_h \) such that
+\[
+\abs{\tilde{\lambda}_h - \lambda_h} \le \frac{1}{\poly(\log N)}.
+\]
+From this approximation, we can extract a real number \( 0 \le \theta \le 1 \) satisfying
+\[
+\abs*{\theta - \frac{uh}{N}} \le \frac{1}{\poly(\log N)}.
+\]
+Since phase estimation can be applied with various choices of \( u \), we can obtain multiple approximations of \( \frac{uh}{N} \). As shown in~\cite{zhandry2024quantum}, selecting \( u \) appropriately allows us to reconstruct \( h \) exactly from these estimates.
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{plain}
+\bibliography{references}
 
 \end{document}
 
