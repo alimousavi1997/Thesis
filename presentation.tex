@@ -675,48 +675,34 @@
 
 
 
-\begin{frame}{Simulating continuous-time walks}
-    
-    \begin{textblock*}{12cm}(0.5cm,1.5cm)
-      
-        \[
-        \ket{\phi_{j0}} := \frac{1}{\sqrt{d}}\sum_{l \in F_j}(\sqrt{\frac{H^*_{jl}}{K}}\ket{0} + \sqrt{1-\frac{|H^*_{jl}|}{K}}\ket{1})
-        \]
-
-        \[
-        \ket{\phi_{j1}} := \ket{0}\ket{1} 
-        \]
-
-        \[
-        T := \sum_{j=0}^{N-1}\sum_{b \in {\{0,1\}}}(\ket{j}\bra{j}\otimes\ket{b}\bra{b})\otimes\ket{\phi_{jb}}
-        \]
-
-        \[
-        W = iS(2TT^* - 1)
-        \]
-
-        \[
-        S\ket{j_1,b_1}\ket{j_2,b_2} = \ket{j_2,b_2}\ket{j_1,b_1}
-        \]
-
-
-
-    \end{textblock*}
-
-\end{frame}
-
-
 
 
 \begin{frame}{Simulating continuous-time walks}
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
-      
-       \[
-       e^{-iAt} = \operatorname{QFT_G}(\sum_{a \in G}e^{-i\lambda_at}\ket{a}\bra{a})\operatorname{QFT^*_G}
-       \]
+            
+    \textbf{Abelian Groups:}
+    \begin{itemize}
+        \item $e^{-iAt} = \text{QFT}_G \left( \sum_{a \in G} e^{-i\lambda_a t} |a\rangle\langle a| \right) \text{QFT}_G^*$
+        \item Efficient since:
+        \begin{itemize}
+            \item QFT$_G$ and QFT$_G^*$ run in poly$(\log|G|)$ time.
+            \item $\lambda_a$ computable to high precision classically.
+        \end{itemize}
+    \end{itemize}
 
+    \vspace{0.5cm}
+    \textbf{Group Actions:}
+    \begin{itemize}
+        \item No efficient QFT-like decomposition.
+        \item Can express:
+        \[
+        e^{-iAt} = \sum_{h \in G} e^{-i\lambda_h t} |G^{(h)} * x\rangle\langle G^{(h)} * x|
+        \]
+        \item But still approximable for $t = \text{poly}(\log|G|)$ due to structure in $A$.
+    \end{itemize}
 
+        
 
 
     \end{textblock*}
@@ -727,29 +713,31 @@
 
 
 
-
-
-
-% \begin{frame}{Simulating group action quantum walks}
+% \begin{frame}{Simulating continuous-time walks}
     
 %     \begin{textblock*}{12cm}(0.5cm,1.5cm)
-
+      
 %         \[
-%         e^{-iAt} = \sum_{h \in G}\ket{G^{(h)}*x}\bra{G^{(h)}*x}
+%         \ket{\phi_{j0}} := \frac{1}{\sqrt{d}}\sum_{l \in F_j}(\sqrt{\frac{H^*_{jl}}{K}}\ket{0} + \sqrt{1-\frac{|H^*_{jl}|}{K}}\ket{1})
 %         \]
 
 %         \[
-%         T := \sum_{y \in X}\sum_{b \in {\{0,1\}}}(\ket{j}\bra{j}\otimes\ket{b}\bra{b})\otimes\ket{\phi_{yb}}
+%         \ket{\phi_{j1}} := \ket{0}\ket{1} 
 %         \]
 
 %         \[
-%         = \sum_{y \in X}\sum_{b \in {\{0,1\}}}\ket{y}\ket{b}\ket{\phi_{yb}}\bra{y}\bra{b}
+%         T := \sum_{j=0}^{N-1}\sum_{b \in {\{0,1\}}}(\ket{j}\bra{j}\otimes\ket{b}\bra{b})\otimes\ket{\phi_{jb}}
 %         \]
 
 %         \[
-%             \ket{\phi_{y0}} = \frac{1}{\sqrt{|Q|}}\sum_{q \in Q}\ket{q*y}\ket{0}
+%         W = iS(2TT^* - 1)
 %         \]
-        
+
+%         \[
+%         S\ket{j_1,b_1}\ket{j_2,b_2} = \ket{j_2,b_2}\ket{j_1,b_1}
+%         \]
+
+
 
 %     \end{textblock*}
 
@@ -758,9 +746,35 @@
 
 
 
+
+
+
 \begin{frame}{Simulating group action quantum walks}
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
+
+                
+        \textbf{Goal:} Efficiently simulate $W = e^{-iAt}$ for $t = \text{poly}(\log |G|)$.
+
+        \medskip
+        \textbf{Approach:} Use discrete-time quantum walk framework:
+        \[
+        W = iS(2TT^* - 1)
+        \]
+
+        \begin{itemize}
+        \item Isometry $T$ and its adjoint $T^*$ are efficiently implemented via simple unitaries $U_0$, $U_1$.
+        \item These unitaries prepare/refactor states $|\varphi_{yb}\rangle$ using a small symmetric set $Q \subset G$.
+        \item Efficient due to:
+            \begin{itemize}
+            \item Bounded degree Cayley graph.
+            \item Polynomial-size $Q$ allows brute-force mapping.
+            \end{itemize}
+        \item Full walk operator $W$ simulated via reflection trick using $T$, $T^*$, and ancilla control.
+        \end{itemize}
+
+        \textbf{Conclusion:} Group-action quantum walks can be simulated efficiently despite lack of QFT-like structure.
+
 
        
 
