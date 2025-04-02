@@ -757,7 +757,7 @@
         \textbf{Goal:} Efficiently simulate $W = e^{-iAt}$ for $t = \text{poly}(\log |G|)$.
 
         \medskip
-        \textbf{Approach:} Use discrete-time quantum walk framework:
+        \textbf{Approach:} Use discrete-time quantum walk framework proposed by Andrew. M. Childs in 2009:
         \[
         W = iS(2TT^* - 1)
         \]
@@ -815,7 +815,8 @@
 \begin{frame}{Quantum Money From Group Actions}
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
-            
+        
+        Proposed by Zhandry in 2023:
         
         \begin{itemize}
         \item $\gen(1^\lambda)$. Begin with the state $\ket{0}\ket{x_\lambda}$, and apply the quantum Fourier transform over $G_\lambda$ to the first register producing the superposition
@@ -913,9 +914,9 @@
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
         \begin{itemize}
-            \item  In the original scheme, using the quantum Fourier transform, we could directly obtain $h$ from the money state $\ket{\mathbb{Z}_N^{(h)} * x}$ and compare it to the given $h$. However, this approach does not work when we use the Hartley transform. 
+            \item  In the original scheme, using the quantum Fourier transform, we could directly obtain $h$ from the money state $\ket{\mathbb{Z}_N^{(h)} * x}$ and compare it to the given $h$. However, this approach does not work exactly the same when we use the Hartley transform. 
             \vspace{1cm}
-            \item  To address this, we design an algorithm for computing $h$ that utilizes quantum walks. 
+            \item  To extract $h$ directly, we design an algorithm for computing $h$ that utilizes quantum walks. 
 
         \end{itemize}
         
@@ -1107,6 +1108,40 @@
 \begin{frame}{References}
     
     \begin{textblock*}{12cm}(0.5cm,1.5cm)
+
+        \footnotesize
+        \begin{thebibliography}{99}
+
+        \bibitem{aaronson2012}
+        S.~Aaronson and P.~Christiano,
+        \newblock \emph{Quantum Money from Hidden Subspaces},
+        \newblock In Theory of Cryptography Conference, pp. 3--25, Springer, 2012. \\
+        \url{https://arxiv.org/abs/1203.4740}
+
+        \bibitem{zhandry2017}
+        M.~Zhandry,
+        \newblock \emph{Quantum Lightning Never Strikes the Same State Twice},
+        \newblock In EUROCRYPT 2019, pp. 408--438. \\
+        \url{https://arxiv.org/abs/1701.03137}
+
+        \bibitem{childs2009}
+        A.~M. Childs,
+        \newblock \emph{On the Relationship Between Continuous- and Discrete-Time Quantum Walks},
+        \newblock \url{https://arxiv.org/abs/0810.0312}
+
+        \bibitem{childs2022}
+        A.~M. Childs,
+        \newblock \emph{Lecture Notes on Quantum Algorithms}, University of Maryland, 2022. \\
+        \url{https://arxiv.org/abs/quant-ph/0012090v2}
+
+        \bibitem{arrazola2014}
+        J.~M. Arrazola and N.~Lütkenhaus,
+        \newblock \emph{Quantum Walks and Graph Isomorphism},
+        \newblock \url{https://arxiv.org/abs/1401.4998}
+
+        \end{thebibliography}
+
+       
 
         
     \end{textblock*}
