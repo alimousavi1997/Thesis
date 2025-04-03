@@ -183,22 +183,6 @@ CNOT =
 \end{bmatrix}
 \]
 
-\subsubsection*{4. Toffoli Gate (CCNOT Gate)}
-\textbf{Operation:} A three-qubit gate that flips the state of the target qubit if both control qubits are in the state $|1\rangle$. \\
-\textbf{Matrix Representation:}
-\[
-CCNOT =
-\begin{bmatrix}
-1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
-0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\
-0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
-0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
-0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
-0 & 0 & 0 & 0 & 0 & 0 & 1 & 0
-\end{bmatrix}
-\]
 
 \subsection*{Universal Gates}
 A set of gates is considered \textbf{universal} if any unitary operation can be approximated to arbitrary precision using a sequence of gates from this set. For example, single-qubit rotation gates combined with the CNOT gate form a universal set, enabling the construction of any quantum algorithm.
@@ -473,10 +457,10 @@ Alternatively, the group action can be viewed as a homomorphism \( \phi : G \to 
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Groups and Characters}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Abelian Groups}
 
 An \textbf{abelian group} (also called a \textbf{commutative group}) is a set \( G \) equipped with a binary operation \( \cdot \) (usually written as addition \( + \) or multiplication \( \cdot \)) that satisfies the following four group axioms, along with an additional \textbf{commutativity} property.
@@ -526,6 +510,9 @@ A set \( G \) with a binary operation \( \cdot \) is an \textbf{abelian group} i
 
 Since abelian groups satisfy commutativity, they allow more flexible mathematical operations and structure, leading to applications in algebra, number theory, and topology.
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Characters of Abelian Groups}
 Let \( G \) be an abelian group. A function  
 
@@ -553,7 +540,7 @@ Applying \( \chi \) to both sides, we obtain:
 \chi(g)^k = \chi(g^k) = \chi(e) = 1.
 \]
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Number of Characters in a Finite Abelian Group}
 
 A \textbf{finite abelian group} of order \( n \) has exactly \( n \) distinct characters, denoted by:  
@@ -570,6 +557,10 @@ The function \( \chi_1 \), defined by:
 
 is called the \textbf{principal character} of \( G \). The remaining \( n-1 \) characters are referred to as \textbf{non-principal characters}.
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Character Group}
 
 If \( G \) is an abelian group, the set of characters \( \{\chi_k\} \) forms an abelian group under pointwise multiplication, defined as:  
@@ -598,7 +589,7 @@ the inverse of a character is simply its \textbf{complex conjugate}:
 \]
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Quantum Fourier Transform}
 
 The \textbf{Quantum Fourier Transform (QFT)} is one of the most fundamental unitary transformations in quantum computing. It plays a crucial role in quantum algorithms, including Shor’s algorithm for integer factorization and quantum phase estimation. The QFT is the quantum analog of the classical discrete Fourier transform (DFT) but operates on quantum states, enabling efficient quantum computation of Fourier coefficients.
@@ -610,14 +601,14 @@ In this section, we discuss the QFT in the context of abelian groups, with a foc
 Let \( G \) be an abelian group. The \textbf{Quantum Fourier Transform} over \( G \) is defined as:
 
 \[
-F_G = \frac{1}{\sqrt{|G|}} \sum_{x \in G} \sum_{y \in \hat{G}} \chi_y(x) | y \rangle \langle x |
+F_G = \frac{1}{\sqrt{|G|}} \sum_{x \in G} \sum_{y \in \hat{G}} \chi(y,x) | y \rangle \langle x |
 \]
 
 where:
 
 \begin{itemize}
     \item \( \hat{G} \) is a complete set of characters of \( G \).
-    \item \( \chi_y(x) \) denotes the \( y \)th character of \( G \), evaluated at \( x \).
+    \item \( \chi(y,x) \) denotes the \( y \)th character of \( G \), evaluated at \( x \).
     \item \( |x\rangle \) and \( |y\rangle \) are quantum states corresponding to elements of \( G \) and its dual group \( \hat{G} \).
 \end{itemize}
 
@@ -625,7 +616,7 @@ Since \( G \) and \( \hat{G} \) are isomorphic, it is often useful to label the 
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{QFT Over \( \mathbb{Z}_{2^n} \)}
 
 The QFT over \( G = \mathbb{Z}_{2^n} \) is defined as:
@@ -682,16 +673,16 @@ where
 
 This decomposition highlights the \textbf{hierarchical dependence of qubits on the binary digits of \( x \)}, making it possible to implement the QFT using \textbf{Hadamard gates and controlled phase shift gates}.
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Cayley graphs}
 
 A Cayley graph is a graphical representation of a group based on a chosen set of generators. It is widely used in algebra, combinatorics, and theoretical computer science to study group structures and their applications in network theory, quantum computing, and cryptography.
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Definition of Cayley Graphs}
 
-A \textit{Cayley graph} is a graph that encodes the structure of a group with respect to a chosen generating set. Formally, let \( G \) be a group and \( S \) be a subset of \( G \) that serves as a generating set, meaning every element of \( G \) can be expressed as a finite product of elements from \( S \). The Cayley graph \( \Gamma(G, S) \) is defined as follows. The vertex set of the graph consists of the elements of \( G \), where each vertex corresponds to a unique group element. The edge set is constructed by drawing a directed edge from vertex \( g \) to vertex \( gs \) for each \( g \in G \) and \( s \in S \). If the generating set \( S \) is symmetric, meaning that whenever \( s \in S \), its inverse \( s^{-1} \) is also in \( S \), then the Cayley graph is undirected; otherwise, it is a directed graph.
-For example, For the cyclic group \( G = \mathbb{Z}_n = \{0,1,2,\dots, n-1\} \) with the generating set \( S = \{\pm 1\} \), the Cayley graph forms a cycle graph. In this graph, each vertex \( j \) is connected to \( j+1 \mod n \) and \( j-1 \mod n \), creating a cyclic structure.\\
+A \textit{Cayley graph} is a graph that encodes the structure of a group with respect to a chosen generating set. Formally, let \( G \) be a group and \( Q \) be a subset of \( G \) that serves as a generating set, meaning every element of \( G \) can be expressed as a finite product of elements from \( Q \). The Cayley graph \( \Gamma(G, Q) \) is defined as follows. The vertex set of the graph consists of the elements of \( G \), where each vertex corresponds to a unique group element. The edge set is constructed by drawing a directed edge from vertex \( g \) to vertex \( gq \) for each \( g \in G \) and \( q \in Q \). If the generating set \( Q \) is symmetric, meaning that whenever \( q \in Q \), its inverse \( q^{-1} \) is also in \( Q \), then the Cayley graph is undirected; otherwise, it is a directed graph.
+For example, For the cyclic group \( G = \mathbb{Z}_n = \{0,1,2,\dots, n-1\} \) with the generating set \( Q = \{\pm 1\} \), the Cayley graph forms a cycle graph. In this graph, each vertex \( j \) is connected to \( j+1 \mod n \) and \( j-1 \mod n \), creating a cyclic structure.\\
 
 
 The adjacency matrix of $\Gamma$ can be expressed as
@@ -727,7 +718,7 @@ Quantum walks on Cayley graphs play a crucial role in quantum computing, quantum
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Discrete-Time Quantum Walk on Cayley Graphs}
 
 A discrete-time quantum walk on a Cayley graph requires a coin operator to maintain unitary evolution.
@@ -745,9 +736,9 @@ where:
 
 Each state is represented as:
 \[
-|\psi\rangle = \sum_{g \in G} \sum_{s \in S} \alpha_{g,s} |g\rangle \otimes |s\rangle,
+|\psi\rangle = \sum_{g \in G} \sum_{q \in Q} \alpha_{g,q} |g\rangle \otimes |q\rangle,
 \]
-where \( |g\rangle \) is the vertex state and \( |s\rangle \) represents the coin state.
+where \( |g\rangle \) is the vertex state and \( |q\rangle \) represents the coin state.
 
 \subsection*{Evolution Operators}
 \textbf{Coin Flip Operator (\( C \))}: This unitary operator acts on the coin space to create a superposition of movement directions. A common choice is the Grover or Hadamard operator.
@@ -1121,7 +1112,26 @@ The quantum money scheme is said to be \textit{correct} if genuine banknotes gen
 where the probability is taken over the randomness of $\gen$ and $\ver$. The scheme $(\gen, \ver)$ is said to be secure if, given a genuine bill $(s, \rho_s)$, no QPT algorithm $\mathcal{A}$ can produce two (possibly entangled) bills $(s, \rho_1)$ and $(s, \rho_2)$ that are both accepted by $\ver$ with non-negligible probability. More formally:
 \[ \Pr\left[ \ver(s, \rho_1) = \ver(s, \rho_2) = 1 : \substack{(s, \rho_s) \gets \gen(1^\lambda) \\ (\rho_1, \rho_2) \gets \mathcal{A}(s, \rho_s)} \right] \le \negl(\lambda). \]
 
-We now briefly outline the quantum money construction from \cite{zhandry2024quantum}, which is based on abelian group actions. Let $\{(G_\lambda, X_\lambda, *)\}_{\lambda \in J}$, where $J \subset \N$, be a collection of cryptographic group actions for abelian groups $G_\lambda$, and let $x_\lambda \in X_\lambda$ be a fixed element. The $\gen$ and $\ver$ algorithms are as follows:
+We now briefly outline the quantum money construction from \cite{zhandry2024quantum}, which is based on abelian group actions. We will the $\comph$ algorithm:
+\paragraph{The $\comph$ Algorithm.}
+Given access to the state $\ket{G^{(h)} * x}$, one can efficiently recover the value of $h$ via a quantum algorithm. In particular, there exists a unitary transformation that maps
+\[
+\ket{G^{(h)} * x} \ket{0} \mapsto \ket{G^{(h)} * x} \ket{h},
+\]
+leveraging the technique of \textit{phase kickback}. The process proceeds as follows:
+
+Begin with the state $\ket{G^{(h)} * x} \ket{0}$ and apply the quantum Fourier transform (QFT) to the second register. Then apply the unitary operator
+\[
+\sum_{k \in G} U_k \otimes \ket{k}\bra{k}
+\]
+to both registers. This operation encodes the character information into the phase, resulting in the state
+\[
+\frac{1}{\sqrt{\abs{G}}} \sum_{k \in G} \ket{G^{(h)} * x} \chi(-k, h) \ket{k}.
+\]
+Finally, applying the inverse QFT to the second register disentangles the phase and reveals $h$, yielding the final state $\ket{G^{(h)} * x} \ket{h}$.
+
+\vspace{0.5cm}
+Let $\{(G_\lambda, X_\lambda, *)\}_{\lambda \in J}$, where $J \subset \N$, be a collection of cryptographic group actions for abelian groups $G_\lambda$, and let $x_\lambda \in X_\lambda$ be a fixed element. The $\gen$ and $\ver$ algorithms are as follows:
 \begin{itemize}
 \item $\gen(1^\lambda)$. Begin with the state $\ket{0}\ket{x_\lambda}$, and apply the quantum Fourier transform over $G_\lambda$ to the first register producing the superposition
     \[ \frac{1}{\sqrt{\abs{G_\lambda}}} \sum_{g \in G_\lambda} \ket{g}\ket{x_\lambda}. \]
@@ -1374,7 +1384,7 @@ The quantum money scheme described earlier can also be instantiated using the qu
 \section*{Verification using quantum walks}
 
 
-Given a state of the form $\ket{\Z_N^{(h)} * x}_H$, we demonstrate how the value of $h$ can be extracted using continuous-time quantum walks. For any $u \in \Z_N$, consider the Cayley graph $\Gamma = (\Z_N, E)$ generated by $Q = {-u, u}$, as introduced in Section \ref{sec:ga-qwalk}. Let $A$ denote the adjacency matrix of $\Gamma$. The eigenvectors of $A$ are given by $\ket{\Z_N^{(h)} * x}$, with corresponding eigenvalues $\lambda_h = 2\cos(2\pi uh / N)$ for each $h \in \Z_N$. According to Theorem \ref{thm:sparse-sim} and the discussion that follows, the unitary evolution operator $W = e^{iAt}$ can be simulated efficiently to exponential precision. To proceed, we first state the following lemma.
+Given a state of the form $\ket{\Z_N^{(h)} * x}_H$, we demonstrate how the value of $h$ can be extracted using continuous-time quantum walks. For any $u \in \Z_N$, consider the Cayley graph $\Gamma = (\Z_N, E)$ generated by $Q = {\{-u, u}\}$. Let $A$ denote the adjacency matrix of $\Gamma$. The eigenvectors of $A$ are given by $\ket{\Z_N^{(h)} * x}$, with corresponding eigenvalues $\lambda_h = 2\cos(2\pi uh / N)$ for each $h \in \Z_N$. According to Theorem \ref{thm:sparse-sim} and the discussion that follows, the unitary evolution operator $W = e^{iAt}$ can be simulated efficiently to exponential precision. To proceed, we first state the following lemma.
 
 
 
