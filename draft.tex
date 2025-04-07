@@ -16,7 +16,7 @@
 % Formatting
 \setlength{\parskip}{0.5em}
 \setlength{\parindent}{0pt}
-\onehalfspacing
+\singlespacing
 
 \title{Quantum Walks and Application to Quantum Money}
 \author{Ali Mousavi}
@@ -75,6 +75,8 @@ The remainder of this thesis is organized as follows. In **Chapter 2**, we provi
 
 
 \chapter{Background of Quantum Computation and Group Actions}
+
+
 
 \section{Quantum Computation Basics}
 
@@ -157,76 +159,6 @@ The quantum Hartley transform over $G$ maps:
 \]
 Because the cas function is real-valued, the resulting amplitudes remain real—a fact that plays a crucial role in real-amplitude quantum protocols.
 
-% \section{Group Actions in Cryptography}
-
-% A \textbf{group action} of a group $G$ on a set $X$ is a function $*\colon G \times X \to X$ satisfying:
-% \begin{enumerate}
-%     \item Identity: $e * x = x$ for all $x \in X$,
-%     \item Compatibility: $g * (h * x) = (gh) * x$ for all $g,h \in G$, $x \in X$.
-% \end{enumerate}
-% We denote the result of $g$ acting on $x$ by $g * x$ or simply $gx$ when unambiguous.
-
-% \subsection{Regular Group Actions}
-
-% The orbit of $x \in X$ under $G$ is $G * x = \{g * x : g \in G\}$. The action is:
-% \begin{itemize}
-%     \item \emph{Transitive} if $G * x = X$,
-%     \item \emph{Free} if $g * x = x$ implies $g = e$,
-%     \item \emph{Regular} if both transitive and free.
-% \end{itemize}
-% In regular actions, $|X| = |G|$, and we can treat $X$ as a “hidden” version of $G$.
-
-% \subsection{Group Actions in Cryptography}
-
-% A \textbf{cryptographic group action} is one that is easy to compute in the forward direction but hard to invert. This gives rise to one-way functions based on group actions.
-
-% \paragraph{Example 1: Discrete Log.}  
-% $G = \mathbb{Z}_p^*$ acting on itself via $g * x = x^g \mod p$. Forward computation is efficient; inversion (discrete logarithm) is hard.
-
-% \paragraph{Example 2: Isogeny-Based.}  
-% $G$ is an ideal class group acting on supersingular elliptic curves. Given a base curve $x_0$ and an element $g \in G$, we compute $g * x_0$ efficiently, but recovering $g$ from $(x_0, g*x_0)$ is assumed hard.
-
-% \subsection{Applications to Quantum Money}
-
-% Cryptographic group actions enable public-key quantum money schemes. A private “serial number” $g \in G$ generates a quantum state based on $g * x_0$, which cannot be copied due to the no-cloning theorem and cannot be reverse-engineered due to the hardness of the action.
-
-% \subsection{Security Assumptions}
-
-% We assume abelian group actions $(G, X)$ satisfying:
-% \begin{itemize}
-%     \item Efficient action computation,
-%     \item Regularity: transitive and free,
-%     \item Hardness of inversion without the secret.
-% \end{itemize}
-
-% In particular, isogeny-based group actions are widely believed to be secure. We also refer to the \textbf{generic group model}, where group elements are treated as black-boxes with no special structure. Prior proofs (e.g., Doliskani's analysis of Zhandry’s scheme) in this model provide confidence in the cryptographic soundness of such constructions.
-
-
-
-
-
-
-
-% \chapter{Background of Quantum Computation and Group Actions}
-
-
-% \section{Quantum Computation Basics}
-% Quantum computation operates on information stored in quantum states. The fundamental unit of quantum information is the \emph{qubit}, which, unlike a classical bit, can exist in a superposition of basis states. A qubit is described by a state $|\psi\rangle = \alpha |0\rangle + \beta |1\rangle$ (in Dirac notation), where $\alpha,\beta \in \mathbb{C}$ and $|\alpha|^2 + |\beta|^2 = 1$. A system of $n$ qubits resides in a $2^n$-dimensional Hilbert space and its state can be a superposition of all $2^n$ basis basis states $|b_1b_2\cdots b_n\rangle$. 
-
-% Computation is carried out by unitary transformations on these states. A quantum algorithm is typically a sequence of quantum gates (unitary operators) applied to an initial state (usually a simple basis state like $|00\cdots0\rangle$), followed by a measurement of some qubits to obtain a classical result. A crucial aspect of quantum computation is that certain transformations—such as the Fourier transform over an $N$-element group—can be implemented very efficiently on a quantum computer (in $\operatorname{poly}(\log N)$ time), whereas their classical counterparts might require $\operatorname{poly}(N)$ time.
-
-% One example important to this work is the \textbf{quantum Fourier transform} (QFT). For an abelian group $G$ of order $N$, the QFT is the unitary map $|g\rangle \mapsto \frac{1}{\sqrt{N}}\sum_{h \in G} \chi_h(g)\, |h\rangle$, where $\{\chi_h\}$ are the characters (complex exponential homomorphisms) of $G$. In more familiar terms, when $G = \mathbb{Z}_N$ (the integers mod $N$), the QFT takes $|j\rangle$ to $\frac{1}{\sqrt{N}}\sum_{k=0}^{N-1} e^{2\pi i j k / N} |k\rangle$. The QFT is a key component in many quantum algorithms, including Shor’s factoring algorithm and certain quantum money schemes (e.g., Zhandry’s) that rely on hiding information in phase relationships. The QFT can be implemented using $O((\log N)^2)$ basic gates for many groups [13], making it an efficient operation.
-
-% Another concept we will use is the \textbf{quantum Hartley transform} (QHT). The Hartley transform is an alternative to the Fourier transform that produces only real values (in the classical case) by using sinusoidal basis functions (sums of sine and cosine) instead of complex exponentials. The \emph{quantum} Hartley transform is the unitary transform corresponding to the classical Hartley transform. For example, the Hartley transform on $\mathbb{Z}_N$ maps a basis state $|j\rangle$ to $\frac{1}{\sqrt{N}}\sum_{k=0}^{N-1} \mathrm{cas}\!\Big(\frac{2\pi j k}{N}\Big)\, |k\rangle$, where $\mathrm{cas}(x) = \cos x + \sin x$ is the Hartley kernel. Because $\cos x + \sin x$ is real for all $x$, the resulting amplitudes are real numbers. We will discuss the Hartley transform in more detail in Chapter 5, including how to implement it efficiently on a quantum computer.
-
-% A final fundamental principle to note is the \textbf{no-cloning theorem}, which underpins the security of quantum money. This theorem states that there is no physical operation that can make a copy of an arbitrary unknown quantum state. This contrasts sharply with classical information, which can be copied freely. The no-cloning theorem means that an adversary cannot duplicate a quantum banknote without fundamentally disturbing it – any attempt to “clone” the state will fail unless the adversary already has complete classical information describing that state.
-
-% Throughout this thesis, when we refer to an algorithm as \emph{efficient} or \emph{feasible}, we typically mean it can be performed by a quantum polynomial-time (QPT) algorithm. This is analogous to classical polynomial time, but on a quantum computer. All of the algorithms we propose (minting, verification, quantum walk simulation, etc.) are intended to be efficient in this sense.
-
-
-
-
-
 
 \section{Group Actions in Cryptography}
 At the heart of our quantum money scheme is the notion of a group action. A \textbf{group action} of a group $G$ on a set $X$ is a function $*\colon G \times X \to X$ that satisfies two properties: (1) the identity element $e \in G$ acts trivially on every $x \in X$ ($e * x = x$), and (2) the action is compatible with the group operation, meaning $g*(h* x) = (gh)*x$ for all $g,h \in G$ and $x \in X$. We will often denote the result of $g$ acting on $x$ by $g*x$ or simply $g x$ when the action is clear from context.
@@ -249,13 +181,515 @@ Finally, we note that working in the \textbf{generic group model} (or generic gr
 
 \chapter{Quantum Walks -- Continuous and Discrete}
 
+Quantum walks are the quantum-mechanical counterparts of classical random walks on graphs. Instead of a probability distribution over vertices, a quantum walk evolves a superposition of vertex states. Interference between multiple paths leads to markedly different behavior from classical walks, often yielding faster spreading and algorithmic speedups~\cite{physics_stackexchange}.
+
+In particular, both major models of quantum walks --- continuous-time and discrete-time --- achieve \emph{ballistic spreading} (standard deviation growing linearly in time) in contrast to the diffusive $O(\sqrt{t})$ spread of classical random walks~\cite{childs2003quantum}. Quantum walks have become a central framework in quantum computing, underpinning various algorithms and even universal quantum computation~\cite{file_gwrqpr3gkui6gav6sze4dj}.
+
+In this chapter, we introduce continuous- and discrete-time quantum walks, compare their properties, and discuss their implementation on highly symmetric graphs known as Cayley graphs. We then explore how group actions and symmetry can be leveraged to analyze and construct quantum walks on these graphs.
 
 
+
+\section{Continuous-Time Quantum Walk}
+
+
+A \textbf{continuous-time quantum walk (CTQW)} is defined by a time-dependent Schrödinger equation on the vertices of a graph. Given a graph $G=(V,E)$ with $\abs{V}=N$ vertices, one assigns a basis state $\ket{j}$ to each vertex $j \in V$. The walk is governed by a Hermitian Hamiltonian $H$ that respects the graph's structure. A common choice is to take $H$ proportional to either the adjacency matrix $A$ of $G$ or the graph Laplacian $L$. For example, one may set
+\[
+H = \gamma A \quad \text{or} \quad H = \gamma L,
+\]
+where $\gamma$ is a constant coupling rate with dimensions of (time)$^{-1}$.
+
+The Hamiltonian connects adjacent vertices: $\bra{j}H\ket{k} \neq 0$ if and only if $(j,k) \in E$. The state of the walk $\ket{\psi(t)} = \sum_{j \in V} \psi_j(t) \ket{j}$ evolves according to the Schrödinger equation:
+\[
+i \frac{d}{dt} \ket{\psi(t)} = H \ket{\psi(t)},
+\]
+with formal solution
+\[
+\ket{\psi(t)} = e^{-iHt} \ket{\psi(0)}.
+\]
+
+In coordinates, if we use the Laplacian $L$ defined by $L_{jk} = -\deg(j)\delta_{jk} + A_{jk}$, the equation becomes
+\[
+i \frac{d}{dt} \psi_j(t) = \sum_{k \in V} L_{jk} \psi_k(t),
+\]
+which mirrors the equation of a classical continuous-time random walk except for the factor $i$. Since $L$ (and $A$) are Hermitian, the quantum dynamics are unitary and conserve total probability (i.e., the norm of the state vector), in contrast to the irreversible nature of classical diffusion.
+
+The continuous-time quantum walk model was first formalized by Farhi and Gutmann in 1998 as a quantum analogue of continuous Markov processes.
+
+\subsection{Hamiltonian Choices}
+
+One can equivalently define a CTQW using $H = A$ (the adjacency matrix) instead of the Laplacian. For an undirected $d$-regular graph, $L = dI - A$, and using $H=A$ introduces only an overall phase factor $e^{-i d t}$ in the evolution, since $dI$ contributes a global phase. Thus, on regular graphs, the choice of Laplacian versus adjacency matrix is unimportant up to a global phase. In general, the adjacency matrix is often used because it directly encodes graph connectivity. Farhi and Gutmann’s original construction corresponds to $H=A$.
+
+Throughout this thesis, we primarily consider $H = A$ for continuous-time walks on unweighted graphs.
+
+\subsection{Example – CTQW on a Hypercube}
+
+The $n$-dimensional Boolean hypercube $Q_n$ is the graph on $2^n$ vertices $\{0,1\}^n$, where edges connect vertices differing in one bit. This is a $d = n$ regular graph, and can be viewed as the Cayley graph of $(\mathbb{Z}_2)^n$ with the generating set consisting of flipping each bit.
+
+The adjacency matrix of $Q_n$ can be written as a sum of $n$ commuting terms, each acting on one bit:
+\[
+A_{Q_n} = \sum_{j=1}^{n} \sigma_x^{(j)},
+\]
+where $\sigma_x^{(j)}$ is the Pauli $X$ operator acting on the $j$-th bit (and identity on the others). Because all $\sigma_x^{(j)}$ commute, the time-evolution operator factorizes:
+\[
+e^{-i A_{Q_n} t} = \prod_{j=1}^{n} e^{-i \sigma_x^{(j)} t} = \bigotimes_{j=1}^{n} \left( \cos t \, I - i \sin t \, \sigma_x^{(j)} \right),
+\]
+yielding an analytical solution for the walk. In particular, starting from the state $\ket{0^n}$, the walker's state remains an even superposition over all vertices at Hamming distance $k$ at time $t$, with amplitudes given by the $k$-th term in the expansion of $(\cos t - i \sin t)^n$.
+
+This shows that the quantum walk spreads across the hypercube exponentially faster than a classical random walk, which requires $O(n \log n)$ steps to approach a uniform distribution. The hypercube example illustrates how symmetry (in this case, the direct product structure) enables explicit solutions.
+
+\subsection{Algorithmic Applications}
+
+Continuous-time quantum walks have been employed to achieve algorithmic speedups. A famous example is the \emph{glued trees traversal problem} by Childs et al. (2003), where a CTQW on a graph formed by two randomly "glued" binary trees can find the unique exit vertex exponentially faster than any classical algorithm. This result gave the first exponential separation between quantum and classical query complexity in a black-box setting.
+
+Another application is \emph{spatial search} on graphs. Childs and Goldstone (2004) showed that a CTQW can find a marked vertex on a $d$-dimensional lattice faster than classical diffusion. In the limit $d \to \infty$, the CTQW dynamics converge to the continuous Dirac equation.
+
+More generally, CTQWs provide a natural framework for quantum search algorithms on graphs, often achieving Grover-like speedups or better. It is also known that continuous-time quantum walks are \textbf{universal for quantum computation}, meaning that sufficiently complex graphs can encode arbitrary quantum logic operations.
+
+
+
+\section{Discrete-Time Quantum Walks}
+
+
+
+In a \textbf{discrete-time quantum walk (DTQW)}, evolution proceeds in discrete time steps. Formally, one defines a unitary step operator $U$ that is repeatedly applied to an initial state. Designing such a $U$ for an arbitrary graph is nontrivial, since a naive attempt to “jump to a random neighbor” quantumly is not unitary.
+
+The resolution is to enlarge the Hilbert space by introducing an auxiliary \emph{coin register} that provides additional degrees of freedom for unitary evolution. This model, first proposed by Watrous in the context of quantum graph algorithms, leads to the \emph{coined discrete-time quantum walk}.
+
+\subsection{Coined Quantum Walk}
+
+For a graph $G=(V,E)$, the state space is $\mathcal{H} = \mathbb{C}^{|V|} \otimes \mathbb{C}^d$, where $d$ is the maximum vertex degree (or a fixed value in regular graphs). A basis state $\ket{j,k}$ represents the walker at vertex $j$ with coin state $k$, where the coin index can be thought of as a label for one of $j$'s outgoing edges.
+
+Each step of the walk is a composition of two operations:
+\begin{enumerate}
+    \item A \emph{coin flip} $C$ acting on the coin register (possibly conditioned on the current vertex),
+    \item A \emph{shift} $S$ that moves the walker to a neighboring vertex determined by the coin state.
+\end{enumerate}
+
+In the case of a $d$-regular graph, a common choice is the Grover diffusion operator as the coin:
+\[
+C = \sum_{j \in V} \ket{j}\bra{j} \otimes C_j, \quad C_j := 2 \ket{\chi_j}\bra{\chi_j} - I_d,
+\]
+where $\ket{\chi_j} := \frac{1}{\sqrt{\deg(j)}} \sum_{k : (j,k) \in E} \ket{k}$ is the uniform superposition over the coin labels of neighbors of $j$. This is a Householder reflection about $\ket{\chi_j}$ and acts as a Grover diffusion operator on the coin space.
+
+Next, the shift operator $S$ acts as
+\[
+S \ket{j,k} = \ket{k,j}, \quad \text{for each } (j,k) \in E,
+\]
+i.e., if the coin state $k$ indicates a neighbor of $j$, the shift $S$ moves the walker to vertex $k$ and updates the coin to $j$. The overall unitary step of the walk is then:
+\[
+U = S C.
+\]
+
+By construction, $U$ is unitary and effects a “quantum hop” on the graph at each time step. On a regular graph, $C$ performs a uniform mixing over possible directions (like tossing a $d$-sided quantum coin), and $S$ implements a conditional shift. On irregular graphs, care must be taken to define appropriate coin spaces, or one may instead use Szegedy’s alternate framework.
+
+\subsection{Szegedy’s Walk}
+
+In 2004, Szegedy proposed a different formulation of DTQW based on classical Markov chains. Here, no coin register is needed. Instead, the walk is defined on $\mathbb{C}^N \otimes \mathbb{C}^N$, with basis states $\ket{j,k}$ corresponding to directed edges.
+
+Given a classical transition matrix $P$ (an $N \times N$ stochastic matrix), one defines:
+\[
+\ket{\psi_j} := \ket{j} \otimes \sum_k \sqrt{P_{kj}} \ket{k},
+\quad
+\Pi := \sum_j \ket{\psi_j}\bra{\psi_j}.
+\]
+Then the walk step is:
+\[
+U = S (2\Pi - I),
+\]
+where $S$ again swaps the two registers: $S\ket{j,k} = \ket{k,j}$.
+
+This construction yields a unitary $U$, and when $P_{kj} = \frac{1}{\deg(j)} A_{kj}$ (i.e., a symmetric random walk), Szegedy’s walk is equivalent to the coined model.
+
+Szegedy’s approach is especially useful for quantizing non-regular Markov chains and is widely used in algorithm design—for example, in the element distinctness problem.
+
+\subsection{Properties and Applications}
+
+Discrete-time quantum walks share many features with their continuous-time counterparts. On the infinite line, the standard coined walk (with Hadamard coin) spreads ballistically, creating a bimodal distribution, unlike the diffusive spread of a classical random walk.
+
+Both DTQW and CTQW have been used to achieve quadratic speedups in search problems. In many cases, the two models can simulate each other. DTQWs can even achieve \textbf{universal quantum computation}: Childs et al. (2009) constructed a coined DTQW that simulates an arbitrary quantum circuit.
+
+In practice, the coined model is convenient for quantum circuit implementations, as the step $U = SC$ can be decomposed into standard quantum gates. Experimental DTQW implementations have been realized on photonic and ion trap systems.
+
+An important feature of DTQWs is that their behavior depends sensitively on the choice of coin operator. Different coins can induce localization, ballistic spread, or symmetry breaking. This tunability can be exploited in algorithm design. By contrast, CTQWs have less flexibility since the Hamiltonian is fully determined by the graph.
+
+
+
+
+
+
+\section{Comparing Continuous and Discrete-Time Quantum Walks}
+
+
+
+Continuous- and discrete-time quantum walks are closely related, yet not strictly equivalent models. Both involve the interference of quantum amplitudes on a graph and can produce similar high-level behaviors, such as linear spreading and faster hitting times compared to classical random walks. In many algorithmic contexts, either model can be used to achieve a quantum speedup.
+
+However, several important distinctions exist between the two models:
+
+\subsection{State Space}
+
+\begin{itemize}
+    \item \textbf{CTQW:} Evolves on the vertex Hilbert space $\mathbb{C}^{|V|}$.
+    \item \textbf{DTQW (Coined):} Uses an enlarged space $\mathbb{C}^{|V|} \otimes \mathbb{C}^d$, introducing a coin register to enable unitary evolution.
+\end{itemize}
+
+The coin adds extra degrees of freedom, allowing more design flexibility. However, it also increases the complexity of analysis and implementation since one must choose both the coin and shift operators carefully to ensure desired evolution.
+
+\subsection{Time Evolution}
+
+\begin{itemize}
+    \item \textbf{CTQW:} Evolution is governed by the continuous-time Schrödinger equation: $\ket{\psi(t)} = e^{-iHt} \ket{\psi(0)}$, allowing probing at arbitrary real-valued times $t$.
+    \item \textbf{DTQW:} Evolves in discrete time-steps via a unitary operator $U$ applied iteratively: $\ket{\psi(t)} = U^t \ket{\psi(0)}$, with $t \in \mathbb{Z}$.
+\end{itemize}
+
+DTQWs can exhibit periodic revivals and step-dependent interference patterns, while CTQWs exhibit behavior determined by the spectral decomposition of $H$. A DTQW can approximate a CTQW through Trotterization: setting $U \approx e^{-iH \Delta t}$ for small $\Delta t$ and iterating.
+
+\subsection{Generality}
+
+\begin{itemize}
+    \item \textbf{CTQW:} Any undirected graph naturally defines a Hermitian Hamiltonian and thus a valid walk.
+    \item \textbf{DTQW:} For general (especially irregular) graphs, defining a local coinless unitary operator may be challenging. Enlarged Hilbert spaces or alternate frameworks like Szegedy's construction are often required.
+\end{itemize}
+
+While coined DTQWs require more setup, they are ultimately general, and Szegedy's method can handle any reversible Markov chain.
+
+\subsection{Analytical Tools}
+
+\begin{itemize}
+    \item \textbf{CTQW:} Analysis reduces to diagonalizing the Hermitian Hamiltonian $H$.
+    \item \textbf{DTQW:} One must diagonalize the larger unitary operator $U$, which may have a more intricate spectrum due to the coin space.
+\end{itemize}
+
+In both cases, analysis is often facilitated by symmetry. For example, when the underlying graph is a Cayley graph or has high symmetry, representation theory can be used to obtain explicit eigenstates and eigenvalues.
+
+\subsection{Equivalences}
+
+There exist formal correspondences between the two models. For instance:
+\begin{itemize}
+    \item A coined DTQW can approximate a CTQW in the limit of small time-steps (Childs et al.).
+    \item CTQWs can be embedded into DTQWs by using additional coin degrees of freedom to emulate continuous evolution.
+\end{itemize}
+
+Thus, the two models are equivalent in computational power. However, in practice, one may be more natural or efficient depending on the problem. For example:
+\begin{itemize}
+    \item \textbf{CTQW:} Favored for spatial search on low-degree graphs due to the natural definition of a marked Hamiltonian.
+    \item \textbf{DTQW:} Preferred for quantizing arbitrary Markov chains (e.g., element distinctness on the Johnson graph), particularly using Szegedy’s framework.
+\end{itemize}
+
+\subsection{Summary}
+
+Continuous-time and discrete-time quantum walks are powerful and related models for quantum computation and algorithm design. CTQWs rely on continuous evolution under a Hermitian Hamiltonian and are tightly linked to physical systems. DTQWs require coin and shift operators but offer additional control and ease of implementation in gate-based architectures.
+
+Each model has advantages:
+\begin{itemize}
+    \item CTQWs often more closely mirror physical intuition.
+    \item DTQWs offer greater flexibility and modularity for algorithm design.
+\end{itemize}
+
+Results in one model can often be translated to the other with suitable modifications. Consequently, both are indispensable tools in the study of quantum algorithms.
+
+
+
+
+
+
+
+\section{Cayley Graphs}
+
+
+
+Having introduced the two types of quantum walks, we now focus on walks on highly symmetric graphs that arise from group structures. A \textbf{Cayley graph} encodes the algebraic structure of a group in graph-theoretic form and provides a natural setting for analyzing quantum walks due to its symmetry properties.
+
+Let $G$ be a group with identity element $e$, and let $S \subset G$ be a generating set for $G$. The \emph{Cayley graph} $\Gamma(G,S)$ is defined as follows:
+\begin{itemize}
+    \item Each group element $g \in G$ corresponds to a vertex.
+    \item For each $g \in G$ and each generator $s \in S$, there is a directed edge from $g$ to $gs$. That is, $(g, gs)$ is an edge labeled by $s$.
+\end{itemize}
+
+If $S$ is symmetric (i.e., $s \in S \Rightarrow s^{-1} \in S$) and does not contain the identity, the graph can be treated as \textbf{undirected}, since for every edge from $g$ to $gs$, there is a corresponding edge back from $gs$ to $g$.
+
+When $S$ is symmetric, $\Gamma(G, S)$ is an undirected $|S|$-regular graph. Note that the Cayley graph depends on the choice of generating set $S$: different generating sets for the same group yield different graphs, though all share key symmetry features.
+
+\subsection{Examples of Cayley Graphs}
+
+\begin{itemize}
+    \item \textbf{Cycle Graph $C_n$:} The cycle graph is the Cayley graph of the cyclic group $\mathbb{Z}_n = \{0, 1, \dots, n-1\}$ with generating set $S = \{1, -1\}$. Each vertex $j \in \mathbb{Z}_n$ is connected to $j \pm 1 \mod n$.
+
+    \item \textbf{Hypercube $Q_n$:} The $n$-dimensional Boolean hypercube is the Cayley graph of the group $(\mathbb{Z}_2)^n$ with generating set $S = \{e_1, \dots, e_n\}$, where $e_i$ flips the $i$-th bit. This graph is $n$-regular and bipartite.
+
+    \item \textbf{Complete Graph $K_N$:} The complete graph on $N$ vertices can be viewed as the Cayley graph of $\mathbb{Z}_N$ with generating set $S = \{1, 2, \dots, N-1\}$ (all nonzero elements). Each vertex $g$ has an edge to every other vertex $g+s$.
+
+    \item \textbf{Infinite Tree (Free Group):} The free group on two generators $a$ and $b$ has a Cayley graph that is an infinite 4-regular tree. Each vertex corresponds to a word in $\{a^{\pm1}, b^{\pm1}\}$, and edges represent multiplication by $a$ or $b$. A finite portion of this graph is shown in Figure~\ref{fig:cayley-free-group}.
+
+    \item \textbf{Dihedral Groups:} Cayley graphs of dihedral groups often form cyclic or prism-like structures. These graphs are used in modeling symmetric structures in both classical and quantum settings.
+\end{itemize}
+
+\subsection{Symmetry and Group Action}
+
+Cayley graphs are highly symmetric. The group $G$ acts regularly on the vertices of $\Gamma(G, S)$ via left multiplication:
+\[
+g : h \mapsto gh.
+\]
+This action is:
+\begin{itemize}
+    \item \textbf{Vertex-transitive:} All vertices are structurally identical; there is no distinguished origin unless one is chosen explicitly.
+    \item \textbf{Regular:} For any two vertices $u, v \in G$, there exists exactly one $g \in G$ such that $g \cdot u = v$.
+\end{itemize}
+
+This symmetry implies that quantum (or classical) walks can often be analyzed by considering representative initial conditions—commonly, the walk is assumed to start at the identity element $e$.
+
+\subsection{Remarks}
+
+Cayley graphs provide a powerful framework for analyzing quantum walks. Their regularity and symmetry often lead to analytical tractability, particularly using representation theory and spectral techniques. Throughout this thesis, we will explore quantum walks on Cayley graphs, leveraging their symmetry to obtain insights into walk dynamics and algorithmic applications.
+
+
+
+
+
+
+
+\section{Quantum Walks on Cayley Graphs}
+
+
+Cayley graphs provide an ideal setting for quantum walks due to their rich symmetry properties, which can be exploited to simplify analysis and implementation. Both continuous-time and discrete-time quantum walks on Cayley graphs have been studied extensively. We now highlight several key features and advantages of quantum walks in this setting.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Spectral Structure}
+
+The adjacency matrix $A$ of a Cayley graph is closely related to the group algebra of $G$. It can be expressed as:
+\[
+A = \sum_{a \in G} \lambda_a |\hat{a}\rangle \langle \hat{a}|,
+\]
+where $|\hat{a}\rangle$ is the quantum Fourier transform of $|a\rangle$. The eigenvalues $\lambda$ are given by
+\[
+\lambda_a = \sum_{q \in Q} \chi(a, q).
+\]
+Note that the eigenvectors $|\hat{a}\rangle$ of $A$ depend only on $G$ and not on the set $Q$.
+
+To see this, we have
+\[
+        A\ket{\hat{a}} = A.\frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y)\ket{y} = \frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y).A\ket{y}
+        \]
+        \[
+        = \frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y).\sum_{q \in Q}\ket{qy}
+        \]
+        Consider $\beta = qy$. Then:
+        \[
+         = \frac{1}{\sqrt{|G|}}\sum_{q \in Q}\chi(a,q)\sum_{\beta}\chi(a,\beta)\ket{\beta} = \sum_{q \in Q}\chi(a,q) . \ket{\hat{a}}
+        \]
+        \[
+         = \lambda_a\ket{\hat{a}}
+        \]
+
+
+% \[
+% A = \sum_{s \in S} P_s,
+% \]
+% where $P_s$ is the permutation matrix representing left multiplication by $s \in G$: $P_s \ket{g} = \ket{sg}$ for all $g \in G$.
+
+% If $S$ is symmetric (i.e., closed under inversion), then $A$ is Hermitian, and $P_s^\dagger = P_{s^{-1}}$. The eigenstates of $A$ are understood through group representation theory. In particular, the regular representation of $G$ on $\mathbb{C}^{|G|}$ decomposes into a direct sum of irreducible representations (irreps), and since each $P_s$ acts via the regular representation, the adjacency matrix $A$ is a sum of representation operators:
+% \[
+% A = \sum_{s \in S} \rho(s),
+% \]
+% where $\rho$ denotes the regular representation.
+
+% By Schur’s lemma, $A$ acts within each irreducible subspace as a matrix proportional to the representation of $S$. Hence, $A$ is block-diagonal (in a suitable basis), with blocks corresponding to irreps of $G$. If $\{\phi_\alpha\}$ are the irreps of $G$, then the eigenvalues of $A$ can be determined from the character values $\chi_\alpha(s)$:
+% \[
+% \lambda_\alpha = \sum_{s \in S} \chi_\alpha(s), \quad \text{(for abelian $G$, $\chi_\alpha$ is a character)}.
+% \]
+
+% In the case of abelian $G$, all irreps are one-dimensional, and the eigenstates of $A$ are the Fourier basis:
+% \[
+% \ket{\chi} = \frac{1}{\sqrt{|G|}} \sum_{g \in G} \chi(g) \ket{g}, \quad \lambda_\chi = \sum_{s \in S} \chi(s).
+% \]
+
+% \textbf{Example – Hypercube:} For $G = \mathbb{Z}_2^n$, characters are labeled by bitstrings $u \in \{0,1\}^n$, and $\chi_u(g) = (-1)^{u \cdot g}$. Then
+% \[
+% \lambda_u = \sum_{j=1}^n (-1)^{u_j},
+% \]
+% which gives the $n+1$ distinct eigenvalues $n, n-2, \dots, -n$ of the $n$-dimensional hypercube.
+
+% In the nonabelian case, similar principles apply but require using higher-dimensional irreps and the Great Orthogonality Theorem.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Invariant Subspaces and Symmetry Reduction}
+
+Cayley graphs possess vertex-transitive symmetry under the group action $g : h \mapsto gh$. This symmetry induces invariant subspaces for the quantum walk evolution. If the initial state is uniform over a symmetry orbit, it remains so under the walk.
+
+In particular, for a continuous-time quantum walk starting at the identity element:
+\[
+\ket{\psi(t)} = e^{-iAt} \ket{e},
+\]
+the resulting state remains a \emph{class function}, i.e., the amplitude $\braket{g|\psi(t)}$ depends only on structural properties of $g$ (such as Hamming weight or conjugacy class).
+
+This symmetry drastically reduces the effective state space. For instance, on distance-regular graphs (including many Cayley graphs), amplitudes are equal for all vertices at the same distance from the starting point. This idea is also used in the analysis of the glued trees graph, where the walk remains uniform on each layer.
+
+\subsection{Hitting and Mixing Properties}
+
+Quantum walks on Cayley graphs have been applied to study hitting and mixing times. In the classical case, random walks on many Cayley graphs are rapidly mixing (e.g., those based on nonabelian simple groups, which often form expanders).
+
+In the quantum case, mixing is more subtle due to unitary evolution. One typically considers \emph{instantaneous} or \emph{time-averaged} mixing. Some Cayley graphs support perfect state transfer or periodicity in CTQWs.
+
+\textbf{Examples:}
+\begin{itemize}
+    \item On the cycle graph $C_n$, a CTQW exhibits perfect revival at time $t = \pi$ if $n$ is even.
+    \item On the hypercube, the CTQW exhibits approximate uniform mixing at specific times.
+\end{itemize}
+
+These properties are derived from the spectral structure, which is accessible via group characters.
+
+\subsection{Discrete-Time Walks and Symmetry}
+
+Coined DTQWs also benefit from Cayley graph symmetry. If a symmetric coin (e.g., the Grover coin) is used at each vertex of a vertex-transitive graph, the walk respects the full symmetry. As a result:
+\begin{itemize}
+    \item Amplitudes often remain uniform on symmetry-equivalent vertices.
+    \item Walk dynamics can often be analyzed by reducing to a lower-dimensional invariant subspace.
+    \item In some cases, symmetry can lead to \emph{localization}, where amplitude becomes trapped due to spectral properties of the coin.
+\end{itemize}
+
+These effects can be mitigated or exploited through careful coin design or by using Szegedy's method, which naturally respects symmetry.
+
+\subsection{Summary}
+
+Cayley graphs offer a rich and powerful structure for quantum walks. Their group-theoretic properties allow:
+\begin{itemize}
+    \item Spectral analysis via irreducible representations.
+    \item Dimensionality reduction using symmetry and invariant subspaces.
+    \item Explicit calculation of probabilities, mixing behavior, and hitting times.
+\end{itemize}
+
+Many efficient quantum walk algorithms exploit these properties either directly or implicitly. In subsequent sections, we will explore quantum walks on more general structures where group actions go beyond simple Cayley graphs.
+
+
+
+
+
+
+
+\section{Cayley Graphs with Group Action}
+
+
+Cayley graphs can also be generalized through group actions. Let \( (G, X, *) \) be a regular group action with a fixed element \( x \in X \), and let \( Q = \{q_1, q_2, \dots, q_k\} \subset G \) be a subset as before. Define the Cayley graph \( \Gamma = (X, E) \), where the vertex set is \( X \), and the edge set consists of all pairs \( (x, y) \in X \times X \) such that \( y = q * x \) for some \( q \in Q \).
+
+The adjacency matrix of this graph can be written as:
+\[
+A = \sum_{h \in G} \lambda_h \ket{G^{(h)} * x} \bra{G^{(h)} * x},
+\]
+where
+\[
+\lambda_h = \sum_{q \in Q} \chi(h, q), \quad \text{and} \quad \ket{G^{(h)} * x} = \frac{1}{\sqrt{|G|}} \sum_{g \in G} \chi(g, h) \ket{g * x}.
+\]
+
+As in the previous case, the eigenvectors \( \ket{G^{(h)} * x} \) are determined solely by the structure of the group \( G \). This construction generalizes the standard Cayley graph: setting \( X = G \) and the group action \( * \) as group multiplication recovers the original definition.
+
+
+To see this, we have:
+
+\[
+    A\ket{G^{(h)}*x} = \frac{1}{\sqrt{|G|}}.\sum_{g \in G}\chi(g,h) A.\ket{g*x}
+    \]
+
+    \[
+    = A\ket{G^{(h)}*x} = \frac{1}{\sqrt{|G|}}.\sum_{g \in G}\chi(g,h)\sum_{q \in Q}\ket{q*(g*x)}
+    \]
+    Consider $\beta = qg$. Then:
+    \[
+    = = \frac{1}{\sqrt{|G|}}\sum_{q \in Q}\sum_{\beta \in G}\chi(\beta,h)\chi(q,h)\ket{\beta * x}
+    \]
+
+    \[
+    = \sum_{q \in Q}\chi(q,h).\ket{G^{(h)}*x} = \lambda_h \ket{G^{(h)}*x}
+    \]
+
+    Since the group action \( (G, X, *) \) is regular, the two Cayley graph constructions are isomorphic. In the first construction, the vertex set is \( G \), and the adjacency matrix is indexed by elements of \( G \). In the second construction, the vertex set is \( X \), with the adjacency matrix indexed by elements of \( X \). The isomorphism between these graphs is given by the bijection
+\[
+\setlength{\arraycolsep}{1mm}
+\begin{array}{rcll}
+\phi: & G & \longrightarrow & X \\
+      & g & \longmapsto     & g * x,
+\end{array}
+\]
+
+which maps each group element \( g \in G \) to the corresponding point in its orbit under the action.
+
+
+    % Assuming the group action is a cryptographic group action, the isomorphism $\phi$ is a one-way function: given $g \in G$, it is easy to compute $g * x$, whereas given $(x, g * x)$, it is hard to compute $g$. Therefore, although these graphs are mathematically the same, computational problems based on them require fundamentally different techniques. A notable example is the implementation of quantum walks on these graphs.\footnote{Implementations of continuous-time quantum walks in the context of cryptographic group actions have previously appeared in \cite{booher2024failing, doliskani2023sample}, in the setting of supersingular isogeny graphs. These walks can be interpreted as group-action walks.} From this point onward, assume $Q$ is a small set, i.e., $\abs{Q} = \poly(\log \abs{G})$. In the first graph, we can efficiently implement the walks $e^{-iAt}$ even for values of $t$ that are exponentially large in $\log \abs{G}$. This follows from the fact that
+    % \begin{equation}
+    %     \label{eq:adjmat-fb}
+    %     e^{-iAt} = \qft_G \sum_{a \in G} e^{-i\lambda_a t} \ket{a} \bra{a} \qft_G^*.
+    % \end{equation}
+    % The quantum Fourier transform $\qft_G$ and its inverse can be applied in $\poly(\log \abs{G})$ operations. The diagonal unitary in the middle, which is a phase computation $\ket{a} \mapsto e^{-i\lambda_a t} \ket{a}$, is also efficient because $\lambda_a$ can be computed classically to arbitrary precision in $\poly(\log \abs{G})$ time.
+    
+    % The situation for group actions is less straightforward. While the states $\ket{G^{(h)} * x}$ are analogous to the states $\ket{\hat{h}}$, the involvement of the action $*$ in the former introduces computational challenges. Specifically, it becomes hard to apply transformations beyond the action $\ket{y} \mapsto \ket{a * y}$ for $a \in G$. Consequently, no decomposition analogous to \eqref{eq:adjmat-fb} exists in the context of group actions. Instead, we are left with the spectral expression
+    % \[ e^{-iAt} = \sum_{h \in G} e^{-i\lambda_h t} \ket{G^{(h)} * x} \bra{G^{(h)} * x}. \]
+    % Despite this limitation, the sparsity and structure of the matrix $A$ allow us to demonstrate in the next section that for $t = \poly(\log \abs{G})$, the walk $e^{-iAt}$ can still be efficiently approximated to polynomial accuracy.   
+
+
+    When the group action \( (G, X, *) \) is assumed to be cryptographic, the isomorphism \( \phi \) becomes a one-way function: given \( g \in G \), it is efficient to compute \( g * x \), but given the pair \( (x, g * x) \), it is computationally hard to recover \( g \). As a result, while the two Cayley graphs are mathematically isomorphic, computational tasks associated with them may require fundamentally different approaches. A particularly illustrative example is the implementation of quantum walks on these graphs.\footnote{Continuous-time quantum walks have been explored in the context of cryptographic group actions in~\cite{booher2024failing, doliskani2023sample}, specifically in supersingular isogeny graphs. These walks can be viewed as group-action quantum walks.}
+
+
+
+% The concept of a Cayley graph generalizes naturally to the case of a group acting on an arbitrary set. Suppose a group $G$ acts transitively on a set $X$, and let $S \subset G$ be a generating set. We can construct a graph, often referred to as a \textbf{Schreier graph}, denoted $\Gamma(X; G, S)$, as follows:
+% \begin{itemize}
+%     \item The vertex set is $X$.
+%     \item For each $x \in X$ and each $s \in S$, there is an edge from $x$ to $s \cdot x$.
+% \end{itemize}
+
+% This graph encodes the action of $G$ on $X$ and generalizes the Cayley graph construction. In fact, when $X \cong G/H$ for some stabilizer subgroup $H$ of a basepoint $x_0$, we interpret $\Gamma(X; G, S)$ as the \emph{Cayley graph of $G$ acting on the coset space $G/H$}. If $H$ is trivial (i.e., the action is regular), then $X \cong G$ and $\Gamma(X; G, S)$ reduces to the standard Cayley graph $\Gamma(G, S)$.
+
+% When $H$ is nontrivial, several group elements from $G$ may correspond to the same vertex in $X$. Nonetheless, $\Gamma(X; G, S)$ inherits considerable symmetry from the group action:
+% \begin{itemize}
+%     \item $G$ acts by automorphisms on the graph,
+%     \item The local structure of the graph is uniform across orbits.
+% \end{itemize}
+
+% \subsection{Examples}
+
+% \begin{itemize}
+%     \item \textbf{Symmetric group:} Let $G = S_n$ act on $X = \{1, \dots, n\}$ by permutations, and let $S$ be a generating set of transpositions. Then $\Gamma(X; G, S)$ is a complete graph on $n$ vertices, as any element can be swapped with any other via some $s \in S$.
+
+%     \item \textbf{Johnson graphs:} These are Schreier graphs of $S_n$ acting on $k$-element subsets of $\{1, \dots, n\}$. Generators correspond to transpositions that change one element of the subset. Johnson graphs are highly symmetric and distance-regular, and they appear frequently in quantum walk algorithms.
+% \end{itemize}
+
+% \subsection{Quantum Walks on Group Action Graphs}
+
+% Quantum walks on graphs arising from group actions share many of the useful features of walks on full Cayley graphs. In fact, one can often analyze a walk on $\Gamma(X; G, S)$ by \emph{lifting} it to a walk on the Cayley graph $\Gamma(G, S)$ and projecting down via the quotient map $G \to G/H$. This structure preserves symmetry in the transition amplitudes.
+
+% In particular, if the initial quantum state is uniform over an orbit of $H$, the state will remain symmetric under the subgroup $H$ throughout the evolution. Thus, the walk evolves in an \emph{invariant subspace}, reducing the effective size of the problem.
+
+% \textbf{Example – Quotient Walks:} Krovi and Brun (2007) analyzed quantum walks on quotient graphs and showed how hitting probabilities and mixing behavior can be improved by exploiting such symmetry reductions.
+
+% Group action graphs are particularly useful in algorithmic settings where the state space is naturally modeled as an orbit under a group of moves or transformations. For instance:
+% \begin{itemize}
+%     \item The Rubik's cube configuration space is essentially the Cayley graph of the Rubik’s group acting on itself. Each configuration corresponds to a group element.
+%     \item A quantum walk on this space is a specialized form of group action walk, where subgroups preserving partial configurations can be used to reduce search complexity.
+% \end{itemize}
+
+% \subsection{Summary}
+
+% Graphs defined from group actions—such as Schreier graphs $\Gamma(X; G, S)$—generalize Cayley graphs to settings where the vertex set is a homogeneous space $G/H$. These graphs:
+% \begin{itemize}
+%     \item Maintain significant symmetry,
+%     \item Enable reduction to invariant subspaces via subgroup structure,
+%     \item Retain many spectral and dynamical properties of Cayley graphs.
+% \end{itemize}
+
+% Quantum walks on such graphs behave similarly to those on full Cayley graphs, though with potentially fewer vertices due to coset identification. This perspective is powerful for analyzing and implementing quantum algorithms.
+
+In the next section, we develop techniques for simulating continuous-time quantum walks on such symmetric graphs using quantum circuits. These simulations exploit the group action structure to simplify circuit construction and enhance algorithmic efficiency.
 
 
 
 
 \chapter{Simulating Group Action Quantum Walks}
+
+\section{Hamiltonian Structure and Sparsity}
+
+\section{Quantum Walk-Based and QSP Simulation}
+
+\section{Complexity Analysis}
+
 
 
 
