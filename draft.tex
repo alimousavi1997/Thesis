@@ -11,6 +11,9 @@
 \usepackage{subcaption}
 \usepackage{setspace}
 
+\newcommand{\opnorm}[1]{\left\lVert #1 \right\rVert}
+
+
 \usepackage[a4paper, left=1.5cm, right=1.5cm, top=2cm, bottom=2cm]{geometry}
 
 % Formatting
@@ -21,6 +24,9 @@
 \title{Quantum Walks and Application to Quantum Money}
 \author{Ali Mousavi}
 \date{April 2025}
+
+
+
 
 
 
@@ -683,6 +689,154 @@ In the next section, we develop techniques for simulating continuous-time quantu
 
 
 \chapter{Simulating Group Action Quantum Walks}
+
+
+
+From this point forward, we assume the generating set \( Q \) is small, i.e., \( \abs{Q} = \operatorname{poly}(\log \abs{G}) \). In the first construction (where \( X = G \)), the walk \( e^{-iAt} \) can be efficiently implemented even for values of \( t \) that are exponentially large in \( \log \abs{G} \). This is a consequence of the identity:
+\begin{equation}
+    \label{eq:adjmat-fb}
+    e^{-iAt} = \operatorname{QFT}_G \left( \sum_{a \in G} e^{-i\lambda_a t} \ket{a} \bra{a} \right) \operatorname{QFT}_G^*,
+\end{equation}
+where \( \operatorname{QFT}_G \) and its inverse can be implemented in \( \operatorname{poly}(\log \abs{G}) \) time. Moreover, the diagonal phase unitary \( \ket{a} \mapsto e^{-i\lambda_a t} \ket{a} \) is also efficient to implement, since the eigenvalues \( \lambda_a \) can be computed classically to arbitrary precision in \( \operatorname{poly}(\log \abs{G}) \) time.
+
+In contrast, the group-action setting presents greater computational difficulty. Although the states \( \ket{G^{(h)} * x} \) play a role analogous to the Fourier basis states \( \ket{\hat{h}} \), the presence of the action \( * \) makes the situation more subtle. In particular, implementing general transformations over these states is difficult; we are typically limited to operations of the form \( \ket{y} \mapsto \ket{a * y} \) for \( a \in G \). As a result, no efficient decomposition similar to~\eqref{eq:adjmat-fb} is known in the group-action setting. Instead, the best we can express is the spectral decomposition:
+\[
+e^{-iAt} = \sum_{h \in G} e^{-i\lambda_h t} \ket{G^{(h)} * x} \bra{G^{(h)} * x}.
+\]
+
+Despite this limitation, the adjacency matrix \( A \) retains a high degree of sparsity and algebraic structure. In the next section, we will show that for \( t = \operatorname{poly}(\log \abs{G}) \), the walk \( e^{-iAt} \) can still be efficiently approximated to polynomial accuracy.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\subsection{Simulating continuous-time walks}
+Childs and Berry, Childs, and Kothari showed that continuous-time quantum walks can be simulated using discrete-time quantum walks. Since our approach relies on their methods, we begin by outlining the relevant notation and framework.
+
+Let \( H \) be a Hamiltonian of dimension \( N = 2^n \), and define \( \opnorm{H}_{\mathrm{max}} = \max_{i, j} \abs{H_{ij}} \). To facilitate the simulation, we expand the Hilbert space from \( \mathbb{C}^N \) to \( \mathbb{C}^{2N} \otimes \mathbb{C}^{2N} \) by appending an ancilla qubit initialized to \( \ket{0} \) and duplicating the resulting space.
+
+To define the discrete-time walk operator, we first construct an orthonormal set of states:
+\begin{align}
+    \ket{\phi_{j0}} & := \frac{1}{\sqrt{d}} \sum_{\ell \in F_j} \ket{\ell} \left( \sqrt{\frac{H_{j\ell}^*}{K}} \ket{0} + \sqrt{1 - \frac{\abs{H_{j\ell}^*}}{K}} \ket{1} \right), \label{eq:walk-sim} \\
+    \ket{\phi_{j1}} & := \ket{0} \ket{1}, \nonumber
+\end{align}
+where \( F_j \) denotes the set of nonzero entries in column \( j \) of \( H \), and \( K \ge \opnorm{H}_{\mathrm{max}} \) is a fixed constant.
+
+Based on these states, we define the isometry \( T : \mathbb{C}^{2N} \to \mathbb{C}^{2N} \otimes \mathbb{C}^{2N} \) as follows:
+\begin{equation}
+    \label{eq:walk-isom}
+    T := \sum_{j = 0}^{N - 1} \sum_{b \in \{0, 1\}} (\ket{j}\bra{j} \otimes \ket{b}\bra{b}) \otimes \ket{\phi_{jb}}.
+\end{equation}
+
+The discrete-time quantum walk operator is then defined as
+\[
+W = iS(2TT^* - \mathbf{1}),
+\]
+where \( S \) is the swap operator acting as
+\[
+S \ket{j_1} \ket{b_1} \ket{j_2} \ket{b_2} = \ket{j_2} \ket{b_2} \ket{j_1} \ket{b_1},
+\]
+for all \( 0 \le j_1, j_2 < N \) and \( b_1, b_2 \in \{0, 1\} \).
+
+To efficiently simulate the continuous-time evolution \( e^{-iHt} \), it suffices to implement the isometry \( T \), its adjoint \( T^* \), and the walk operator \( W \) efficiently.
+%  Assuming black-box (oracle) access to the entries of \( H \), the following result holds:
+
+% \begin{theorem}[{\cite[Theorem 1]{berry2015hamiltonian}}]
+% \label{thm:sparse-sim}
+% Let \( H \) be a \( d \)-sparse Hamiltonian acting on \( n \) qubits. Then the unitary \( e^{-iHt} \) can be approximated to within error \( \epsilon \) using
+% \[
+% O\left( \tau \frac{\log(\tau / \epsilon)}{\log\log(\tau / \epsilon)} \right)
+% \]
+% queries to \( H \), and
+% \[
+% O\left( \tau \left[ n + \log^{5 / 2}(\tau / \epsilon) \right] \frac{\log(\tau / \epsilon)}{\log\log(\tau / \epsilon)} \right)
+% \]
+% additional elementary gates, where \( \tau = d \cdot \opnorm{H}_{\mathrm{max}} \cdot t \).
+% \end{theorem}
+
+
+
+
+
+
+
+\subsection{Simulating group action quantum walks.}
+Assume \( t = \operatorname{poly}(\log \abs{G}) \). We show that the continuous-time walk \( W = e^{-iAt} \) can be efficiently simulated using the discrete-time quantum walk framework developed in~\cite{childs2010relationship, berry2015hamiltonian}. Recall the isometry \( T \) defined in Equation~\eqref{eq:walk-isom}, where the states \( \ket{\phi_b} \) are as given in Equation~\eqref{eq:walk-sim}. To carry out the simulation, it suffices to show that the isometry \( T \), its adjoint \( T^* \), and the discrete-time walk operator
+\[
+W = iS(2TT^* - \mathbf{1})
+\]
+can all be efficiently implemented in the group-action setting.
+
+
+Let \( \Gamma = (X, E) \) be the Cayley graph associated with the group action \( (G, X, *) \), and let \( A \) denote its adjacency matrix. The Hamiltonian \( H \) of interest is simply \( A \), indexed by elements of \( X \). In this context, the isometry \( T \) takes the form:
+\begin{align*}
+T
+& := \sum_{y \in X} \sum_{b \in \{0, 1\}} (\ket{y}\bra{y} \otimes \ket{b}\bra{b}) \otimes \ket{\phi_{yb}} \\
+& = \sum_{y \in X} \sum_{b \in \{0, 1\}} \ket{y} \ket{b} \ket{\phi_{yb}} \bra{y} \bra{b}.
+\end{align*}
+
+
+Because of the structure of $\Gamma$, the states .... simplify as follows. First, since the set $Q$ is symmetric, the graph $\Gamma$ is undirected and the adjacency matrix $A$ is symmetric with non-negative entries; the nonzero entries of $A$ are all equal to $1$. Therefore, we can set $K = {A}_{\mathrm{max}} = 1$. As a result, for $y \in X$, the state $\ket{\phi_{y0}}$ becomes
+\[ \ket{\phi_{y0}} = \frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q * y} \ket{0}. \]
+We now describe how to implement the isometry \( T \) by constructing efficient unitaries \( U_0 \) and \( U_1 \), where each \( U_b \) acts as
+\[
+U_b : \ket{0} \ket{y, b} \ket{0, 0} \mapsto \ket{0} \ket{y, b} \ket{\phi_{yb}}, \quad b \in \{0, 1\},
+\]
+with the first register serving as an ancilla.
+
+The unitary \( U_1 \) is straightforward to implement, since \( \ket{\phi_{y1}} = \ket{0} \ket{1} \) is independent of \( y \). We now focus on the construction of \( U_0 \).
+
+Because \( Q \subset G \) is a small set (i.e., \( \abs{Q} = \operatorname{poly}(\log \abs{G}) \)), we can construct an efficient unitary \( V_Q : \mathbb{C}^Q \to \mathbb{C}^Q \) such that
+\[
+V_Q \ket{0} = \frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q}.
+\]
+Applying \( V_Q \otimes \mathbf{1} \) to the state \( \ket{0} \ket{y, 0} \ket{0, 0} \) produces:
+\[
+\frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q} \ket{y, 0} \ket{0, 0}.
+\]
+
+Next, we apply the unitary \( V_1 \), defined by:
+\[
+V_1 : \ket{q} \ket{y, 0} \ket{0, 0} \mapsto \ket{q} \ket{y, 0} \ket{q * y, 0}.
+\]
+
+Following this, we uncompute the first register to recover \( \ket{0} \ket{y, 0} \ket{\phi_{y0}} \). This is achieved by applying the unitary \( V_2 \), defined as:
+\[
+V_2 : \ket{q} \ket{y, 0} \ket{q * y, 0} \mapsto \ket{0} \ket{y, 0} \ket{q * y, 0}.
+\]
+Since \( Q \) is small, we can efficiently determine \( q \) from the pair \( (y, q * y) \) by exhaustively checking each \( q \in Q \). Thus, \( V_2 \) (and therefore \( U_0 \)) can be implemented efficiently.
+
+
+To implement \( U_0^* : \ket{0} \ket{y, 0} \ket{\phi_{y0}} \mapsto \ket{0} \ket{y, 0} \ket{0, 0} \), we sequentially apply \( V_2^* \), followed by \( V_1^* \), and finally \( V_Q^* \otimes \mathbf{1} \). Since each of these unitaries can be implemented efficiently, it follows that \( U_0^* \) is also efficient.
+
+We now construct the isometry \( T \) using a conditional unitary \( U_T \), which applies either \( U_0 \) or \( U_1 \) depending on the value of the qubit \( b \). That is,
+\[
+U_T = \text{Controlled-}U_b \quad \text{with control on } b \in \{0,1\}.
+\]
+
+Next, we demonstrate that the walk unitary
+\[
+W = iS(2TT^* - \mathbf{1})
+\]
+can be applied efficiently. This reduces to implementing the reflection \( 2TT^* - \mathbf{1} \), which we analyze as follows:
+\begin{align*}
+2\ket{0}\bra{0} \otimes TT^* - \mathbf{1}
+&= 2\ket{0}\bra{0} \otimes \sum_{y \in X} \sum_{b \in \{0,1\}} \ket{y,b} \ket{\phi_{yb}} \bra{y,b} \bra{\phi_{yb}} - \mathbf{1} \\
+&= 2\sum_{y \in X} \sum_{b \in \{0,1\}} \ket{0} \ket{y,b} \ket{\phi_{yb}} \bra{0} \bra{y,b} \bra{\phi_{yb}} - \mathbf{1} \\
+&= U_T \left( 2 \sum_{y \in X} \sum_{b \in \{0,1\}} \ket{0} \ket{y,b} \ket{0,0} \bra{0} \bra{y,b} \bra{0,0} - \mathbf{1} \right) U_T^* \\
+&= U_T \left( 2\ket{0}\bra{0} \otimes \mathbf{1}_{X,b} \otimes \ket{0,0}\bra{0,0} - \mathbf{1} \right) U_T^*.
+\end{align*}
+
+Since \( U_T \), \( U_T^* \), and the operator \( 2\ket{0}\bra{0} \otimes \mathbf{1}_{X,b} \otimes \ket{0,0}\bra{0,0} - \mathbf{1} \) can all be implemented efficiently, it follows that the reflection \( 2\ket{0}\bra{0} \otimes TT^* - \mathbf{1} \) is also efficient.
+
+Finally, for any input state \( \ket{\psi} \), the reflection acts as:
+\[
+\left(2\ket{0}\bra{0} \otimes TT^* - \mathbf{1} \right) \ket{0} \ket{\psi} = \ket{0} \left(2TT^* - \mathbf{1} \right) \ket{\psi},
+\]
+confirming that the full walk operator \( W \) can be implemented efficiently in the group-action setting.
+
+
+
+
 
 \section{Hamiltonian Structure and Sparsity}
 
