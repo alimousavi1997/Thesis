@@ -1035,7 +1035,7 @@ The final summation matches precisely with Equation~\eqref{eq:qht-alt}, which de
 The complete procedure is summarized in the following algorithm.
 
 % \begin{algorithm}[$\qht_N$] \
-\paragraph{algorithm $\qht_N$}
+\paragraph{Algorithm $\qht_N$}
     % \label{alg:qht-N}
     % \begin{description}[font = \normalfont\itshape, itemsep = 0mm, parsep = 0mm, topsep = 1mm]
     %     \item [Input:] quantum state $\ket{\psi} \in \C^N$, where $N = 2^n$
@@ -1064,7 +1064,7 @@ The complete procedure is summarized in the following algorithm.
 
 
 % \begin{proof}
-\paragraph{proof.}
+\paragraph{Proof.}
     The correctness of the algorithm follows from the preceding discussion. Except for the unitary \( U_R \) and the negation unitary in Step~\ref{stp:ngt}, all steps of the algorithm can be implemented using \( O(1) \) elementary gates. The negation operation in Step~\ref{stp:ngt} can be realized using approximately \( \lceil \log N \rceil \) elementary gates.
     
     To implement the unitary \( U_R \), which requires constructing the conditional rotation operator \( R(y, b) \) for arbitrary \( y \) and \( b \), we make use of the two-qubit controlled rotations:
@@ -1114,12 +1114,12 @@ The Hartley-based quantum money scheme introduced in the previous chapter requir
 
 
     % \begin{lemma}
-    \paragraph{lemma.}
+    \paragraph{Lemma.}
         \label{lem:h-eigen}
         The money state $\ket{\mathbb{Z}_N^{(h)} * x}_H$ is an eigenstate of $W$ with eigenvalue $e^{i\lambda_h t}$.
     % \end{lemma}
     % \begin{proof}
-    \paragraph{proof.}
+    \paragraph{Proof.}
         We have 
         \begin{align*}
             e^{iAt} \ket{\mathbb{Z}_N^{(h)} * x}_H
