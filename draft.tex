@@ -41,8 +41,12 @@
 
 
 
-
-\title{Quantum Walks and Application to Quantum Money}
+\title{
+  Quantum Walks and Application to Quantum Money\\[1em]
+  \large Supervised by Dr. Jake Doliskani\\[3em]
+  \normalsize McMaster University\\
+  Department of Computing and Software
+}
 \author{Ali Mousavi}
 \date{April 2025}
 
@@ -62,7 +66,7 @@
 
 
 \newpage
-\textbf{Abstract}
+\textbf{\large Abstract}
 
 This thesis explores the foundations of quantum computation, focusing on quantum walks and their application to quantum money. Quantum walks, particularly continuous-time quantum walks based on group actions, serve as a powerful computational tool with applications in search algorithms and cryptographic protocols. We examine their mathematical structure and their advantages over classical random walks, emphasizing their efficiency in state evolution and probability distribution spreading. As a part of this work, we examine efficient implementations of transforms such as the Quantum Fourier Transform (QFT) and the Quantum Hartley Transform (QHT), analyzing their role in encoding quantum states for secure cryptographic applications. In particular, we discuss a novel instantiation of a quantum money scheme based on QHT, leveraging its unique properties for improved security and efficiency.
 To ensure the robustness of this quantum money scheme, we develop a verification mechanism utilizing quantum walks. Unlike previous approaches, which rely on standard quantum state measurements, our method employs continuous-time quantum walks to authenticate quantum money, preventing counterfeiting while maintaining computational feasibility. Additionally, we present a detailed discussion on the efficient implementation of this scheme, including optimized circuit designs and error mitigation strategies.
@@ -115,9 +119,9 @@ Computation is carried out by unitary transformations on these states. A quantum
 
 One example important to this work is the \textbf{quantum Fourier transform} (QFT). For an abelian group $G$ of order $N$, the QFT is the unitary map
 \[
-|g\rangle \mapsto \frac{1}{\sqrt{N}}\sum_{h \in G} \chi_h(g)\, |h\rangle,
+|g\rangle \mapsto \frac{1}{\sqrt{N}}\sum_{h \in G} \chi(h,g)\, |h\rangle,
 \]
-where $\{\chi_h\}$ are the characters (complex exponential homomorphisms) of $G$. When $G = \mathbb{Z}_N$ (the integers mod $N$), the QFT takes $|j\rangle$ to $\frac{1}{\sqrt{N}}\sum_{k=0}^{N-1} e^{2\pi i j k / N} |k\rangle$. 
+where $\{\chi(h,.)\}$ are the characters (complex exponential homomorphisms) of $G$. When $G = \mathbb{Z}_N$ (the integers mod $N$), the QFT takes $|j\rangle$ to $\frac{1}{\sqrt{N}}\sum_{k=0}^{N-1} e^{2\pi i j k / N} |k\rangle$. 
 
 Let $G \cong \mathbb{Z}_{N_1} \oplus \cdots \oplus \mathbb{Z}_{N_k}$ be a decomposition of $G$. The character $\chi(a, x)$ is then given by
 \[
@@ -159,19 +163,19 @@ Another concept we use is the \textbf{quantum Hartley transform} (QHT), which re
 \paragraph{Definition.}
 For $G = \mathbb{Z}_N$, define
 \[
-\operatorname{QHT}_N: \ket{a} \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} cas\left(\frac{2\pi a y}{N}\right) \ket{y}, \quad \text{where } cas(x) = \cos(x) + \sin(x).
+\operatorname{QHT}_N: \ket{a} \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\left(\frac{2\pi a y}{N}\right) \ket{y}, \quad \text{where } \cas(x) = \cos(x) + \sin(x).
 \]
 
 For general abelian $G = \mathbb{Z}_{N_1} \oplus \cdots \oplus \mathbb{Z}_{N_k}$, the Hartley transform of $f : G \to \mathbb{R}$ is
 \begin{equation}
-    \operatorname{QHT}_G(f)({a}) = \frac{1}{\sqrt{|G|}} \sum_{{y} \in G} cas(2\pi \langle {a}, \alpha({y}) \rangle) f({y}),
+    \operatorname{QHT}_G(f)({a}) = \frac{1}{\sqrt{|G|}} \sum_{{y} \in G} \cas(2\pi \langle {a}, \alpha({y}) \rangle) f({y}),
 \end{equation}
 where $\alpha({y}) = y_1 / N_1 + \cdots + y_k / N_k$.
 
 \paragraph{Unitary Equivalence.}
 Using the identity
 \[
-cas(2\pi \langle {a}, \alpha({y}) \rangle) = \frac{1 - i}{2}\chi({a}, {y}) + \frac{1 + i}{2}\chi(-{a}, {y}),
+\cas(2\pi \langle {a}, \alpha({y}) \rangle) = \frac{1 - i}{2}\chi({a}, {y}) + \frac{1 + i}{2}\chi(-{a}, {y}),
 \]
 we obtain:
 \begin{equation}
@@ -188,7 +192,7 @@ Because the cas function is real-valued, the resulting amplitudes remain real—
 
 
 \section{Group Actions in Cryptography}
-At the heart of our quantum money scheme is the notion of a group action. A \textbf{group action} of a group $G$ on a set $X$ is a function $*\colon G \times X \to X$ that satisfies two properties: (1) the identity element $e \in G$ acts trivially on every $x \in X$ ($e * x = x$), and (2) the action is compatible with the group operation, meaning $g*(h* x) = (gh)*x$ for all $g,h \in G$ and $x \in X$. We will often denote the result of $g$ acting on $x$ by $g*x$ or simply $g x$ when the action is clear from context.
+At the heart of our quantum money scheme is the notion of a group action. A \textbf{group action} of a group $G$ on a set $X$ is a function $*\colon G \times X \to X$ that satisfies two properties: (1) the identity element $e \in G$ acts trivially on every $x \in X$ ($e * x = x$), and (2) the action is compatible with the group operation, meaning $g*(h* x) = (gh)*x$ for all $g,h \in G$ and $x \in X$. We will denote the result of $g$ acting on $x$ by $g*x$.
 
 The orbit of an element $x \in X$ under the action is the set $G * x = \{g*x : g \in G\} \subseteq X$. If there is exactly one orbit (i.e., $G * x = X$ for some $x$), the action is called \emph{transitive}. If, in addition, no non-identity group element fixes any $x$ (i.e., $g * x = x$ implies $g = e$), then the action is \emph{free}. A group action that is both transitive and free is sometimes called a \textbf{regular action}. In a regular action, for any two elements $y, z \in X$, there is a unique group element $g$ such that $g * y = z$. In other words, $G$ acts like a permutation group that moves elements of $X$ around, and knowing the starting and ending point uniquely determines the “move” $g$. In this case $|X| = |G|$, and we can think of $X$ as essentially a copy of $G$ with the group structure “hidden” by the action.
 
@@ -196,7 +200,7 @@ Group actions are ubiquitous in modern cryptography. A \textbf{cryptographic gro
 
 Another prominent example comes from elliptic-curve cryptography: the action of an ideal class group on a set of elliptic curves. In schemes like CSIDH (Commutative Supersingular Isogeny Diffie–Hellman), an abelian group of ideal classes $G$ acts on the set $X$ of supersingular elliptic curves by isogeny (an isogeny is a structure-preserving map between curves). Starting from a curve $x_0$, one can efficiently compute $g * x_0$ (which is another elliptic curve) for any group element $g$, but given two curves $x_0$ and $x = g * x_0$, it is believed to be computationally hard to recover $g$. This hard problem is the foundation of isogeny-based cryptography. We refer to such $G$ and $X$ as a \emph{cryptographic group action} pair.
 
-Cryptographic group actions provide a natural platform for public-key quantum money schemes. In such schemes, the secret “serial number” of a quantum banknote can be an element $g \in G$, and the quantum state of the banknote can be some function of $g*x_0$ for a public base point $x_0 \in X$. The hardness of inverting the action ($x_0$ and $x = g*x_0$ do not easily reveal $g$) contributes to the security against counterfeiting, while the structure of the group action can be used to efficiently verify authenticity (as we will see with the Fourier or Hartley transform techniques).
+Cryptographic group actions provide a natural platform for public-key quantum money schemes. In such schemes, the secret “serial number” of a quantum banknote can be an element $h \in G$, and the quantum state of the banknote can be some function of $h*x_0$ for a public base point $x_0 \in X$. The hardness of inverting the action ($x_0$ and $x = h*x_0$ do not easily reveal $h$) contributes to the security against counterfeiting, while the structure of the group action can be used to efficiently verify authenticity (as we will see with the Fourier or Hartley transform techniques).
 
 We will assume throughout that we have a family of abelian group actions $(G,X)$ that are cryptographically suitable: $|G|$ is large (growing with the security parameter), the action is efficiently computable, transitive and free (so $|X|=|G|$), and inverting the action is infeasible without the secret key. Such families are conjectured to exist (for example, the isogeny-based actions, and others discussed in cryptographic literature). 
 
@@ -348,72 +352,20 @@ An important feature of DTQWs is that their behavior depends sensitively on the 
 
 
 
-Continuous- and discrete-time quantum walks are closely related, yet not strictly equivalent models. Both involve the interference of quantum amplitudes on a graph and can produce similar high-level behaviors, such as linear spreading and faster hitting times compared to classical random walks. In many algorithmic contexts, either model can be used to achieve a quantum speedup.
+Continuous- and discrete-time quantum walks are closely related, yet not strictly equivalent models. Both involve the interference of quantum amplitudes on a graph and can produce similar high-level behaviors, such as linear spreading and faster hitting times compared to classical random walks. In many algorithmic contexts, either model can be used to achieve a quantum speedup. However, several important distinctions exist between the two models:
 
-However, several important distinctions exist between the two models:
 
-\subsection{State Space}
+A key distinction between continuous-time quantum walks (CTQWs) and discrete-time quantum walks (DTQWs) lies in their \textit{state space construction}. CTQWs evolve solely on the vertex Hilbert space $\mathbb{C}^{|V|}$, while DTQWs typically operate on an enlarged Hilbert space of the form $\mathbb{C}^{|V|} \otimes \mathbb{C}^d$. This extension introduces a coin register, granting additional degrees of freedom that enable unitary evolution even on irregular graphs. Although this added structure allows for more nuanced and flexible design, it also complicates the analysis and implementation due to the need for careful choices of both coin and shift operators.
 
-\begin{itemize}
-    \item \textbf{CTQW:} Evolves on the vertex Hilbert space $\mathbb{C}^{|V|}$.
-    \item \textbf{DTQW (Coined):} Uses an enlarged space $\mathbb{C}^{|V|} \otimes \mathbb{C}^d$, introducing a coin register to enable unitary evolution.
-\end{itemize}
+The \textit{time evolution} mechanics further differentiate the two models. CTQWs evolve continuously according to the Schrödinger equation, $\ket{\psi(t)} = e^{-iHt} \ket{\psi(0)}$, allowing the system to be probed at any real-valued time $t$. In contrast, DTQWs evolve in discrete time steps via repeated application of a unitary operator $U$, such that $\ket{\psi(t)} = U^t \ket{\psi(0)}$, where $t \in \mathbb{Z}$. This discrete nature can lead to rich interference patterns and periodic revivals, whereas the behavior of CTQWs is largely governed by the spectral properties of the Hamiltonian $H$. Notably, DTQWs can approximate CTQWs via Trotterization by choosing $U \approx e^{-iH \Delta t}$ and taking small $\Delta t$.
 
-The coin adds extra degrees of freedom, allowing more design flexibility. However, it also increases the complexity of analysis and implementation since one must choose both the coin and shift operators carefully to ensure desired evolution.
+In terms of \textit{generality}, CTQWs are naturally defined on any undirected graph, as the adjacency matrix or Laplacian of the graph yields a Hermitian Hamiltonian that governs the walk. DTQWs, on the other hand, face more challenges on irregular graphs. Defining local, unitary, and coinless evolution in such cases may not be straightforward, necessitating either coin registers or alternative constructions like Szegedy’s framework, which generalizes DTQWs to work with any reversible Markov chain. Despite these hurdles, DTQWs are ultimately as general as CTQWs and even offer additional design flexibility in algorithmic applications.
 
-\subsection{Time Evolution}
+From the perspective of \textit{analytical techniques}, CTQWs benefit from the relatively simpler task of diagonalizing a Hermitian operator $H$. DTQWs, however, involve unitary operators acting on larger spaces, often with more complex spectra due to the coin degrees of freedom. In both models, leveraging the symmetry of the underlying graph can significantly simplify analysis. For example, in highly symmetric or Cayley graphs, representation theory can be employed to explicitly determine eigenvalues and eigenvectors.
 
-\begin{itemize}
-    \item \textbf{CTQW:} Evolution is governed by the continuous-time Schrödinger equation: $\ket{\psi(t)} = e^{-iHt} \ket{\psi(0)}$, allowing probing at arbitrary real-valued times $t$.
-    \item \textbf{DTQW:} Evolves in discrete time-steps via a unitary operator $U$ applied iteratively: $\ket{\psi(t)} = U^t \ket{\psi(0)}$, with $t \in \mathbb{Z}$.
-\end{itemize}
+Interestingly, there exist formal \textit{equivalences} between the two models. A coined DTQW can approximate a CTQW through small time-step evolution, as demonstrated by Childs et al., and conversely, CTQWs can often be embedded into DTQWs by carefully engineering the coin space to emulate continuous dynamics. While both are computationally equivalent in power, each model has practical advantages in different settings. CTQWs are frequently preferred for spatial search on low-degree graphs due to the natural formulation of marked Hamiltonians. DTQWs, especially in Szegedy’s coinless formulation, excel in quantizing classical Markov chains and have been instrumental in algorithms such as element distinctness.
 
-DTQWs can exhibit periodic revivals and step-dependent interference patterns, while CTQWs exhibit behavior determined by the spectral decomposition of $H$. A DTQW can approximate a CTQW through Trotterization: setting $U \approx e^{-iH \Delta t}$ for small $\Delta t$ and iterating.
-
-\subsection{Generality}
-
-\begin{itemize}
-    \item \textbf{CTQW:} Any undirected graph naturally defines a Hermitian Hamiltonian and thus a valid walk.
-    \item \textbf{DTQW:} For general (especially irregular) graphs, defining a local coinless unitary operator may be challenging. Enlarged Hilbert spaces or alternate frameworks like Szegedy's construction are often required.
-\end{itemize}
-
-While coined DTQWs require more setup, they are ultimately general, and Szegedy's method can handle any reversible Markov chain.
-
-\subsection{Analytical Tools}
-
-\begin{itemize}
-    \item \textbf{CTQW:} Analysis reduces to diagonalizing the Hermitian Hamiltonian $H$.
-    \item \textbf{DTQW:} One must diagonalize the larger unitary operator $U$, which may have a more intricate spectrum due to the coin space.
-\end{itemize}
-
-In both cases, analysis is often facilitated by symmetry. For example, when the underlying graph is a Cayley graph or has high symmetry, representation theory can be used to obtain explicit eigenstates and eigenvalues.
-
-\subsection{Equivalences}
-
-There exist formal correspondences between the two models. For instance:
-\begin{itemize}
-    \item A coined DTQW can approximate a CTQW in the limit of small time-steps (Childs et al.).
-    \item CTQWs can be embedded into DTQWs by using additional coin degrees of freedom to emulate continuous evolution.
-\end{itemize}
-
-Thus, the two models are equivalent in computational power. However, in practice, one may be more natural or efficient depending on the problem. For example:
-\begin{itemize}
-    \item \textbf{CTQW:} Favored for spatial search on low-degree graphs due to the natural definition of a marked Hamiltonian.
-    \item \textbf{DTQW:} Preferred for quantizing arbitrary Markov chains (e.g., element distinctness on the Johnson graph), particularly using Szegedy’s framework.
-\end{itemize}
-
-\subsection{Summary}
-
-Continuous-time and discrete-time quantum walks are powerful and related models for quantum computation and algorithm design. CTQWs rely on continuous evolution under a Hermitian Hamiltonian and are tightly linked to physical systems. DTQWs require coin and shift operators but offer additional control and ease of implementation in gate-based architectures.
-
-Each model has advantages:
-\begin{itemize}
-    \item CTQWs often more closely mirror physical intuition.
-    \item DTQWs offer greater flexibility and modularity for algorithm design.
-\end{itemize}
-
-Results in one model can often be translated to the other with suitable modifications. Consequently, both are indispensable tools in the study of quantum algorithms.
-
+In summary, continuous-time and discrete-time quantum walks offer complementary approaches to quantum computation and algorithm design. CTQWs provide an elegant, physics-inspired model of continuous evolution, while DTQWs offer modularity and fine-grained control well-suited for implementation in gate-based architectures. Though differing in form, the models are deeply connected, and insights from one can often be translated to the other, making both indispensable tools in the quantum algorithm designer’s toolkit.
 
 
 
@@ -870,10 +822,10 @@ confirming that the full walk operator \( W \) can be implemented efficiently in
 
 \chapter{Quantum Money and Hartley Transform}
 
-We now present our public-key quantum money scheme based on group actions and the Hartley transform. We begin by reviewing Zhandry’s quantum money scheme from abelian group actions (which uses the Fourier transform) as a baseline. Then we describe our Hartley-transform-based variant and discuss its properties. The quantum Hartley transform will play a central role in both the minting and verification of banknotes.
+We now present our public-key quantum money scheme based on group actions and the Hartley transform. We begin by reviewing Zhandry’s quantum money scheme from abelian group actions (which uses the Fourier transform) as a baseline. Then we describe our Hartley-transform-based variant and discuss its properties. The quantum Hartley transform will play a central role in both the generation and verification of banknotes.
 
 \section{Public-Key Quantum Money: Definitions}
-A public-key quantum money scheme consists of two algorithms, traditionally called $\mathsf{Mint}$ and $\mathsf{Verify}$:
+A public-key quantum money scheme consists of two algorithms, traditionally called $\mathsf{Gen}$ and $\mathsf{Verify}$:
 \begin{itemize}
     \item $\mathsf{Gen}(1^n)$ is a probabilistic quantum polynomial-time (QPT) algorithm that, given a security parameter $n$, outputs a pair $(s, |\$\rangle)$. Here $s$ is a classical string called the \emph{serial number} (or public key) and $|\$\rangle$ is a quantum state representing the banknote. We often call the pair $(s, |\$\rangle)$ a banknote, and $s$ by itself the serial number of that banknote.
     \item $\mathsf{Verify}(s, |\$\rangle)$ is a QPT algorithm (which may be implemented as a quantum circuit acting on the state $|\$\rangle$ and some ancillary workspace). It takes as input a serial number $s$ and an alleged quantum banknote state $|\$\rangle$. It outputs $\mathtt{accept}$ (valid) or $\mathtt{reject}$ (invalid).
@@ -894,79 +846,79 @@ Zhandry’s quantum money scheme [31] is built on an abelian group action $G \cu
 
 The minting algorithm $\mathsf{Mint}$ in Zhandry’s scheme works as follows (informally):
 \begin{enumerate}
-    \item On input $1^n$, sample a random group element $g \leftarrow G$. This $g$ will serve as the serial number $s$ for the banknote.
+    \item On input $1^n$, sample a random group element $h \leftarrow G$. This $h$ will serve as the serial number $s$ for the banknote.
     \item Prepare two registers: the first is a group element register, initialized to $|0_G\rangle$ (an encoding of the identity element of $G$), and the second is an $X$-register initialized to $|x_0\rangle$.
     \item Apply the quantum Fourier transform over $G$ to the first register. This creates a uniform superposition over $G$: 
     \[
-    \frac{1}{\sqrt{N}} \sum_{h \in G} |h\rangle \otimes |x_0\rangle\,.
+    \frac{1}{\sqrt{N}} \sum_{g \in G} |g\rangle \otimes |x_0\rangle\,.
     \] 
-    \item Now apply the group action in a controlled manner: for each basis state $|h\rangle$ in the first register, apply $h$’s action on the second register. This transforms the joint state into 
+    \item Now apply the group action in a controlled manner: for each basis state $|g\rangle$ in the first register, apply $g$’s action on the second register. This transforms the joint state into 
     \[
-    \frac{1}{\sqrt{N}} \sum_{h \in G} |h\rangle \otimes |h * x_0\rangle\,,
+    \frac{1}{\sqrt{N}} \sum_{g \in G} |g\rangle \otimes |g * x_0\rangle\,,
     \] 
     which is an entangled state between a superposition of group elements and their corresponding $X$-elements.
     \item Apply the inverse QFT (which is the adjoint of the QFT) on the first register. This recombines the amplitudes in the first register. The result (by properties of the QFT) can be shown to be 
     \[
-    \frac{1}{\sqrt{N}} \sum_{h \in G} \omega^{\langle g,\,h \rangle} |h\rangle \otimes |h * x_0\rangle\,,
+    \frac{1}{\sqrt{N}} \sum_{g \in G} \omega^{\langle h,\,g \rangle} |g\rangle \otimes |g * x_0\rangle\,,
     \] 
-    where $\omega^{\langle g,\,h \rangle}$ denotes the phase picked up that depends on $g$ and $h$. In fact, this state can be written as $|g\rangle \otimes \frac{1}{\sqrt{N}}\sum_{h \in G} |h * x_0\rangle$; essentially, the first register ends up in $|g\rangle$ (the serial number) and the second register is an equal superposition of all elements of $X$ in the orbit of $x_0$ (which is $X$ itself, since the action is transitive) but weighted by a phase related to $g$. This is the so-called group-action Fourier state.
-    \item The first register (which contains $|g\rangle$) is measured in the computational basis, yielding the random serial number $g$ and collapsing the second register to a state that we will denote $|\$_g\rangle$. This $|\$_g\rangle$ is the actual quantum money state corresponding to serial $g$.
-    \item Output the pair $(s = g,\; |\$\rangle = |\$_g\rangle)$.
+    where $\omega^{\langle h,\,g \rangle}$ denotes the phase picked up that depends on $h$ and $g$. In fact, this state can be written as $|h\rangle \otimes \frac{1}{\sqrt{N}}\sum_{g \in G} |g * x_0\rangle$; essentially, the first register ends up in $|h\rangle$ (the serial number) and the second register is an equal superposition of all elements of $X$ in the orbit of $x_0$ (which is $X$ itself, since the action is transitive) but weighted by a phase related to $h$. This is the so-called group-action Fourier state.
+    \item The first register (which contains $|h\rangle$) is measured in the computational basis, yielding the random serial number $g$ and collapsing the second register to a state that we will denote $|\$_h\rangle$. This $|\$_h\rangle$ is the actual quantum money state corresponding to serial $h$.
+    \item Output the pair $(s = h,\; |\$\rangle = |\$_h\rangle)$.
 \end{enumerate}
 
-In the above, a bit of algebra reveals that $|\$_g\rangle = \frac{1}{\sqrt{N}} \sum_{h \in G} \chi_g(h)\, |h * x_0\rangle$, where $\chi_g(h) = \omega^{\langle g,\,h \rangle}$ is essentially the character of $G$ indexed by $g$. In other words, $|\$_g\rangle$ is (up to global phase) the state one gets by applying the representation (character) $\chi_g$ to weight the superposition over the orbit $X$. These states for different $g$ are almost orthogonal and can be distinguished with the right measurement.
+In the above, a bit of algebra reveals that $|\$_h\rangle = \frac{1}{\sqrt{N}} \sum_{g\in G} \chi(h,g)\, |g * x_0\rangle$, where $\chi(h,g) = \omega^{\langle h,\,g \rangle}$ is essentially the character of $G$ indexed by $h$. In other words, $|\$_h\rangle$ is (up to global phase) the state one gets by applying the representation (character) $\chi(h,.)$ to weight the superposition over the orbit $X$. These states for different $h$ are almost orthogonal and can be distinguished with the right measurement.
 
-The verification algorithm $\mathsf{Verify}(g, |\$_g\rangle)$ for Zhandry’s scheme goes as follows:
+The verification algorithm $\mathsf{Verify}(h, |\$_h\rangle)$ for Zhandry’s scheme goes as follows:
 \begin{enumerate}
-    \item Given the purported serial number $g \in G$ and an input state $|\psi\rangle$ (which should equal $|\$_g\rangle$ if genuine), attach an auxiliary register prepared in $|x_0\rangle$.
-    \item Perform a controlled group action “kickback” using $g$ on the auxiliary register. Specifically, perform the unitary that maps $|y\rangle \otimes |x_0\rangle \mapsto |y\rangle \otimes |g * x_0 \rangle$ for each basis element $|y\rangle$ of the first register. (This operation uses the classical $g$ to act on the second register conditioned on the first—essentially, it multiplies the second register’s state by $g$ if the first register is in an appropriate basis state. There are various ways to implement this, but conceptually it’s a controlled operation using the known $g$.)
-    \item Now measure the second register (the auxiliary one) in the computational basis of $X$ to see if it is still $|x_0\rangle$. If the state $|\psi\rangle$ was the correct Fourier state $|\$_g\rangle$, one can show that this measurement will yield $x_0$ with high probability (constructive interference causes the $x_0$ component to be strong). If $|\psi\rangle$ was not the correct state, the measurement is unlikely to give $x_0$.
+    \item Given the purported serial number $h \in G$ and an input state $|\psi\rangle$ (which should equal $|\$_h\rangle$ if genuine), attach an auxiliary register prepared in $|x_0\rangle$.
+    \item Perform a controlled group action “kickback” using $h$ on the auxiliary register. Specifically, perform the unitary that maps $|y\rangle \otimes |x_0\rangle \mapsto |y\rangle \otimes |h * x_0 \rangle$ for each basis element $|y\rangle$ of the first register. (This operation uses the classical $h$ to act on the second register conditioned on the first—essentially, it multiplies the second register’s state by $h$ if the first register is in an appropriate basis state. There are various ways to implement this, but conceptually it’s a controlled operation using the known $h$.)
+    \item Now measure the second register (the auxiliary one) in the computational basis of $X$ to see if it is still $|x_0\rangle$. If the state $|\psi\rangle$ was the correct Fourier state $|\$_h\rangle$, one can show that this measurement will yield $x_0$ with high probability (constructive interference causes the $x_0$ component to be strong). If $|\psi\rangle$ was not the correct state, the measurement is unlikely to give $x_0$.
     \item Accept if and only if the measurement outcome is $x_0$ (i.e. the second register returns to the base state).
 \end{enumerate}
 
-The intuition is that the genuine state $|\$_g\rangle$ contains a phase that exactly cancels out the action of $g$ in the verification step, causing the auxiliary register to end up back at $x_0$. A counterfeit state, by contrast, would not generally have the right phase relationship, and the auxiliary register’s state would be some superposition over $X$ that is not concentrated on $x_0$, hence likely giving a different outcome upon measurement.
+The intuition is that the genuine state $|\$_h\rangle$ contains a phase that exactly cancels out the action of $h$ in the verification step, causing the auxiliary register to end up back at $x_0$. A counterfeit state, by contrast, would not generally have the right phase relationship, and the auxiliary register’s state would be some superposition over $X$ that is not concentrated on $x_0$, hence likely giving a different outcome upon measurement.
 
-Zhandry’s scheme is shown to be correct (valid notes pass) and is believed to be secure under the assumption that the group action is one-way. The hardness essentially boils down to: given $x_0$ and $|\$_g\rangle$, an adversary cannot figure out a different $g'$ that would produce a second valid state $|\$_{g'}\rangle$ or replicate $|\$_g\rangle$ (because that would solve the hidden subgroup or discrete log type problem in the group action).
+Zhandry’s scheme is shown to be correct (valid notes pass) and is believed to be secure under the assumption that the group action is one-way. The hardness essentially boils down to: given $x_0$ and $|\$_h\rangle$, an adversary cannot figure out a different $h'$ that would produce a second valid state $|\$_{h'}\rangle$ or replicate $|\$_h\rangle$ (because that would solve the hidden subgroup or discrete log type problem in the group action).
 
 \section{Hartley-Transform Money Scheme Construction}
 Our scheme modifies the above Fourier-based construction by utilizing the \textbf{quantum Hartley transform (QHT)} in place of the QFT. Since the Hartley transform is closely related to the Fourier transform (essentially it produces the real and imaginary parts in a single real-valued transform), one might expect this substitution to be straightforward. And indeed, for the minting procedure it largely is: we will use the QHT to create real-amplitude superposition states.
 
-Concretely, assume again a group action $G \curvearrowright X$ with $|G|=N$. We fix the same generating set $S$ and basepoint $x_0$. The $\mathsf{Mint}_{H}$ (Hartley mint) algorithm:
+Concretely, assume again a group action $G \curvearrowright X$ with $|G|=N$. We fix the same generating set $S$ and basepoint $x_0$. The $\mathsf{Gen}_{H}$ (Hartley generation) algorithm:
 \begin{enumerate}
-    \item Sample a random $g \leftarrow G$ to be the serial number.
+    \item Sample a random $h \leftarrow G$ to be the serial number.
     \item Prepare $|0_G, x_0\rangle$ as before.
     \item Apply the \emph{quantum Hartley transform} over $G$ to the first register. The Hartley transform (on an abelian group of order $N$) is defined as:
     \[
-       \mathrm{QHT}: |h\rangle \mapsto \frac{1}{\sqrt{N}} \sum_{k \in G} \cas \!\Big(\frac{2\pi \langle k,h \rangle}{N}\Big) |k\rangle,
+       \mathrm{QHT}: |g\rangle \mapsto \frac{1}{\sqrt{N}} \sum_{k \in G} \cas \!\Big(\frac{2\pi \langle k,g \rangle}{N}\Big) |k\rangle,
     \] 
-    where $\mathrm{cas}(\theta) = \cos \theta + \sin \theta$ and $\langle k,h \rangle$ denotes some pairing like an exponent or dot product (for cyclic groups this is just $kh$). In simpler terms, $\mathrm{QHT}(|0_G\rangle) = \frac{1}{\sqrt{N}}\sum_{k \in G} |k\rangle$ (because $cas(0)=1$), \emph{the same uniform superposition as the QFT produces for $|0\rangle$}. So after this step, we again have $\frac{1}{\sqrt{N}}\sum_{h \in G} |h\rangle|x_0\rangle$, but crucially the coefficients are all \emph{real} and positive (in fact all $1/\sqrt{N}$).
-    \item Perform the controlled group action by the first register on the second: $\frac{1}{\sqrt{N}}\sum_{h} |h\rangle |h*x_0\rangle$.
+    where $\mathrm{cas}(\theta) = \cos \theta + \sin \theta$ and $\langle k,g \rangle$ denotes some pairing like an exponent or dot product (for cyclic groups this is just $kg$). In simpler terms, $\mathrm{QHT}(|0_G\rangle) = \frac{1}{\sqrt{N}}\sum_{k \in G} |k\rangle$ (because $\cas(0)=1$), \emph{the same uniform superposition as the QFT produces for $|0\rangle$}. So after this step, we again have $\frac{1}{\sqrt{N}}\sum_{g \in G} |g\rangle|x_0\rangle$, but crucially the coefficients are all \emph{real} and positive (in fact all $1/\sqrt{N}$).
+    \item Perform the controlled group action by the first register on the second: $\frac{1}{\sqrt{N}}\sum_{g} |g\rangle |g*x_0\rangle$.
     \item Apply the inverse QHT on the first register (which being its own inverse up to a constant factor, is the same operation again since Hartley is symmetric like Fourier). Now here is where things differ: after this operation, the joint state will be 
     \[
-       \frac{1}{\sqrt{N}} \sum_{h \in G} \cas\!\Big(\frac{2\pi \langle g,h \rangle}{N}\Big)\, |h\rangle \otimes |h*x_0\rangle.
+       \frac{1}{\sqrt{N}} \sum_{g \in G} \cas\!\Big(\frac{2\pi \langle h,g \rangle}{N}\Big)\, |g\rangle \otimes |g*x_0\rangle.
     \] 
-    Because the Hartley transform combines what would be cosine and sine terms, this state is not as nicely factorable as in the Fourier case. In the Fourier case, we got $|g\rangle \otimes \text{(orbit state)}$. In the Hartley case, we do not get a single basis state in the first register; instead we get a superposition in the first register with real coefficients $c_h = cas(2\pi\langle g,h\rangle/N)$. However, note that $c_h$ is just some real number in $[-1,1]$ depending on $g$ and $h$. Another way to express the above state is:
+    Because the Hartley transform combines what would be cosine and sine terms, this state is not as nicely factorable as in the Fourier case. In the Fourier case, we got $|h\rangle \otimes \text{(orbit state)}$. In the Hartley case, we do not get a single basis state in the first register; instead we get a superposition in the first register with real coefficients $c_g = \cas(2\pi\langle h,g\rangle/N)$. However, note that $c_g$ is just some real number in $[-1,1]$ depending on $h$ and $g$. Another way to express the above state is:
     \[
-      |\$\rangle = \frac{1}{\sqrt{N}} \sum_{x \in X} \Big(\frac{1}{\sqrt{N}}\sum_{h: h*x_0 = x} \cas\!\big(\frac{2\pi \langle g,h \rangle}{N}\big)\Big)\, |x\rangle.
+      |\$\rangle = \frac{1}{\sqrt{N}} \sum_{x \in X} \Big(\frac{1}{\sqrt{N}}\sum_{g: g*x_0 = x} \cas\!\big(\frac{2\pi \langle h,g \rangle}{N}\big)\Big)\, |x\rangle.
     \] 
-    Since for a given $x\in X$, all $h$ such that $h*x_0=x$ have the form $h = u g$ for a unique $u \in G$ (because the action is free and transitive), one can simplify the internal sum using properties of the cas function. But we need not dive into that here.
-    \item No measurement of the first register is performed. In fact, we do not have a nice product state separation, so we cannot simply measure one register to get $g$. Instead, the output of minting is just the quantum state $|\$\rangle$ (which is entangled between what used to be two registers) and the known classical serial number $g$ (we know what $g$ we picked).
+    Since for a given $x\in X$, all $g$ such that $g*x_0=x$ have the form $g = u h$ for a unique $u \in G$ (because the action is free and transitive), one can simplify the internal sum using properties of the cas function. But we need not dive into that here.
+    \item No measurement of the first register is performed. In fact, we do not have a nice product state separation, so we cannot simply measure one register to get $h$. Instead, the output of minting is just the quantum state $|\$\rangle$ (which is entangled between what used to be two registers) and the known classical serial number $h$ (we know what $h$ we picked).
 \end{enumerate}
 
-The resulting money state $|\$\rangle$ has only real amplitudes (because the initial superposition was real and the controlled operation doesn’t introduce complex numbers, and the Hartley transform yields real coefficients). In particular, in the computational basis of $X$, the state $|\$\rangle$ is some real-vector state (with both positive and negative values possible). We can think of it as a “Hartley orbit state” corresponding to $g$.
+The resulting money state $|\$\rangle$ has only real amplitudes (because the initial superposition was real and the controlled operation doesn’t introduce complex numbers, and the Hartley transform yields real coefficients). In particular, in the computational basis of $X$, the state $|\$\rangle$ is some real-vector state (with both positive and negative values possible). We can think of it as a “Hartley orbit state” corresponding to $h$.
 
-The verification algorithm in our Hartley-based scheme attempts to mirror the Fourier-based verification: it will use the given serial $g$ and try to check the state. A first idea would be: do exactly the same as Zhandry’s verify (the group-action kickback and measure). However, this fails in certain cases. Specifically, the Hartley transform being real causes an ambiguity: it turns out that there exist distinct $g \neq g'$ for which the Hartley-based states $|\$\rangle_g$ and $|\$\rangle_{g'}$ are not orthogonal, and the original verification might accept a forged state that is a certain superposition. In fact, the verification algorithm might accept an illegitimate state with some probability bounded away from zero. This is the “breakdown” of the straightforward Hartley substitution that we alluded to earlier.
+The verification algorithm in our Hartley-based scheme attempts to mirror the Fourier-based verification: it will use the given serial $h$ and try to check the state. A first idea would be: do exactly the same as Zhandry’s verify (the group-action kickback and measure). However, this fails in certain cases. Specifically, the Hartley transform being real causes an ambiguity: it turns out that there exist distinct $h \neq h'$ for which the Hartley-based states $|\$\rangle_h$ and $|\$\rangle_{h'}$ are not orthogonal, and the original verification might accept a forged state that is a certain superposition. In fact, the verification algorithm might accept an illegitimate state with some probability bounded away from zero. This is the “breakdown” of the straightforward Hartley substitution that we alluded to earlier.
 
 To address this, our verification algorithm takes a more sophisticated approach:
 \begin{enumerate}
-    \item Given $(g, |\psi\rangle)$, it first uses the \textbf{quantum walk-based phase estimation} method (to be detailed in Chapter 6) to \emph{compute the eigenphase corresponding to $g$}. In short, we will treat $|\psi\rangle$ as an eigenvector of the group action adjacency matrix with a certain eigenvalue $\lambda$ related to $g$. We run a procedure to estimate $\lambda$ to high precision.
-    \item From the estimated eigenvalue(s), we reconstruct a candidate group element $g^*$ that we believe generated the state. (This uses the fact that by running phase estimation for multiple carefully chosen walk durations, one can solve for $g$ as shown in [31].)
-    \item We check if $g^* = g$ (the serial number provided). If not, we reject, since the state does not match the serial. If yes, we accept.
+    \item Given $(h, |\psi\rangle)$, it first uses the \textbf{quantum walk-based phase estimation} method (to be detailed in Chapter 6) to \emph{compute the eigenphase corresponding to $h$}. In short, we will treat $|\psi\rangle$ as an eigenvector of the group action adjacency matrix with a certain eigenvalue $\lambda$ related to $h$. We run a procedure to estimate $\lambda$ to high precision.
+    \item From the estimated eigenvalue(s), we reconstruct a candidate group element $h^*$ that we believe generated the state. (This uses the fact that by running phase estimation for multiple carefully chosen walk durations, one can solve for $h$ as shown in [31].)
+    \item We check if $h^* = h$ (the serial number provided). If not, we reject, since the state does not match the serial. If yes, we accept.
 \end{enumerate}
 
-This procedure essentially extracts the hidden group element from the state and compares it to the claimed serial. If an adversary tries to forge a state $|\psi\rangle$ for a known serial $g$, the only way to consistently pass verification is if $|\psi\rangle$ truly encodes the same $g$ in its eigen-spectrum. A fake note that was causing trouble for the naive Hartley verification (e.g., a state that is a mixture of two different “Hartley orbit” states) would yield an eigenphase that does not correspond to a single valid $g$, and the algorithm would detect the mismatch.
+This procedure essentially extracts the hidden group element from the state and compares it to the claimed serial. If an adversary tries to forge a state $|\psi\rangle$ for a known serial $h$, the only way to consistently pass verification is if $|\psi\rangle$ truly encodes the same $h$ in its eigen-spectrum. A fake note that was causing trouble for the naive Hartley verification (e.g., a state that is a mixture of two different “Hartley orbit” states) would yield an eigenphase that does not correspond to a single valid $h$, and the algorithm would detect the mismatch.
 
-The key quantum tool enabling this verification is the continuous-time quantum walk on the group action graph and the ability to simulate it, which we prepared in Chapter 4. The walk Hamiltonian $A(X,S)$ has the genuine money state $|\$\rangle_g$ as an eigenstate with a known eigenvalue $\lambda(g)$. By running phase estimation on $e^{-iA t}$ with the state $|\psi\rangle$, we attempt to measure that eigenvalue. We repeat for a few different values of $t$ (the “twists” or different phases) to get enough information to pinpoint $g$. This approach can be viewed as adding extra “twists” to the verification: effectively, each choice of $t$ in phase estimation is like looking at the state in a different interference fringe pattern, analogous to applying different group actions as twists in the verification procedure. This is why we described the new verification as using group action twists—by varying a continuous parameter related to the group action’s eigenvalues, we break the symmetry that allowed a counterfeit to slip through.
+The key quantum tool enabling this verification is the continuous-time quantum walk on the group action graph and the ability to simulate it, which we prepared in Chapter 4. The walk Hamiltonian $A(X,S)$ has the genuine money state $|\$\rangle_h$ as an eigenstate with a known eigenvalue $\lambda(h)$. By running phase estimation on $e^{-iA t}$ with the state $|\psi\rangle$, we attempt to measure that eigenvalue. We repeat for a few different values of $t$ (the “twists” or different phases) to get enough information to pinpoint $h$. This approach can be viewed as adding extra “twists” to the verification: effectively, each choice of $t$ in phase estimation is like looking at the state in a different interference fringe pattern, analogous to applying different group actions as twists in the verification procedure. This is why we described the new verification as using group action twists—by varying a continuous parameter related to the group action’s eigenvalues, we break the symmetry that allowed a counterfeit to slip through.
 
 We defer the full analysis of the success probabilities and how many repetitions are needed to Chapter 6, where we describe the verification algorithm in detail. For now, the takeaway is that by using the quantum walk approach, we can reliably verify Hartley-based money states, restoring security while still enjoying the properties of real amplitudes.
 
@@ -1193,6 +1145,20 @@ The Hartley-based quantum money scheme introduced in the previous chapter requir
 
 
 
+    
+
+\chapter*{Conclusion}
+\addcontentsline{toc}{chapter}{Conclusion}
+
+In this thesis, we explored the rich interplay between quantum walks, group actions, and quantum cryptographic constructions. Starting from the theoretical foundations of quantum computation and group action-based cryptography, we developed a novel public-key quantum money scheme based on the quantum Hartley transform. By substituting the conventional Fourier transform with the Hartley transform, our construction yields real-amplitude quantum banknotes—an innovation that may simplify certain implementations and provide alternative security features.
+
+A central technical contribution was the use of continuous-time quantum walks for verification. We demonstrated that such walks can be simulated efficiently in the group-action setting, even in the absence of an explicit Fourier diagonalization. This approach allows for extracting the serial number (a hidden group element) from the quantum money state with high success probability, thereby providing a sound and efficient verification mechanism. Our method leverages the spectral structure and symmetry properties of Cayley graphs, extending the utility of quantum walks into cryptographic applications.
+
+Beyond its specific contributions to quantum money, this work opens up new directions for incorporating real-valued quantum transforms and continuous-time quantum walks into broader quantum algorithm design. We hope these ideas encourage further research into real-amplitude quantum information, new quantum primitives based on group actions, and the exploration of quantum walks as tools for secure and efficient computation.
+
+
+
+
 
 
 \bibliographystyle{plain}
@@ -1203,7 +1169,6 @@ The Hartley-based quantum money scheme introduced in the previous chapter requir
 \bibitem{Childs2003} A. M. Childs, ``Quantum Information Processing in Continuous Time,'' PhD Thesis, MIT, 2004.
 % Add all other references as needed
 \end{thebibliography}
-
 
 
 
