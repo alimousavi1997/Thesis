@@ -79,12 +79,12 @@ To ensure the robustness of this quantum money scheme, we develop a verification
 
 
 \chapter{Introduction}
-Quantum money, first introduced in a seminal paper by Wiesner [29], is a form of currency represented by quantum states. Unlike classical money, an ideal quantum bill cannot be counterfeited due to the no-cloning theorem of quantum mechanics, which prohibits making an identical copy of an unknown quantum state. Wiesner’s original scheme (now termed a \emph{private-key quantum money} scheme) had significant practical drawbacks: it required the issuing bank’s secret key to verify each banknote, meaning the bank had to be involved in every transaction. This reliance on the bank for verification severely limits the usability of private-key quantum money schemes.
+Quantum money, first introduced in a seminal paper by Wiesner~\cite{Wiesner1983}, is a form of currency represented by quantum states. Unlike classical money, an ideal quantum bill cannot be counterfeited due to the no-cloning theorem of quantum mechanics, which prohibits making an identical copy of an unknown quantum state. Wiesner’s original scheme (now termed a \emph{private-key quantum money} scheme) had significant practical drawbacks: it required the issuing bank’s secret key to verify each banknote, meaning the bank had to be involved in every transaction. This reliance on the bank for verification severely limits the usability of private-key quantum money schemes.
 
-In 2009, Aaronson [1] proposed the first \emph{public-key quantum money} scheme, in which anyone can verify a quantum banknote while only the bank can mint (issue) new valid banknotes. Public-key quantum money removes the transactional bottleneck of involving the bank every time. Aaronson’s specific scheme was later broken by Lutomirski et al.~[24]. In the years since, several alternative public-key quantum money constructions have been explored [2, 17, 30, 19, 20, 23, 31]. However, each of these proposals has either been broken by further cryptanalysis [14, 26, 7, 23] or relies on unconventional cryptographic assumptions, making their security or practicality questionable.
+In 2009, Aaronson~\cite{Aaronson2009} proposed the first \emph{public-key quantum money} scheme, in which anyone can verify a quantum banknote while only the bank can mint (issue) new valid banknotes. Public-key quantum money removes the transactional bottleneck of involving the bank every time. Aaronson’s specific scheme was later broken by Lutomirski et al.~\cite{Lutomirski2010}. In the years since, several alternative public-key quantum money constructions have been explored. However, each of these proposals has either been broken by further cryptanalysis or relies on unconventional cryptographic assumptions, making their security or practicality questionable.
 
 \medskip\noindent\textbf{Quantum Money from Group Actions and the Fourier Transform.} 
-A promising candidate for secure public-key quantum money based on more standard assumptions was recently proposed by Zhandry [31]. In Zhandry’s scheme, the core idea is to use an abelian group action as the foundation for the quantum state. Each money state (quantum banknote) is prepared as a \emph{group-action Fourier state}, and the corresponding serial number is an element of the underlying group (we will elaborate on these terms in later chapters). The verification algorithm in this scheme uses a group-action phase kickback routine to extract the serial number from the quantum banknote and check its validity. Doliskani [15] later proved that Zhandry’s scheme is secure in the generic group action model, providing evidence for its security under well-defined assumptions.
+A promising candidate for secure public-key quantum money based on more standard assumptions was recently proposed by Zhandry~\cite{Zhandry2022}. In Zhandry’s scheme, the core idea is to use an abelian group action as the foundation for the quantum state. Each money state (quantum banknote) is prepared as a \emph{group-action Fourier state}, and the corresponding serial number is an element of the underlying group (we will elaborate on these terms in later chapters). The verification algorithm in this scheme uses a group-action phase kickback routine to extract the serial number from the quantum banknote and check its validity. Doliskani~\cite{Doliskani2023} later proved that Zhandry’s scheme is secure in the generic group action model, providing evidence for its security under well-defined assumptions.
 
 \medskip\noindent\textbf{This Work – Motivation and Contributions.} 
 In this thesis, we adapt Zhandry’s group-action quantum money scheme by replacing its use of the Quantum Fourier Transform with the \emph{Quantum Hartley Transform} (QHT) over finite abelian groups. The motivation behind this substitution is multifold. First, using the Hartley transform causes the banknotes to have \emph{real} amplitudes instead of complex amplitudes. We believe this shift from complex to real quantum states may offer both computational and theoretical advantages. For example, certain mathematical identities hold for any two real orthonormal bases that do not generally hold for complex bases; such differences can affect the properties of quantum states and were a barrier in prior analyses (indeed, an attempted “quantum lightning” construction in [31] failed due to properties of complex phases that do not arise with real amplitudes). Beyond this specific context, our work is a first step toward employing real-valued quantum transforms in quantum cryptography and quantum algorithms. To the best of our knowledge, this is the first significant quantum cryptographic construction that makes essential use of the quantum Hartley transform. We hope that exploring real-amplitude quantum states will inspire further research into new quantum algorithms and optimizations for real-valued transforms.
@@ -179,7 +179,7 @@ Using the identity
 \]
 we obtain:
 \begin{equation}
-\operatorname{QHT}_G = \frac{1 - i}{2} \operatorname{QFT}_G + \frac{1 + i}{2} \operatorname{QFT}_G^*,
+\operatorname{QHT}_G = \frac{1 - i}{2} \operatorname{QFT}_G + \frac{1 + i}{2} \operatorname{QFT}_G^*, \label{eq:QHT_QFT}
 \end{equation}
 showing that $\operatorname{QHT}_G^2 = {1}$ and hence the QHT is unitary.
 
@@ -664,26 +664,26 @@ In the next section, we develop techniques for simulating continuous-time quantu
 \chapter{Simulating Group Action Quantum Walks}
 
 
-
-From this point forward, we assume the generating set \( Q \) is small, i.e., \( \abs{Q} = \operatorname{poly}(\log \abs{G}) \). In the first construction (where \( X = G \)), the walk \( e^{-iAt} \) can be efficiently implemented even for values of \( t \) that are exponentially large in \( \log \abs{G} \). This is a consequence of the identity:
+From this point onward, we assume that the generating set \( Q \) is small, specifically \( \abs{Q} = \operatorname{poly}(\log \abs{G}) \). In the first construction, where the vertex set is \( X = G \), the continuous-time walk \( e^{-iAt} \) can be implemented efficiently even for values of \( t \) that are exponentially large in \( \log \abs{G} \). This efficiency stems from the identity:
 \begin{equation}
     \label{eq:adjmat-fb}
     e^{-iAt} = \operatorname{QFT}_G \left( \sum_{a \in G} e^{-i\lambda_a t} \ket{a} \bra{a} \right) \operatorname{QFT}_G^*,
 \end{equation}
-where \( \operatorname{QFT}_G \) and its inverse can be implemented in \( \operatorname{poly}(\log \abs{G}) \) time. Moreover, the diagonal phase unitary \( \ket{a} \mapsto e^{-i\lambda_a t} \ket{a} \) is also efficient to implement, since the eigenvalues \( \lambda_a \) can be computed classically to arbitrary precision in \( \operatorname{poly}(\log \abs{G}) \) time.
+where both \( \operatorname{QFT}_G \) and its inverse can be implemented in \( \operatorname{poly}(\log \abs{G}) \) time. Moreover, the diagonal unitary \( \ket{a} \mapsto e^{-i\lambda_a t} \ket{a} \) is efficiently realizable since the eigenvalues \( \lambda_a \) can be computed classically to arbitrary precision in polynomial time with respect to \( \log \abs{G} \).
 
-In contrast, the group-action setting presents greater computational difficulty. Although the states \( \ket{G^{(h)} * x} \) play a role analogous to the Fourier basis states \( \ket{\hat{h}} \), the presence of the action \( * \) makes the situation more subtle. In particular, implementing general transformations over these states is difficult; we are typically limited to operations of the form \( \ket{y} \mapsto \ket{a * y} \) for \( a \in G \). As a result, no efficient decomposition similar to~\eqref{eq:adjmat-fb} is known in the group-action setting. Instead, the best we can express is the spectral decomposition:
+The situation becomes more nuanced in the group-action setting. Although the states \( \ket{G^{(h)} * x} \) play a role analogous to the Fourier basis states \( \ket{\hat{h}} \), the involvement of the group action \( * \) introduces additional complexity. In particular, implementing arbitrary transformations over these states is nontrivial. One is typically restricted to operations of the form \( \ket{y} \mapsto \ket{a * y} \), where \( a \in G \). Consequently, no efficient decomposition analogous to~\eqref{eq:adjmat-fb} is currently known in the group-action context. The best available formulation is the spectral decomposition:
 \[
 e^{-iAt} = \sum_{h \in G} e^{-i\lambda_h t} \ket{G^{(h)} * x} \bra{G^{(h)} * x}.
 \]
 
-Despite this limitation, the adjacency matrix \( A \) retains a high degree of sparsity and algebraic structure. In the next section, we will show that for \( t = \operatorname{poly}(\log \abs{G}) \), the walk \( e^{-iAt} \) can still be efficiently approximated to polynomial accuracy.
+Despite these challenges, the adjacency matrix \( A \) still exhibits substantial sparsity and algebraic structure. In the following section, we demonstrate that for \( t = \operatorname{poly}(\log \abs{G}) \), the walk \( e^{-iAt} \) remains efficiently approximable to polynomial accuracy.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsection{Simulating continuous-time walks}
-Childs and Berry, Childs, and Kothari showed that continuous-time quantum walks can be simulated using discrete-time quantum walks. Since our approach relies on their methods, we begin by outlining the relevant notation and framework.
+\section{Simulating continuous-time walks}
+Childs~\cite{Childs2004}, Berry and Kothari~\cite{BerryKothari} showed that continuous-time quantum walks can be simulated using discrete-time quantum walks. Since our approach relies on their methods, we begin by outlining the relevant notation and framework.
 
 Let \( H \) be a Hamiltonian of dimension \( N = 2^n \), and define \( \opnorm{H}_{\mathrm{max}} = \max_{i, j} \abs{H_{ij}} \). To facilitate the simulation, we expand the Hilbert space from \( \mathbb{C}^N \) to \( \mathbb{C}^{2N} \otimes \mathbb{C}^{2N} \) by appending an ancilla qubit initialized to \( \ket{0} \) and duplicating the resulting space.
 
@@ -732,8 +732,8 @@ To efficiently simulate the continuous-time evolution \( e^{-iHt} \), it suffice
 
 
 
-\subsection{Simulating group action quantum walks.}
-Assume \( t = \operatorname{poly}(\log \abs{G}) \). We show that the continuous-time walk \( W = e^{-iAt} \) can be efficiently simulated using the discrete-time quantum walk framework developed in~\cite{childs2010relationship, berry2015hamiltonian}. Recall the isometry \( T \) defined in Equation~\eqref{eq:walk-isom}, where the states \( \ket{\phi_b} \) are as given in Equation~\eqref{eq:walk-sim}. To carry out the simulation, it suffices to show that the isometry \( T \), its adjoint \( T^* \), and the discrete-time walk operator
+\section{Simulating group action quantum walks.}
+Assume \( t = \operatorname{poly}(\log \abs{G}) \). We show that the continuous-time walk \( W = e^{-iAt} \) can be efficiently simulated using the discrete-time quantum walk framework developed in~\cite{childs2010relationship}. Recall the isometry \( T \) defined in Equation~\eqref{eq:walk-isom}, where the states \( \ket{\phi_b} \) are as given in Equation~\eqref{eq:walk-sim}. To carry out the simulation, it suffices to show that the isometry \( T \), its adjoint \( T^* \), and the discrete-time walk operator
 \[
 W = iS(2TT^* - \mathbf{1})
 \]
@@ -748,7 +748,7 @@ T
 \end{align*}
 
 
-Because of the structure of $\Gamma$, the states .... simplify as follows. First, since the set $Q$ is symmetric, the graph $\Gamma$ is undirected and the adjacency matrix $A$ is symmetric with non-negative entries; the nonzero entries of $A$ are all equal to $1$. Therefore, we can set $K = {A}_{\mathrm{max}} = 1$. As a result, for $y \in X$, the state $\ket{\phi_{y0}}$ becomes
+Because of the structure of $\Gamma$, the states \eqref{eq:walk-sim} simplify as follows. First, since the set $Q$ is symmetric, the graph $\Gamma$ is undirected and the adjacency matrix $A$ is symmetric with non-negative entries; the nonzero entries of $A$ are all equal to $1$. Therefore, we can set $K = \opnorm{A}_{\mathrm{max}} = 1$. As a result, for $y \in X$, the state $\ket{\phi_{y0}}$ becomes
 \[ \ket{\phi_{y0}} = \frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q * y} \ket{0}. \]
 We now describe how to implement the isometry \( T \) by constructing efficient unitaries \( U_0 \) and \( U_1 \), where each \( U_b \) acts as
 \[
@@ -1059,7 +1059,7 @@ The complete procedure is summarized in the following algorithm.
 % \begin{theorem}
 \paragraph{Theorem.}
     \label{thm:qht-cost}
-    Algorithm \ref{alg:qht-N} is correct and can be implemented using $\approx \log^2 N + O(\log N)$ elementary gates.
+    Algorithm above is correct and can be implemented using $\approx \log^2 N + O(\log N)$ elementary gates.
 % \end{theorem}
 
 
@@ -1077,7 +1077,7 @@ The complete procedure is summarized in the following algorithm.
     \]
     for \( j = 0, 1, \dots, n - 1 \). When \( b = 0 \), we have \( R(y, 0) = \mathbf{1} \), and when \( b = 1 \), the operator \( R(y, 1) \) is the product of those \( R_j \) for which the \( j \)th bit of \( y \) is 1. Therefore, for a binary string \( y \) of length \( k = \lceil \log y \rceil \), we can implement \( U_R \) using at most \( k \) gates from the set \( \{R_j\} \).
     
-    Let \( T(N) \) denote the gate complexity of Algorithm~\ref{alg:qht-N} for an input of dimension \( N \). Assuming access to the \( R_j \) gates as elementary operations, the recurrence relation becomes
+    Let \( T(N) \) denote the gate complexity of the algorithm for an input of dimension \( N \). Assuming access to the \( R_j \) gates as elementary operations, the recurrence relation becomes
     \[
     T(N) \approx T(N / 2) + 2\log N + O(1).
     \]
@@ -1086,7 +1086,7 @@ The complete procedure is summarized in the following algorithm.
 %%%%%%%%%%%  ta inja  %%%%%%%%%%%
 
 
-- The resulting complexity for an $N$-point QHT is $O(N \log N)$ basic quantum gates (up to polylog factors for precision), which is on par (up to constant factors) with the complexity of a QFT circuit. We also derived explicit constants for small cases to show improvements over prior work.
+The resulting complexity for an $N$-point QHT is $O(\log^2 N)$ basic quantum gates (up to polylog factors for precision), which is on par (up to constant factors) with the complexity of a QFT circuit. We also derived explicit constants for small cases to show improvements over prior work.
 
 For the purposes of this thesis, the main point is: \emph{we can implement the Hartley transform needed for our money scheme with polynomial efficiency}. Thus, switching to the Hartley transform does not introduce any prohibitive cost. All steps of minting and verification remain efficient. Having covered the construction of the money scheme and the necessary tools, we now proceed to the final piece: the detailed verification algorithm using quantum walks, and an analysis of how it validates genuine banknotes and foils counterfeit attempts.
 \vspace{1em}
@@ -1108,7 +1108,7 @@ The Hartley-based quantum money scheme introduced in the previous chapter requir
 
     \section{Using Quantum Walks to Extract the Serial}
     
-    Given a state of the form $\ket{\mathbb{Z}_N^{(h)} * x}_H$, we demonstrate how the value of $h$ can be extracted using continuous-time quantum walks. For any $u \in \mathbb{Z}_N$, consider the Cayley graph $\Gamma = (\mathbb{Z}_N, E)$ generated by $Q = {\{-u, u}\}$. Let $A$ denote the adjacency matrix of $\Gamma$. The eigenvectors of $A$ are given by $\ket{\mathbb{Z}_N^{(h)} * x}$, with corresponding eigenvalues $\lambda_h = 2\cos(2\pi uh / N)$ for each $h \in \mathbb{Z}_N$. According to Theorem \ref{thm:sparse-sim} and the discussion that follows, the unitary evolution operator $W = e^{iAt}$ can be simulated efficiently to exponential precision. To proceed, we first state the following lemma.
+    Given a state of the form $\ket{\mathbb{Z}_N^{(h)} * x}_H$, we demonstrate how the value of $h$ can be extracted using continuous-time quantum walks. For any $u \in \mathbb{Z}_N$, consider the Cayley graph $\Gamma = (\mathbb{Z}_N, E)$ generated by $Q = {\{-u, u}\}$. Let $A$ denote the adjacency matrix of $\Gamma$. The eigenvectors of $A$ are given by $\ket{\mathbb{Z}_N^{(h)} * x}$, with corresponding eigenvalues $\lambda_h = 2\cos(2\pi uh / N)$ for each $h \in \mathbb{Z}_N$. According to Theorem in the previous chapter and the discussion that follows, the unitary evolution operator $W = e^{iAt}$ can be simulated efficiently to exponential precision. To proceed, we first state the following lemma.
 
 
 
@@ -1128,7 +1128,7 @@ The Hartley-based quantum money scheme introduced in the previous chapter requir
             & = e^{i\lambda_{h}t} \frac{1 - i}{2} \ket{\mathbb{Z}_N^{(h)} * x} + \frac{1 + i}{2} e^{i\lambda_{-h}t} \ket{\mathbb{Z}_N^{(-h)} * x} \\
             & = e^{i\lambda_{h}t} \ket{\mathbb{Z}_N^{(h)} * x}_H,
         \end{align*}
-        where the second equality follows from the identity in \eqref{eq:ht-ft}, and the last equality follows from the fact that $\lambda_h = \lambda_{-h}$.
+        where the second equality follows from the identity in \eqref{eq:QHT_QFT}, and the last equality follows from the fact that $\lambda_h = \lambda_{-h}$.
     % \end{proof}
 
 
@@ -1140,7 +1140,7 @@ The Hartley-based quantum money scheme introduced in the previous chapter requir
     \[
     \abs*{\theta - \frac{uh}{N}} \le \frac{1}{\operatorname{poly}(\log N)}.
     \]
-    Since phase estimation can be applied with various choices of \( u \), we can obtain multiple approximations of \( \frac{uh}{N} \). As shown in~\cite{zhandry2024quantum}, selecting \( u \) appropriately allows us to reconstruct \( h \) exactly from these estimates.
+    Since phase estimation can be applied with various choices of \( u \), we can obtain multiple approximations of \( \frac{uh}{N} \). As shown in~\cite{Zhandry2024}, selecting \( u \) appropriately allows us to reconstruct \( h \) exactly from these estimates.
 
 
 
@@ -1163,11 +1163,35 @@ Beyond its specific contributions to quantum money, this work opens up new direc
 
 \bibliographystyle{plain}
 \begin{thebibliography}{99}
-% Sample Bib entries. Replace with real ones.
-\bibitem{Aaronson2009} S. Aaronson, ``Quantum Copy-Protection and Quantum Money,'' In Proc. of CCC, 2009.
-\bibitem{Zhandry2022} M. Zhandry, ``Quantum Money from Modular Forms,'' In Proc. of CRYPTO, 2022.
-\bibitem{Childs2003} A. M. Childs, ``Quantum Information Processing in Continuous Time,'' PhD Thesis, MIT, 2004.
-% Add all other references as needed
+
+    \bibitem{Wiesner1983}
+    S. Wiesner, ``Conjugate Observables and the Foundations of Cryptography,'' \textit{Sigact News}, vol. 15, no. 1, pp. 78–88, 1983.
+    
+    \bibitem{Aaronson2009}
+    S. Aaronson, ``Quantum Copy-Protection and Quantum Money,'' In \textit{Proceedings of the IEEE Conference on Computational Complexity (CCC)}, 2009.
+    
+    \bibitem{Lutomirski2010}
+    A. Lutomirski, S. Aaronson, E. Farhi, D. Gosset, J. Keselman, P. Shor, A. Slofstra, and A. Speyer, ``Breaking and Making Quantum Money: Toward a New Quantum Cryptographic Protocol,'' arXiv:1004.4843, 2010.
+    
+    \bibitem{Zhandry2022}
+    M. Zhandry, ``Quantum Money from Modular Forms,'' In \textit{Proceedings of CRYPTO}, 2022.
+    
+    \bibitem{Doliskani2023}
+    J. Doliskani, ``On the Security of Group Action-Based Quantum Money,'' unpublished manuscript, 2023.
+    
+    \bibitem{Childs2004}
+    A. M. Childs, ``Quantum Information Processing in Continuous Time,'' Ph.D. thesis, Massachusetts Institute of Technology, 2004.
+    
+    \bibitem{BerryKothari}
+    D. Berry and R. Kothari, ``Hamiltonian Simulation with Optimal Sample Complexity,'' In \textit{Proceedings of FOCS}, 2018.
+
+    \bibitem{Zhandry2024}
+    M. Zhandry, ``Quantum Money from Abelian Group Actions,'' In \textit{Proceedings of the 15th Innovations in Theoretical Computer Science Conference (ITCS)}, Schloss Dagstuhl–Leibniz Center for Informatics, 2024.
+
+
+    \bibitem{childs2010relationship}
+    A. M. Childs, ``On the Relationship Between Continuous- and Discrete-Time Quantum Walk,'' \textit{Communications in Mathematical Physics}, vol. 294, pp. 581–603, 2010.
+
 \end{thebibliography}
 
 
