@@ -3,30 +3,13 @@
 
 
 
-\usepackage{amsmath, amssymb, amsthm}
-\usepackage{graphicx}
-\usepackage{hyperref}
-\usepackage{cite}
-\usepackage{physics}
-\usepackage{algorithm}
-% \usepackage{algorithmic}
-\usepackage{tikz}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{setspace}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
 
-\newcommand{\opnorm}[1]{\left\lVert #1 \right\rVert}
+\usepackage[margin= 1in]{geometry}
+\usepackage{article_macros}
 
 
-\usepackage[a4paper, left=1.5cm, right=1.5cm, top=2cm, bottom=2cm]{geometry}
-
-% Formatting
-\setlength{\parskip}{0.5em}
-\setlength{\parindent}{0pt}
-\singlespacing
-
+\sloppy
+\allowdisplaybreaks
 
 
 
@@ -41,9 +24,25 @@
 
 
 
+\definecolor{citecolor}{HTML}{009933}
+
+\hypersetup{
+	unicode = true,
+    colorlinks = true,
+    citecolor = citecolor,
+    filecolor = blue,
+    linkcolor = blue,
+    urlcolor = blue,
+    pdfstartview = {FitH},
+}
+
+
+
+
+
 \title{
   Quantum Walks and Application to Quantum Money\\[1em]
-  \large Supervised by Dr. Jake Doliskani\\[3em]
+%   \large Supervised by Dr. Jake Doliskani\\[3em]
   \normalsize McMaster University\\
   Department of Computing and Software
 }
@@ -66,7 +65,8 @@
 
 
 \newpage
-\textbf{\large Abstract}
+\textbf{\large Abstract}\\
+
 
 This thesis explores the foundations of quantum computation, focusing on quantum walks and their application to quantum money. Quantum walks, particularly continuous-time quantum walks based on group actions, serve as a powerful computational tool with applications in search algorithms and cryptographic protocols. We examine their mathematical structure and their advantages over classical random walks, emphasizing their efficiency in state evolution and probability distribution spreading. As a part of this work, we examine efficient implementations of transforms such as the Quantum Fourier Transform (QFT) and the Quantum Hartley Transform (QHT), analyzing their role in encoding quantum states for secure cryptographic applications. In particular, we discuss a novel instantiation of a quantum money scheme based on QHT, leveraging its unique properties for improved security and efficiency.
 To ensure the robustness of this quantum money scheme, we develop a verification mechanism utilizing quantum walks. Unlike previous approaches, which rely on standard quantum state measurements, our method employs continuous-time quantum walks to authenticate quantum money, preventing counterfeiting while maintaining computational feasibility. Additionally, we present a detailed discussion on the efficient implementation of this scheme, including optimized circuit designs and error mitigation strategies.
@@ -87,7 +87,7 @@ In 2009, Aaronson~\cite{Aaronson2009} proposed the first \emph{public-key quantu
 A promising candidate for secure public-key quantum money based on more standard assumptions was recently proposed by Zhandry~\cite{Zhandry2022}. In Zhandry’s scheme, the core idea is to use an abelian group action as the foundation for the quantum state. Each money state (quantum banknote) is prepared as a \emph{group-action Fourier state}, and the corresponding serial number is an element of the underlying group (we will elaborate on these terms in later chapters). The verification algorithm in this scheme uses a group-action phase kickback routine to extract the serial number from the quantum banknote and check its validity. Doliskani~\cite{Doliskani2023} later proved that Zhandry’s scheme is secure in the generic group action model, providing evidence for its security under well-defined assumptions.
 
 \medskip\noindent\textbf{This Work – Motivation and Contributions.} 
-In this thesis, we adapt Zhandry’s group-action quantum money scheme by replacing its use of the Quantum Fourier Transform with the \emph{Quantum Hartley Transform} (QHT) over finite abelian groups. The motivation behind this substitution is multifold. First, using the Hartley transform causes the banknotes to have \emph{real} amplitudes instead of complex amplitudes. We believe this shift from complex to real quantum states may offer both computational and theoretical advantages. For example, certain mathematical identities hold for any two real orthonormal bases that do not generally hold for complex bases; such differences can affect the properties of quantum states and were a barrier in prior analyses (indeed, an attempted “quantum lightning” construction in [31] failed due to properties of complex phases that do not arise with real amplitudes). Beyond this specific context, our work is a first step toward employing real-valued quantum transforms in quantum cryptography and quantum algorithms. To the best of our knowledge, this is the first significant quantum cryptographic construction that makes essential use of the quantum Hartley transform. We hope that exploring real-amplitude quantum states will inspire further research into new quantum algorithms and optimizations for real-valued transforms.
+In this thesis, we adapt Zhandry’s group-action quantum money scheme by replacing its use of the Quantum Fourier Transform with the \emph{Quantum Hartley Transform} (QHT) over finite abelian groups. The motivation behind this substitution is multifold. First, using the Hartley transform causes the banknotes to have \emph{real} amplitudes instead of complex amplitudes. We believe this shift from complex to real quantum states may offer both computational and theoretical advantages. For example, certain mathematical identities hold for any two real orthonormal bases that do not generally hold for complex bases; such differences can affect the properties of quantum states and were a barrier in prior analyses (indeed, an attempted “quantum lightning” construction in \cite{Zhandry2022} failed due to properties of complex phases that do not arise with real amplitudes). Beyond this specific context, our work is a first step toward employing real-valued quantum transforms in quantum cryptography and quantum algorithms. To the best of our knowledge, this is the first significant quantum cryptographic construction that makes essential use of the quantum Hartley transform. We hope that exploring real-amplitude quantum states will inspire further research into new quantum algorithms and optimizations for real-valued transforms.
 
 We now summarize our main contributions:
 \begin{itemize}
@@ -100,12 +100,12 @@ We now summarize our main contributions:
 In summary, our work combines ideas from quantum cryptography (public-key quantum money), quantum walks, and quantum signal processing (Hartley and related transforms) to create a novel and potentially practical quantum money scheme. 
 
 \medskip\noindent\textbf{Thesis Organization.} 
-The remainder of this thesis is organized as follows. In **Chapter 2**, we provide background on the basics of quantum computation and the theory of group actions, including the concept of cryptographic group actions which underlie our money scheme. **Chapter 3** covers quantum walks, both continuous-time and discrete-time, outlining their differences and importance in quantum algorithms. In **Chapter 4**, we apply the quantum walk framework to group actions: we describe how a continuous-time quantum walk on a group action can be simulated efficiently, a crucial step for our serial number extraction algorithm. **Chapter 5** details the quantum money scheme itself and the role of the Hartley transform in its construction. We explain how the scheme is formulated and discuss the advantages and challenges introduced by using the Hartley transform. Finally, **Chapter 6** presents the verification algorithm for the Hartley-based quantum money. This chapter shows how we use quantum walks (as developed in Chapter 4) to reliably verify banknotes and compute their serial numbers, thereby addressing the verification issues that arose from the use of real amplitudes.
+The remainder of this thesis is organized as follows. In Chapter~\ref{chap:backgound}, we provide background on the basics of quantum computation and the theory of group actions, including the concept of cryptographic group actions which underlie our money scheme. Chapter~\ref{chap:quantum_walks} covers quantum walks, both continuous-time and discrete-time, outlining their differences and importance in quantum algorithms. In Chapter~\ref{chap:simulating}, we apply the quantum walk framework to group actions: we describe how a continuous-time quantum walk on a group action can be simulated efficiently, a crucial step for our serial number extraction algorithm. Chapter~\ref{chap:quantum_money} details the quantum money scheme itself and the role of the Hartley transform in its construction. We explain how the scheme is formulated and discuss the advantages and challenges introduced by using the Hartley transform. Finally, Chapter~\ref{chap:verification} presents the verification algorithm for the Hartley-based quantum money. This chapter shows how we use quantum walks (as developed in Chapter 4) to reliably verify banknotes and compute their serial numbers, thereby addressing the verification issues that arose from the use of real amplitudes.
 \vspace{1em}
 
 
 
-\chapter{Background of Quantum Computation and Group Actions}
+\chapter{Background of Quantum Computation and Group Actions}\label{chap:backgound}
 
 
 
@@ -121,11 +121,14 @@ One example important to this work is the \textbf{quantum Fourier transform} (QF
 \[
 |g\rangle \mapsto \frac{1}{\sqrt{N}}\sum_{h \in G} \chi(h,g)\, |h\rangle,
 \]
-where $\{\chi(h,.)\}$ are the characters (complex exponential homomorphisms) of $G$. When $G = \mathbb{Z}_N$ (the integers mod $N$), the QFT takes $|j\rangle$ to $\frac{1}{\sqrt{N}}\sum_{k=0}^{N-1} e^{2\pi i j k / N} |k\rangle$. 
-
-Let $G \cong \mathbb{Z}_{N_1} \oplus \cdots \oplus \mathbb{Z}_{N_k}$ be a decomposition of $G$. The character $\chi(a, x)$ is then given by
+where $\{\chi(h,.)\}$ are the characters (complex exponential homomorphisms) of $G$. When $G = \mathbb{Z}_N$ (the integers mod $N$), the QFT takes $|j\rangle$ to:
 \[
-\chi(a, x) = \omega_{N_1}^{a_1x_1} \cdots \omega_{N_k}^{a_kx_k}, \quad \text{where } \omega_M = \exp(2\pi i/ M).
+\frac{1}{\sqrt{N}}\sum_{k=0}^{N-1} e^{2\pi i j k / N} |k\rangle
+\] 
+
+Let $G \cong \mathbb{Z}_{N_1} \oplus \cdots \oplus \mathbb{Z}_{N_k}$ be a decomposition of $G$. The character $\chi(\bm{a}, x)$ is then given by
+\[
+\chi(\bm{a}, \bm{x}) = \omega_{N_1}^{a_1x_1} \cdots \omega_{N_k}^{a_kx_k}, \quad \text{where } \omega_M = \exp(2\pi i/ M).
 \]
 
 The Fourier transform of a function $f: G \to \mathbb{C}$ is given by
@@ -147,7 +150,7 @@ These states are eigenstates of the action unitary $U_k: \ket{y} \mapsto \ket{k 
 U_k \ket{G^{(h)} * x} = \chi(-k, h) \ket{G^{(h)} * x}.
 \]
 
-\paragraph{The cmpIndex Algorithm.}
+\paragraph{The $\comph$ Algorithm.}
 Given a state $\ket{G^{(h)} * x}$, one can recover $h$ using phase kickback. Starting from $\ket{G^{(h)} * x} \ket{0}$, apply:
 \begin{itemize}
     \item QFT to second register,
@@ -163,30 +166,31 @@ Another concept we use is the \textbf{quantum Hartley transform} (QHT), which re
 \paragraph{Definition.}
 For $G = \mathbb{Z}_N$, define
 \[
-\operatorname{QHT}_N: \ket{a} \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\left(\frac{2\pi a y}{N}\right) \ket{y}, \quad \text{where } \cas(x) = \cos(x) + \sin(x).
+\qht_N: \ket{a} \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\left(\frac{2\pi a y}{N}\right) \ket{y}, \label{eq:qht_def}
 \]
+Where $\cas(x) = \cos(x) + \sin(x)$.
 
 For general abelian $G = \mathbb{Z}_{N_1} \oplus \cdots \oplus \mathbb{Z}_{N_k}$, the Hartley transform of $f : G \to \mathbb{R}$ is
 \begin{equation}
-    \operatorname{QHT}_G(f)({a}) = \frac{1}{\sqrt{|G|}} \sum_{{y} \in G} \cas(2\pi \langle {a}, \alpha({y}) \rangle) f({y}),
+    \qht(f)({\bm{a}}) = \frac{1}{\sqrt{|G|}} \sum_{{\bm{y}} \in G} \cas(2\pi \langle {\bm{a}}, \alpha({\bm{y}}) \rangle) f({\bm{y}}),
 \end{equation}
-where $\alpha({y}) = y_1 / N_1 + \cdots + y_k / N_k$.
+where $\alpha({\bm{y}}) = y_1 / N_1 + \cdots + y_k / N_k$.
 
 \paragraph{Unitary Equivalence.}
 Using the identity
 \[
-\cas(2\pi \langle {a}, \alpha({y}) \rangle) = \frac{1 - i}{2}\chi({a}, {y}) + \frac{1 + i}{2}\chi(-{a}, {y}),
+\cas(2\pi \langle {\bm{a}}, \alpha({\bm{y}}) \rangle) = \frac{1 - i}{2}\chi({\bm{a}}, {\bm{y}}) + \frac{1 + i}{2}\chi(-{\bm{a}}, {\bm{y}}),
 \]
 we obtain:
 \begin{equation}
-\operatorname{QHT}_G = \frac{1 - i}{2} \operatorname{QFT}_G + \frac{1 + i}{2} \operatorname{QFT}_G^*, \label{eq:QHT_QFT}
+\qht_G = \frac{1 - i}{2} \qft_G + \frac{1 + i}{2} \qft_G^*, \label{eq:QHT_QFT}
 \end{equation}
-showing that $\operatorname{QHT}_G^2 = {1}$ and hence the QHT is unitary.
+showing that $\qht_G^2 = {1}$ and hence the $\qht$ is unitary.
 
 \paragraph{Quantum Formulation.}
 The quantum Hartley transform over $G$ maps:
 \[
-\sum_{{x} \in G} f({x}) \ket{{x}} \mapsto \sum_{{a} \in G} \operatorname{QHT}_G(f)({a}) \ket{{a}}.
+\sum_{{x} \in G} f({x}) \ket{{x}} \mapsto \sum_{{\bm{a}} \in G} \qht_G(f)({\bm{a}}) \ket{{\bm{a}}}.
 \]
 Because the cas function is real-valued, the resulting amplitudes remain real—a fact that plays a crucial role in real-amplitude quantum protocols.
 
@@ -210,11 +214,11 @@ Finally, we note that working in the \textbf{generic group model} (or generic gr
 
 
 
-\chapter{Quantum Walks -- Continuous and Discrete}
+\chapter{Quantum Walks -- Continuous and Discrete}\label{chap:quantum_walks}
 
-Quantum walks are the quantum-mechanical counterparts of classical random walks on graphs. Instead of a probability distribution over vertices, a quantum walk evolves a superposition of vertex states. Interference between multiple paths leads to markedly different behavior from classical walks, often yielding faster spreading and algorithmic speedups~\cite{physics_stackexchange}.
+Quantum walks are the quantum-mechanical counterparts of classical random walks on graphs. Instead of a probability distribution over vertices, a quantum walk evolves a superposition of vertex states. Interference between multiple paths leads to markedly different behavior from classical walks, often yielding faster spreading and algorithmic speedups~\cite{Aharonov2001}.
 
-In particular, both major models of quantum walks --- continuous-time and discrete-time --- achieve \emph{ballistic spreading} (standard deviation growing linearly in time) in contrast to the diffusive $O(\sqrt{t})$ spread of classical random walks~\cite{childs2003quantum}. Quantum walks have become a central framework in quantum computing, underpinning various algorithms and even universal quantum computation~\cite{file_gwrqpr3gkui6gav6sze4dj}.
+In particular, both major models of quantum walks --- continuous-time and discrete-time --- achieve \emph{ballistic spreading} (standard deviation growing linearly in time) in contrast to the diffusive $O(\sqrt{t})$ spread of classical random walks~\cite{Kempe2003}. Quantum walks have become a central framework in quantum computing, underpinning various algorithms and even universal quantum computation~\cite{Childs2009,Ambainis2003}.
 
 In this chapter, we introduce continuous- and discrete-time quantum walks, compare their properties, and discuss their implementation on highly symmetric graphs known as Cayley graphs. We then explore how group actions and symmetry can be leveraged to analyze and construct quantum walks on these graphs.
 
@@ -270,9 +274,9 @@ This shows that the quantum walk spreads across the hypercube exponentially fast
 
 \subsection{Algorithmic Applications}
 
-Continuous-time quantum walks have been employed to achieve algorithmic speedups. A famous example is the \emph{glued trees traversal problem} by Childs et al. (2003), where a CTQW on a graph formed by two randomly "glued" binary trees can find the unique exit vertex exponentially faster than any classical algorithm. This result gave the first exponential separation between quantum and classical query complexity in a black-box setting.
+Continuous-time quantum walks have been employed to achieve algorithmic speedups. A famous example is the \emph{glued trees traversal problem} by Childs \cite{Childs2003}, where a CTQW on a graph formed by two randomly "glued" binary trees can find the unique exit vertex exponentially faster than any classical algorithm. This result gave the first exponential separation between quantum and classical query complexity in a black-box setting.
 
-Another application is \emph{spatial search} on graphs. Childs and Goldstone (2004) showed that a CTQW can find a marked vertex on a $d$-dimensional lattice faster than classical diffusion. In the limit $d \to \infty$, the CTQW dynamics converge to the continuous Dirac equation.
+Another application is \emph{spatial search} on graphs. Childs and Goldstone \cite{ChildsGoldstone2004} showed that a CTQW can find a marked vertex on a $d$-dimensional lattice faster than classical diffusion. In the limit $d \to \infty$, the CTQW dynamics converge to the continuous Dirac equation.
 
 More generally, CTQWs provide a natural framework for quantum search algorithms on graphs, often achieving Grover-like speedups or better. It is also known that continuous-time quantum walks are \textbf{universal for quantum computation}, meaning that sufficiently complex graphs can encode arbitrary quantum logic operations.
 
@@ -315,7 +319,7 @@ By construction, $U$ is unitary and effects a “quantum hop” on the graph at 
 
 \subsection{Szegedy’s Walk}
 
-In 2004, Szegedy proposed a different formulation of DTQW based on classical Markov chains. Here, no coin register is needed. Instead, the walk is defined on $\mathbb{C}^N \otimes \mathbb{C}^N$, with basis states $\ket{j,k}$ corresponding to directed edges.
+In 2004, Szegedy \cite{Szegedy2004} proposed a different formulation of DTQW based on classical Markov chains. Here, no coin register is needed. Instead, the walk is defined on $\mathbb{C}^N \otimes \mathbb{C}^N$, with basis states $\ket{j,k}$ corresponding to directed edges.
 
 Given a classical transition matrix $P$ (an $N \times N$ stochastic matrix), one defines:
 \[
@@ -337,7 +341,7 @@ Szegedy’s approach is especially useful for quantizing non-regular Markov chai
 
 Discrete-time quantum walks share many features with their continuous-time counterparts. On the infinite line, the standard coined walk (with Hadamard coin) spreads ballistically, creating a bimodal distribution, unlike the diffusive spread of a classical random walk.
 
-Both DTQW and CTQW have been used to achieve quadratic speedups in search problems. In many cases, the two models can simulate each other. DTQWs can even achieve \textbf{universal quantum computation}: Childs et al. (2009) constructed a coined DTQW that simulates an arbitrary quantum circuit.
+Both DTQW and CTQW have been used to achieve quadratic speedups in search problems. In many cases, the two models can simulate each other. DTQWs can even achieve \textbf{universal quantum computation}: Childs\cite{Childs2009} constructed a coined DTQW that simulates an arbitrary quantum circuit.
 
 In practice, the coined model is convenient for quantum circuit implementations, as the step $U = SC$ can be decomposed into standard quantum gates. Experimental DTQW implementations have been realized on photonic and ion trap systems.
 
@@ -397,7 +401,7 @@ When $S$ is symmetric, $\Gamma(G, S)$ is an undirected $|S|$-regular graph. Note
 
     \item \textbf{Complete Graph $K_N$:} The complete graph on $N$ vertices can be viewed as the Cayley graph of $\mathbb{Z}_N$ with generating set $S = \{1, 2, \dots, N-1\}$ (all nonzero elements). Each vertex $g$ has an edge to every other vertex $g+s$.
 
-    \item \textbf{Infinite Tree (Free Group):} The free group on two generators $a$ and $b$ has a Cayley graph that is an infinite 4-regular tree. Each vertex corresponds to a word in $\{a^{\pm1}, b^{\pm1}\}$, and edges represent multiplication by $a$ or $b$. A finite portion of this graph is shown in Figure~\ref{fig:cayley-free-group}.
+    \item \textbf{Infinite Tree (Free Group):} The free group on two generators $a$ and $b$ has a Cayley graph that is an infinite 4-regular tree. Each vertex corresponds to a word in $\{a^{\pm1}, b^{\pm1}\}$, and edges represent multiplication by $a$ or $b$.
 
     \item \textbf{Dihedral Groups:} Cayley graphs of dihedral groups often form cyclic or prism-like structures. These graphs are used in modeling symmetric structures in both classical and quantum settings.
 \end{itemize}
@@ -446,20 +450,23 @@ where $|\hat{a}\rangle$ is the quantum Fourier transform of $|a\rangle$. The eig
 Note that the eigenvectors $|\hat{a}\rangle$ of $A$ depend only on $G$ and not on the set $Q$.
 
 To see this, we have
-\[
-        A\ket{\hat{a}} = A.\frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y)\ket{y} = \frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y).A\ket{y}
-        \]
-        \[
-        = \frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y).\sum_{q \in Q}\ket{qy}
-        \]
-        Consider $\beta = qy$. Then:
-        \[
-         = \frac{1}{\sqrt{|G|}}\sum_{q \in Q}\chi(a,q)\sum_{\beta}\chi(a,\beta)\ket{\beta} = \sum_{q \in Q}\chi(a,q) . \ket{\hat{a}}
-        \]
-        \[
-         = \lambda_a\ket{\hat{a}}
-        \]
 
+        \begin{align}
+            A\ket{\hat{a}} 
+            &= A\frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y)\ket{y} \nonumber \\
+            &= \frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y)A\ket{y} \nonumber \\
+            &= \frac{1}{\sqrt{|G|}}\sum_{y \in G}\chi(a,y)\sum_{q \in Q}\ket{qy} \nonumber
+            \end{align}
+            
+            \noindent Consider $\beta = qy$. Then the above equation becomes:
+            
+            \begin{align}
+            \frac{1}{\sqrt{|G|}}\sum_{q \in Q} \sum_{y \in G} \chi(a,y)\ket{qy} 
+            &= \frac{1}{\sqrt{|G|}}\sum_{q \in Q} \chi(a,q) \sum_{\beta \in G} \chi(a,\beta)\ket{\beta} \nonumber \\
+            &= \sum_{q \in Q} \chi(a,q)\ket{\hat{a}} \nonumber \\
+            &= \lambda_a\ket{\hat{a}} \label{eq:group_action_walk}
+            \end{align}
+            
 
 % \[
 % A = \sum_{s \in S} P_s,
@@ -500,7 +507,7 @@ In particular, for a continuous-time quantum walk starting at the identity eleme
 \[
 \ket{\psi(t)} = e^{-iAt} \ket{e},
 \]
-the resulting state remains a \emph{class function}, i.e., the amplitude $\braket{g|\psi(t)}$ depends only on structural properties of $g$ (such as Hamming weight or conjugacy class).
+the resulting state remains a \emph{class function}, i.e., the amplitude $\braket{g}{\psi(t)}$ depends only on structural properties of $g$ (such as Hamming weight or conjugacy class).
 
 This symmetry drastically reduces the effective state space. For instance, on distance-regular graphs (including many Cayley graphs), amplitudes are equal for all vertices at the same distance from the starting point. This idea is also used in the analysis of the glued trees graph, where the walk remains uniform on each layer.
 
@@ -565,21 +572,21 @@ As in the previous case, the eigenvectors \( \ket{G^{(h)} * x} \) are determined
 
 To see this, we have:
 
-\[
-    A\ket{G^{(h)}*x} = \frac{1}{\sqrt{|G|}}.\sum_{g \in G}\chi(g,h) A.\ket{g*x}
-    \]
 
-    \[
-    = A\ket{G^{(h)}*x} = \frac{1}{\sqrt{|G|}}.\sum_{g \in G}\chi(g,h)\sum_{q \in Q}\ket{q*(g*x)}
-    \]
-    Consider $\beta = qg$. Then:
-    \[
-    = = \frac{1}{\sqrt{|G|}}\sum_{q \in Q}\sum_{\beta \in G}\chi(\beta,h)\chi(q,h)\ket{\beta * x}
-    \]
 
-    \[
-    = \sum_{q \in Q}\chi(q,h).\ket{G^{(h)}*x} = \lambda_h \ket{G^{(h)}*x}
-    \]
+\begin{align}
+    A\ket{G^{(h)} * x} 
+    &= \frac{1}{\sqrt{|G|}}\sum_{g \in G} \chi(g, h)\, A\ket{g * x} \nonumber \\
+    &= \frac{1}{\sqrt{|G|}}\sum_{g \in G} \chi(g, h)\sum_{q \in Q} \ket{q * (g * x)} \nonumber
+    \end{align}
+    
+    \noindent Consider $\beta = qg$. Then the above equation becomes:
+    
+    \begin{align}
+    \frac{1}{\sqrt{|G|}}\sum_{q \in Q} \sum_{\beta \in G} \chi(\beta, h)\chi(q, h)\ket{\beta * x}
+    &= \sum_{q \in Q} \chi(q, h)\ket{G^{(h)} * x} \nonumber \\
+    &= \lambda_h \ket{G^{(h)} * x} \label{eq:group_action_symmetrized}
+    \end{align}
 
     Since the group action \( (G, X, *) \) is regular, the two Cayley graph constructions are isomorphic. In the first construction, the vertex set is \( G \), and the adjacency matrix is indexed by elements of \( G \). In the second construction, the vertex set is \( X \), with the adjacency matrix indexed by elements of \( X \). The isomorphism between these graphs is given by the bijection
 \[
@@ -661,15 +668,15 @@ In the next section, we develop techniques for simulating continuous-time quantu
 
 
 
-\chapter{Simulating Group Action Quantum Walks}
+\chapter{Simulating Group Action Quantum Walks}\label{chap:simulating}
 
 
 From this point onward, we assume that the generating set \( Q \) is small, specifically \( \abs{Q} = \operatorname{poly}(\log \abs{G}) \). In the first construction, where the vertex set is \( X = G \), the continuous-time walk \( e^{-iAt} \) can be implemented efficiently even for values of \( t \) that are exponentially large in \( \log \abs{G} \). This efficiency stems from the identity:
 \begin{equation}
     \label{eq:adjmat-fb}
-    e^{-iAt} = \operatorname{QFT}_G \left( \sum_{a \in G} e^{-i\lambda_a t} \ket{a} \bra{a} \right) \operatorname{QFT}_G^*,
+    e^{-iAt} = \qft_G \left( \sum_{a \in G} e^{-i\lambda_a t} \ket{a} \bra{a} \right) \qft_G^*,
 \end{equation}
-where both \( \operatorname{QFT}_G \) and its inverse can be implemented in \( \operatorname{poly}(\log \abs{G}) \) time. Moreover, the diagonal unitary \( \ket{a} \mapsto e^{-i\lambda_a t} \ket{a} \) is efficiently realizable since the eigenvalues \( \lambda_a \) can be computed classically to arbitrary precision in polynomial time with respect to \( \log \abs{G} \).
+where both \( \qft_G \) and its inverse can be implemented in \( \operatorname{poly}(\log \abs{G}) \) time. Moreover, the diagonal unitary \( \ket{a} \mapsto e^{-i\lambda_a t} \ket{a} \) is efficiently realizable since the eigenvalues \( \lambda_a \) can be computed classically to arbitrary precision in polynomial time with respect to \( \log \abs{G} \).
 
 The situation becomes more nuanced in the group-action setting. Although the states \( \ket{G^{(h)} * x} \) play a role analogous to the Fourier basis states \( \ket{\hat{h}} \), the involvement of the group action \( * \) introduces additional complexity. In particular, implementing arbitrary transformations over these states is nontrivial. One is typically restricted to operations of the form \( \ket{y} \mapsto \ket{a * y} \), where \( a \in G \). Consequently, no efficient decomposition analogous to~\eqref{eq:adjmat-fb} is currently known in the group-action context. The best available formulation is the spectral decomposition:
 \[
@@ -694,7 +701,7 @@ To define the discrete-time walk operator, we first construct an orthonormal set
 \end{align}
 where \( F_j \) denotes the set of nonzero entries in column \( j \) of \( H \), and \( K \ge \opnorm{H}_{\mathrm{max}} \) is a fixed constant.
 
-Based on these states, we define the isometry \( T : \mathbb{C}^{2N} \to \mathbb{C}^{2N} \otimes \mathbb{C}^{2N} \) as follows:
+Based on these states, we define the isometry \( T : \C^{2N} \to \mathbb{C}^{2N} \otimes \mathbb{C}^{2N} \) as follows:
 \begin{equation}
     \label{eq:walk-isom}
     T := \sum_{j = 0}^{N - 1} \sum_{b \in \{0, 1\}} (\ket{j}\bra{j} \otimes \ket{b}\bra{b}) \otimes \ket{\phi_{jb}}.
@@ -702,7 +709,7 @@ Based on these states, we define the isometry \( T : \mathbb{C}^{2N} \to \mathbb
 
 The discrete-time quantum walk operator is then defined as
 \[
-W = iS(2TT^* - \mathbf{1}),
+W = iS(2TT^* - \mathds{1}),
 \]
 where \( S \) is the swap operator acting as
 \[
@@ -735,7 +742,7 @@ To efficiently simulate the continuous-time evolution \( e^{-iHt} \), it suffice
 \section{Simulating group action quantum walks.}
 Assume \( t = \operatorname{poly}(\log \abs{G}) \). We show that the continuous-time walk \( W = e^{-iAt} \) can be efficiently simulated using the discrete-time quantum walk framework developed in~\cite{childs2010relationship}. Recall the isometry \( T \) defined in Equation~\eqref{eq:walk-isom}, where the states \( \ket{\phi_b} \) are as given in Equation~\eqref{eq:walk-sim}. To carry out the simulation, it suffices to show that the isometry \( T \), its adjoint \( T^* \), and the discrete-time walk operator
 \[
-W = iS(2TT^* - \mathbf{1})
+W = iS(2TT^* - \mathds{1})
 \]
 can all be efficiently implemented in the group-action setting.
 
@@ -762,7 +769,7 @@ Because \( Q \subset G \) is a small set (i.e., \( \abs{Q} = \operatorname{poly}
 \[
 V_Q \ket{0} = \frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q}.
 \]
-Applying \( V_Q \otimes \mathbf{1} \) to the state \( \ket{0} \ket{y, 0} \ket{0, 0} \) produces:
+Applying \( V_Q \otimes \mathds{1} \) to the state \( \ket{0} \ket{y, 0} \ket{0, 0} \) produces:
 \[
 \frac{1}{\sqrt{\abs{Q}}} \sum_{q \in Q} \ket{q} \ket{y, 0} \ket{0, 0}.
 \]
@@ -779,7 +786,7 @@ V_2 : \ket{q} \ket{y, 0} \ket{q * y, 0} \mapsto \ket{0} \ket{y, 0} \ket{q * y, 0
 Since \( Q \) is small, we can efficiently determine \( q \) from the pair \( (y, q * y) \) by exhaustively checking each \( q \in Q \). Thus, \( V_2 \) (and therefore \( U_0 \)) can be implemented efficiently.
 
 
-To implement \( U_0^* : \ket{0} \ket{y, 0} \ket{\phi_{y0}} \mapsto \ket{0} \ket{y, 0} \ket{0, 0} \), we sequentially apply \( V_2^* \), followed by \( V_1^* \), and finally \( V_Q^* \otimes \mathbf{1} \). Since each of these unitaries can be implemented efficiently, it follows that \( U_0^* \) is also efficient.
+To implement \( U_0^* : \ket{0} \ket{y, 0} \ket{\phi_{y0}} \mapsto \ket{0} \ket{y, 0} \ket{0, 0} \), we sequentially apply \( V_2^* \), followed by \( V_1^* \), and finally \( V_Q^* \otimes \mathds{1} \). Since each of these unitaries can be implemented efficiently, it follows that \( U_0^* \) is also efficient.
 
 We now construct the isometry \( T \) using a conditional unitary \( U_T \), which applies either \( U_0 \) or \( U_1 \) depending on the value of the qubit \( b \). That is,
 \[
@@ -788,22 +795,22 @@ U_T = \text{Controlled-}U_b \quad \text{with control on } b \in \{0,1\}.
 
 Next, we demonstrate that the walk unitary
 \[
-W = iS(2TT^* - \mathbf{1})
+W = iS(2TT^* - \mathds{1})
 \]
-can be applied efficiently. This reduces to implementing the reflection \( 2TT^* - \mathbf{1} \), which we analyze as follows:
+can be applied efficiently. This reduces to implementing the reflection \( 2TT^* - \mathds{1} \), which we analyze as follows:
 \begin{align*}
-2\ket{0}\bra{0} \otimes TT^* - \mathbf{1}
-&= 2\ket{0}\bra{0} \otimes \sum_{y \in X} \sum_{b \in \{0,1\}} \ket{y,b} \ket{\phi_{yb}} \bra{y,b} \bra{\phi_{yb}} - \mathbf{1} \\
-&= 2\sum_{y \in X} \sum_{b \in \{0,1\}} \ket{0} \ket{y,b} \ket{\phi_{yb}} \bra{0} \bra{y,b} \bra{\phi_{yb}} - \mathbf{1} \\
-&= U_T \left( 2 \sum_{y \in X} \sum_{b \in \{0,1\}} \ket{0} \ket{y,b} \ket{0,0} \bra{0} \bra{y,b} \bra{0,0} - \mathbf{1} \right) U_T^* \\
-&= U_T \left( 2\ket{0}\bra{0} \otimes \mathbf{1}_{X,b} \otimes \ket{0,0}\bra{0,0} - \mathbf{1} \right) U_T^*.
+2\ket{0}\bra{0} \otimes TT^* - \mathds{1}
+&= 2\ket{0}\bra{0} \otimes \sum_{y \in X} \sum_{b \in \{0,1\}} \ket{y,b} \ket{\phi_{yb}} \bra{y,b} \bra{\phi_{yb}} - \mathds{1} \\
+&= 2\sum_{y \in X} \sum_{b \in \{0,1\}} \ket{0} \ket{y,b} \ket{\phi_{yb}} \bra{0} \bra{y,b} \bra{\phi_{yb}} - \mathds{1} \\
+&= U_T \left( 2 \sum_{y \in X} \sum_{b \in \{0,1\}} \ket{0} \ket{y,b} \ket{0,0} \bra{0} \bra{y,b} \bra{0,0} - \mathds{1} \right) U_T^* \\
+&= U_T \left( 2\ket{0}\bra{0} \otimes \mathds{1}_{X,b} \otimes \ket{0,0}\bra{0,0} - \mathds{1} \right) U_T^*.
 \end{align*}
 
-Since \( U_T \), \( U_T^* \), and the operator \( 2\ket{0}\bra{0} \otimes \mathbf{1}_{X,b} \otimes \ket{0,0}\bra{0,0} - \mathbf{1} \) can all be implemented efficiently, it follows that the reflection \( 2\ket{0}\bra{0} \otimes TT^* - \mathbf{1} \) is also efficient.
+Since \( U_T \), \( U_T^* \), and the operator \( 2\ket{0}\bra{0} \otimes \mathds{1}_{X,b} \otimes \ket{0,0}\bra{0,0} - \mathds{1} \) can all be implemented efficiently, it follows that the reflection \( 2\ket{0}\bra{0} \otimes TT^* - \mathds{1} \) is also efficient.
 
 Finally, for any input state \( \ket{\psi} \), the reflection acts as:
 \[
-\left(2\ket{0}\bra{0} \otimes TT^* - \mathbf{1} \right) \ket{0} \ket{\psi} = \ket{0} \left(2TT^* - \mathbf{1} \right) \ket{\psi},
+\left(2\ket{0}\bra{0} \otimes TT^* - \mathds{1} \right) \ket{0} \ket{\psi} = \ket{0} \left(2TT^* - \mathds{1} \right) \ket{\psi},
 \]
 confirming that the full walk operator \( W \) can be implemented efficiently in the group-action setting.
 
@@ -820,7 +827,7 @@ confirming that the full walk operator \( W \) can be implemented efficiently in
 
 
 
-\chapter{Quantum Money and Hartley Transform}
+\chapter{Quantum Money and Hartley Transform}\label{chap:quantum_money}
 
 We now present our public-key quantum money scheme based on group actions and the Hartley transform. We begin by reviewing Zhandry’s quantum money scheme from abelian group actions (which uses the Fourier transform) as a baseline. Then we describe our Hartley-transform-based variant and discuss its properties. The quantum Hartley transform will play a central role in both the generation and verification of banknotes.
 
@@ -842,7 +849,7 @@ In a \emph{public-key} scheme, the verifier uses only the public information (he
 We next outline Zhandry’s scheme, which our scheme builds upon.
 
 \section{Fourier-Based Quantum Money from Group Actions}
-Zhandry’s quantum money scheme [31] is built on an abelian group action $G \curvearrowright X$. We have a family of group actions parameterized by the security parameter $n$ (so the size of $G$ grows with $n$). For simplicity, assume $|G| = N$. The scheme also fixes a particular element $x_0 \in X$ that everyone knows (a public base point in $X$).
+Zhandry’s quantum money scheme \cite{Zhandry2024} is built on an abelian group action $G \curvearrowright X$. We have a family of group actions parameterized by the security parameter $n$ (so the size of $G$ grows with $n$). For simplicity, assume $|G| = N$. The scheme also fixes a particular element $x_0 \in X$ that everyone knows (a public base point in $X$).
 
 The minting algorithm $\mathsf{Mint}$ in Zhandry’s scheme works as follows (informally):
 \begin{enumerate}
@@ -889,17 +896,17 @@ Concretely, assume again a group action $G \curvearrowright X$ with $|G|=N$. We 
     \item Prepare $|0_G, x_0\rangle$ as before.
     \item Apply the \emph{quantum Hartley transform} over $G$ to the first register. The Hartley transform (on an abelian group of order $N$) is defined as:
     \[
-       \mathrm{QHT}: |g\rangle \mapsto \frac{1}{\sqrt{N}} \sum_{k \in G} \cas \!\Big(\frac{2\pi \langle k,g \rangle}{N}\Big) |k\rangle,
+       \mathrm{QHT}: |g\rangle \mapsto \frac{1}{\sqrt{N}} \sum_{k \in G} \cas \Big(\frac{2\pi \langle k,g \rangle}{N}\Big) |k\rangle,
     \] 
     where $\mathrm{cas}(\theta) = \cos \theta + \sin \theta$ and $\langle k,g \rangle$ denotes some pairing like an exponent or dot product (for cyclic groups this is just $kg$). In simpler terms, $\mathrm{QHT}(|0_G\rangle) = \frac{1}{\sqrt{N}}\sum_{k \in G} |k\rangle$ (because $\cas(0)=1$), \emph{the same uniform superposition as the QFT produces for $|0\rangle$}. So after this step, we again have $\frac{1}{\sqrt{N}}\sum_{g \in G} |g\rangle|x_0\rangle$, but crucially the coefficients are all \emph{real} and positive (in fact all $1/\sqrt{N}$).
     \item Perform the controlled group action by the first register on the second: $\frac{1}{\sqrt{N}}\sum_{g} |g\rangle |g*x_0\rangle$.
     \item Apply the inverse QHT on the first register (which being its own inverse up to a constant factor, is the same operation again since Hartley is symmetric like Fourier). Now here is where things differ: after this operation, the joint state will be 
     \[
-       \frac{1}{\sqrt{N}} \sum_{g \in G} \cas\!\Big(\frac{2\pi \langle h,g \rangle}{N}\Big)\, |g\rangle \otimes |g*x_0\rangle.
+       \frac{1}{\sqrt{N}} \sum_{g \in G} \cas\Big(\frac{2\pi \langle h,g \rangle}{N}\Big)\, |g\rangle \otimes |g*x_0\rangle.
     \] 
     Because the Hartley transform combines what would be cosine and sine terms, this state is not as nicely factorable as in the Fourier case. In the Fourier case, we got $|h\rangle \otimes \text{(orbit state)}$. In the Hartley case, we do not get a single basis state in the first register; instead we get a superposition in the first register with real coefficients $c_g = \cas(2\pi\langle h,g\rangle/N)$. However, note that $c_g$ is just some real number in $[-1,1]$ depending on $h$ and $g$. Another way to express the above state is:
     \[
-      |\$\rangle = \frac{1}{\sqrt{N}} \sum_{x \in X} \Big(\frac{1}{\sqrt{N}}\sum_{g: g*x_0 = x} \cas\!\big(\frac{2\pi \langle h,g \rangle}{N}\big)\Big)\, |x\rangle.
+      |\$\rangle = \frac{1}{\sqrt{N}} \sum_{x \in X} \Big(\frac{1}{\sqrt{N}}\sum_{g: g*x_0 = x} \cas\big(\frac{2\pi \langle h,g \rangle}{N}\big)\Big)\, |x\rangle.
     \] 
     Since for a given $x\in X$, all $g$ such that $g*x_0=x$ have the form $g = u h$ for a unique $u \in G$ (because the action is free and transitive), one can simplify the internal sum using properties of the cas function. But we need not dive into that here.
     \item No measurement of the first register is performed. In fact, we do not have a nice product state separation, so we cannot simply measure one register to get $h$. Instead, the output of minting is just the quantum state $|\$\rangle$ (which is entangled between what used to be two registers) and the known classical serial number $h$ (we know what $h$ we picked).
@@ -912,7 +919,7 @@ The verification algorithm in our Hartley-based scheme attempts to mirror the Fo
 To address this, our verification algorithm takes a more sophisticated approach:
 \begin{enumerate}
     \item Given $(h, |\psi\rangle)$, it first uses the \textbf{quantum walk-based phase estimation} method (to be detailed in Chapter 6) to \emph{compute the eigenphase corresponding to $h$}. In short, we will treat $|\psi\rangle$ as an eigenvector of the group action adjacency matrix with a certain eigenvalue $\lambda$ related to $h$. We run a procedure to estimate $\lambda$ to high precision.
-    \item From the estimated eigenvalue(s), we reconstruct a candidate group element $h^*$ that we believe generated the state. (This uses the fact that by running phase estimation for multiple carefully chosen walk durations, one can solve for $h$ as shown in [31].)
+    \item From the estimated eigenvalue(s), we reconstruct a candidate group element $h^*$ that we believe generated the state. (This uses the fact that by running phase estimation for multiple carefully chosen walk durations, one can solve for $h$ as shown in \cite{Zhandry2022}.)
     \item We check if $h^* = h$ (the serial number provided). If not, we reject, since the state does not match the serial. If yes, we accept.
 \end{enumerate}
 
@@ -925,11 +932,11 @@ We defer the full analysis of the success probabilities and how many repetitions
 \section{Efficient Quantum Hartley Transform Implementation}
 Before moving on to the verification algorithm, we briefly discuss how we implement the quantum Hartley transform (QHT) efficiently, as this is an important practical aspect of our scheme. The Fourier transform is well-known to have efficient circuits; for the Hartley transform, fewer results are available, so we contributed a new circuit construction.
 
-The QHT we need is over an abelian group, which for concreteness one can think of as $\mathbb{Z}_N$ (the general finite abelian group case can usually be reduced to a direct sum of cyclic groups, applying QHT on each cyclic component). Classical Hartley transforms have a recursive structure similar to fast Fourier transforms. In fact, there are known formulas to express a Hartley transform of size $N$ in terms of two Hartley transforms of size $N/2$ plus some additional linear operations [25]. We leveraged such structures to design a divide-and-conquer quantum circuit.
+The QHT we need is over an abelian group, which for concreteness one can think of as $\mathbb{Z}_N$ (the general finite abelian group case can usually be reduced to a direct sum of cyclic groups, applying QHT on each cyclic component). Classical Hartley transforms have a recursive structure similar to fast Fourier transforms. In fact, there are known formulas to express a Hartley transform of size $N$ in terms of two Hartley transforms of size $N/2$ plus some additional linear operations \cite{Bracewell1984}. We leveraged such structures to design a divide-and-conquer quantum circuit.
 
 Our algorithm for QHT works roughly as follows:
 - If $N$ is even, we can express the length-$N$ Hartley transform in terms of two length-$N/2$ Hartley transforms plus a combination of cheap operations (additions, permutations of data, etc.). We implement this decomposition recursively as a quantum circuit. The base of the recursion is when the size is small (like $N=2$ or $4$, where the transform can be done with a constant number of gates).
-- We found that by carefully optimizing this recursion and using some known quantum subroutines for certain linear combinations, the overall gate count is improved compared to naive methods or previous proposals [21, 22]. In particular, our circuit avoids introducing any quantum Fourier transform internally (unlike [22] which computed Hartley via Fourier plus some adjustments), and this yields a purely real rotation-based circuit.
+- We found that by carefully optimizing this recursion and using some known quantum subroutines for certain linear combinations, the overall gate count is improved compared to naive methods or previous proposals \cite{Klappenecker2001DCT,Klappenecker2001Signal}. In particular, our circuit avoids introducing any quantum Fourier transform internally (unlike \cite{Klappenecker2001Signal} which computed Hartley via Fourier plus some adjustments), and this yields a purely real rotation-based circuit.
 
 
 %%%%%%%%%%% az inja %%%%%%%%%%%%%
@@ -937,12 +944,12 @@ Our algorithm for QHT works roughly as follows:
 Our algorithm for the quantum Hartley transform, \( \qht_N \), is modeled after the recursive structure of the quantum Fourier transform algorithm \( \qft_N \). To motivate this, we begin by reviewing the standard approach for computing \( \qft_N \). For clarity, we assume \( N = 2^n \), allowing each element of \( \mathbb{Z}_N \) to be represented using exactly \( n \) qubits. The same recursive framework can be extended to handle general values of \( N \). For any \( a \in \mathbb{Z}_N \), the quantum Fourier transform is defined as:
 
 
-\begin{align*}
+\begin{align}
     \qft_N\ket{a}
     & = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \omega_N^{ay}\ket{y} \\
     & = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \omega_N^{ay} \ket{y} + (-1)^a \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \omega_N^{ay} \ket{y + N/2} \\
-    & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \omega_N^{ay} \frac{1}{\sqrt{2}} (\ket{0} + (-1)^a \ket{1}) \ket{y}, %\numberthis\label{eq:qft_alt}
-\end{align*}
+    & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \omega_N^{ay} \frac{1}{\sqrt{2}} (\ket{0} + (-1)^a \ket{1}) \ket{y}, \label{eq:qft_alt}
+\end{align}
 
 
 In the final expression, we have isolated the first qubit for clarity. Let \( \ket{a} = \ket{t}\ket{b} \), where \( b \) denotes the least significant bit of \( a \), implying that \( a = 2t + b \) for some \( t \in \mathbb{Z}_{N / 2} \). Applying \( \qft_{N / 2} \) to the first register yields the state:
@@ -951,7 +958,7 @@ In the final expression, we have isolated the first qubit for clarity. Let \( \k
 Next, we apply the phase unitary \( P(y, b) \), defined by \( \ket{y} \ket{b} \mapsto \omega_N^{by} \ket{y} \ket{b} \), followed by a Hadamard transform on the final qubit. This results in the state given in Equation~\eqref{eq:qft_alt}.
 
 
-We now describe our algorithm for efficiently computing the quantum Hartley transform \( \qht_N \). The key idea is to leverage the recursive structure of \( \qht_N \), analogous to the strategy used for \( \qft_N \). To facilitate this, we begin by rewriting the summation in Equation~\eqref{eq:qht-N} to expose its recursive form. Our approach is as follows:
+We now describe our algorithm for efficiently computing the quantum Hartley transform \( \qht_N \). The key idea is to leverage the recursive structure of \( \qht_N \), analogous to the strategy used for \( \qft_N \). To facilitate this, we begin by rewriting the summation in Equation~\eqref{eq:qht_def} to expose its recursive form. Our approach is as follows:
 \begin{equation}
     \label{eq:cas-expand}
 	\frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \ket{y}
@@ -981,9 +988,9 @@ In the final equality, the most significant qubit has been isolated to emphasize
 We now demonstrate how to compute \( \qht_N \) recursively. For a given \( a \in \mathbb{Z}_N \), we decompose the basis state as \( \ket{a} = \ket{t}\ket{b} \), where \( b \) denotes the least significant bit, such that \( a = 2t + b \) for some \( t \in \mathbb{Z}_{N/2} \). Assuming the existence of an efficient quantum circuit for computing \( \qht_{N/2} \), we proceed to construct \( \qht_N \) in a recursive fashion. To begin the transformation on \( \ket{a} \), we introduce an ancilla qubit initialized to \( \ket{0} \), yielding the joint state \( \ket{0}\ket{t}\ket{b} \). We then proceed as follows:
 \begin{align*}
 	\ket{0}\ket{t}\ket{b}
-    & \mapsto \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi t y}{N / 2} \Big) \ket{0} \ket{y} \ket{b} & (\mathbf{1} \otimes \qht_{N / 2} \otimes \mathbf{1}) \\
+    & \mapsto \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi t y}{N / 2} \Big) \ket{0} \ket{y} \ket{b} & (\mathds{1} \otimes \qht_{N / 2} \otimes \mathds{1}) \\
     & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) \ket{0} \ket{y} \ket{b} \\
-    & \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) (\ket{0} + \ket{1}) \ket{y}\ket{b}. & (H \otimes \mathbf{1})
+    & \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) (\ket{0} + \ket{1}) \ket{y}\ket{b}. & (H \otimes \mathds{1})
 \end{align*}
 Next, we apply a controlled negation operation, where the ancilla qubit is flipped if and only if the least significant bit \( b \) is equal to 1.
 \[
@@ -1024,7 +1031,7 @@ Next, we uncompute the first qubit by applying a \textsc{CNOT} gate with the las
 \begin{align*}
     \ket{\psi}
     & \mapsto \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi ay}{N} \Big) \ket{0} \ket{y} \ket{b} & (\textsc{cnot}) \\
-    & \mapsto \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi ay}{N} \Big) \ket{0} \ket{y} \frac{1}{\sqrt{2}}(\ket{0} + (-1)^b \ket{1}) & (\mathbf{1} \otimes H) \\
+    & \mapsto \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi ay}{N} \Big) \ket{0} \ket{y} \frac{1}{\sqrt{2}}(\ket{0} + (-1)^b \ket{1}) & (\mathds{1} \otimes H) \\
     & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{2\pi ay}{N} \Big) \ket{0} \ket{y} \frac{1}{\sqrt{2}}(\ket{0} + (-1)^a \ket{1}). & ((-1)^b = (-1)^a) \\
 \end{align*}
 The final summation matches precisely with Equation~\eqref{eq:qht-alt}, which defines the quantum Hartley transform of \( \ket{a} \). Thus, we have successfully implemented the transformation:
@@ -1044,13 +1051,13 @@ The complete procedure is summarized in the following algorithm.
 
 \begin{enumerate}%[itemsep = 0mm, parsep = 1mm, topsep = 1mm]
     \item Initialize an ancilla qubit to $0$ to obtain the state $\ket{0}\ket{\psi}$
-    \item Compute $\mathbf{1} \otimes \qht_{N / 2} \otimes \mathbf{1}$ recursively.
-    \item Apply $H \otimes \mathbf{1}$.
+    \item Compute $\mathds{1} \otimes \qht_{N / 2} \otimes \mathds{1}$ recursively.
+    \item Apply $H \otimes \mathds{1}$.
     \item\label{stp:ngt} Apply the controlled negation $\ket{0}\ket{y} \mapsto \ket{0}\ket{y}, \ket{1}\ket{y} \mapsto \ket{1}\ket{N / 2 -y}$ to the first two registers.
     \item Apply the unitary $U_R$.
-    \item Apply $H \otimes \mathbf{1}$
+    \item Apply $H \otimes \mathds{1}$
     \item Apply \textsc{cnot} to the first and last qubits.
-    \item Apply $\mathbf{1} \otimes H$.
+    \item Apply $\mathds{1} \otimes H$.
     \item Trace out the first qubit
 \end{enumerate}
 % \end{algorithm}
@@ -1069,13 +1076,13 @@ The complete procedure is summarized in the following algorithm.
     
     To implement the unitary \( U_R \), which requires constructing the conditional rotation operator \( R(y, b) \) for arbitrary \( y \) and \( b \), we make use of the two-qubit controlled rotations:
     \[
-    R_j = \ket{0}\bra{0} \otimes \mathbf{1} + \ket{1}\bra{1} \otimes
+    R_j = \ket{0}\bra{0} \otimes \mathds{1} + \ket{1}\bra{1} \otimes
     \begin{bmatrix}
     \cos\left(\frac{2\pi 2^j}{N}\right) & \sin\left(\frac{2\pi 2^j}{N}\right) \\
     -\sin\left(\frac{2\pi 2^j}{N}\right) & \cos\left(\frac{2\pi 2^j}{N}\right)
     \end{bmatrix},
     \]
-    for \( j = 0, 1, \dots, n - 1 \). When \( b = 0 \), we have \( R(y, 0) = \mathbf{1} \), and when \( b = 1 \), the operator \( R(y, 1) \) is the product of those \( R_j \) for which the \( j \)th bit of \( y \) is 1. Therefore, for a binary string \( y \) of length \( k = \lceil \log y \rceil \), we can implement \( U_R \) using at most \( k \) gates from the set \( \{R_j\} \).
+    for \( j = 0, 1, \dots, n - 1 \). When \( b = 0 \), we have \( R(y, 0) = \mathds{1} \), and when \( b = 1 \), the operator \( R(y, 1) \) is the product of those \( R_j \) for which the \( j \)th bit of \( y \) is 1. Therefore, for a binary string \( y \) of length \( k = \lceil \log y \rceil \), we can implement \( U_R \) using at most \( k \) gates from the set \( \{R_j\} \).
     
     Let \( T(N) \) denote the gate complexity of the algorithm for an input of dimension \( N \). Assuming access to the \( R_j \) gates as elementary operations, the recurrence relation becomes
     \[
@@ -1097,9 +1104,9 @@ For the purposes of this thesis, the main point is: \emph{we can implement the H
 
 
 
-\chapter{Verification Algorithm Using Quantum Walks}
+\chapter{Verification Algorithm Using Quantum Walks}\label{chap:verification}
 
-The Hartley-based quantum money scheme introduced in the previous chapter requires a new verification procedure to address the issues that arise from using real amplitude states. In this chapter, we describe and analyze the verification algorithm, which leverages continuous-time quantum walks on the group action graph (and their efficient simulation from Chapter 4) to extract the information needed to authenticate a banknote.
+The Hartley-based quantum money scheme introduced in the previous chapter requires a new verification procedure to address the issues that arise from using real amplitude states. In this chapter, we describe and analyze the verification algorithm, which leverages continuous-time quantum walks on the group action graph (and their efficient simulation from Chapter~\ref{chap:simulating}) to extract the information needed to authenticate a banknote.
 
     \section{Challenges with Naïve Verification}
     Before detailing the new algorithm, let us briefly recap why the straightforward approach fails. In the Fourier-based scheme, verification was done by a single “kickback” operation using the claimed serial $h$, and measuring an auxiliary register. In the Hartley-based scheme, if we attempted the analogous one-step verification, we would perform the controlled-$h$ action and measure the auxiliary system. A genuine state $|\$_h\rangle$ (the Hartley money state for serial $h$) would cause some interference pattern in the auxiliary register, but unlike the Fourier case, it does not return the auxiliary to $|x_0\rangle$ deterministically. In fact, there is an ambiguity: certain superpositions of eigenstates corresponding to $h$ and $-h$ (or other group-related variants) can produce the same measurement statistics in that one-step test. This means an adversary might prepare a counterfeit state that is not a legitimate $|\$_h\rangle$ but still passes the one-step verification with non-zero probability. Essentially, the Hartley transform being real means we lost some phase information, and a single measurement cannot distinguish some mirrored states.
@@ -1162,37 +1169,8 @@ Beyond its specific contributions to quantum money, this work opens up new direc
 
 
 \bibliographystyle{plain}
-\begin{thebibliography}{99}
+\bibliography{references}
 
-    \bibitem{Wiesner1983}
-    S. Wiesner, ``Conjugate Observables and the Foundations of Cryptography,'' \textit{Sigact News}, vol. 15, no. 1, pp. 78–88, 1983.
-    
-    \bibitem{Aaronson2009}
-    S. Aaronson, ``Quantum Copy-Protection and Quantum Money,'' In \textit{Proceedings of the IEEE Conference on Computational Complexity (CCC)}, 2009.
-    
-    \bibitem{Lutomirski2010}
-    A. Lutomirski, S. Aaronson, E. Farhi, D. Gosset, J. Keselman, P. Shor, A. Slofstra, and A. Speyer, ``Breaking and Making Quantum Money: Toward a New Quantum Cryptographic Protocol,'' arXiv:1004.4843, 2010.
-    
-    \bibitem{Zhandry2022}
-    M. Zhandry, ``Quantum Money from Modular Forms,'' In \textit{Proceedings of CRYPTO}, 2022.
-    
-    \bibitem{Doliskani2023}
-    J. Doliskani, ``On the Security of Group Action-Based Quantum Money,'' unpublished manuscript, 2023.
-    
-    \bibitem{Childs2004}
-    A. M. Childs, ``Quantum Information Processing in Continuous Time,'' Ph.D. thesis, Massachusetts Institute of Technology, 2004.
-    
-    \bibitem{BerryKothari}
-    D. Berry and R. Kothari, ``Hamiltonian Simulation with Optimal Sample Complexity,'' In \textit{Proceedings of FOCS}, 2018.
-
-    \bibitem{Zhandry2024}
-    M. Zhandry, ``Quantum Money from Abelian Group Actions,'' In \textit{Proceedings of the 15th Innovations in Theoretical Computer Science Conference (ITCS)}, Schloss Dagstuhl–Leibniz Center for Informatics, 2024.
-
-
-    \bibitem{childs2010relationship}
-    A. M. Childs, ``On the Relationship Between Continuous- and Discrete-Time Quantum Walk,'' \textit{Communications in Mathematical Physics}, vol. 294, pp. 581–603, 2010.
-
-\end{thebibliography}
 
 
 
