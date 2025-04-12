@@ -81,7 +81,7 @@ To ensure the robustness of this quantum money scheme, we develop a verification
 \chapter{Introduction}
 Quantum money, first introduced in a seminal paper by Wiesner~\cite{Wiesner1983}, is a form of currency represented by quantum states. Unlike classical money, an ideal quantum bill cannot be counterfeited due to the no-cloning theorem of quantum mechanics, which prohibits making an identical copy of an unknown quantum state. Wiesner’s original scheme (now termed a \emph{private-key quantum money} scheme) had significant practical drawbacks: it required the issuing bank’s secret key to verify each banknote, meaning the bank had to be involved in every transaction. This reliance on the bank for verification severely limits the usability of private-key quantum money schemes.
 
-In 2009, Aaronson~\cite{Aaronson2009} proposed the first \emph{public-key quantum money} scheme, in which anyone can verify a quantum banknote while only the bank can mint (issue) new valid banknotes. Public-key quantum money removes the transactional bottleneck of involving the bank every time. Aaronson’s specific scheme was later broken by Lutomirski et al.~\cite{Lutomirski2010}. In the years since, several alternative public-key quantum money constructions have been explored. However, each of these proposals has either been broken by further cryptanalysis or relies on unconventional cryptographic assumptions, making their security or practicality questionable.
+In 2009, Aaronson~\cite{Aaronson2009} proposed the first \emph{public-key quantum money} scheme, in which anyone can verify a quantum banknote while only the bank can generate new valid banknotes. Public-key quantum money removes the transactional bottleneck of involving the bank every time. Aaronson’s specific scheme was later broken by Lutomirski et al.~\cite{Lutomirski2010}. In the years since, several alternative public-key quantum money constructions have been explored. However, each of these proposals has either been broken by further cryptanalysis or relies on unconventional cryptographic assumptions, making their security or practicality questionable.
 
 \medskip\noindent\textbf{Quantum Money from Group Actions and the Fourier Transform.} 
 A promising candidate for secure public-key quantum money based on more standard assumptions was recently proposed by Zhandry~\cite{Zhandry2022}. In Zhandry’s scheme, the core idea is to use an abelian group action as the foundation for the quantum state. Each money state (quantum banknote) is prepared as a \emph{group-action Fourier state}, and the corresponding serial number is an element of the underlying group (we will elaborate on these terms in later chapters). The verification algorithm in this scheme uses a group-action phase kickback routine to extract the serial number from the quantum banknote and check its validity. Doliskani~\cite{Doliskani2023} later proved that Zhandry’s scheme is secure in the generic group action model, providing evidence for its security under well-defined assumptions.
@@ -495,14 +495,11 @@ Another application is \emph{spatial search} on graphs. Childs and Goldstone \ci
 More generally, CTQWs provide a natural framework for quantum search algorithms on graphs, often achieving Grover-like speedups or better. It is also known that continuous-time quantum walks are \textbf{universal for quantum computation}, meaning that sufficiently complex graphs can encode arbitrary quantum logic operations.
 
 
-
 \section{Discrete-Time Quantum Walks}
-
-
 
 In a \textbf{discrete-time quantum walk (DTQW)}, evolution proceeds in discrete time steps. Formally, one defines a unitary step operator $U$ that is repeatedly applied to an initial state. Designing such a $U$ for an arbitrary graph is nontrivial, since a naive attempt to “jump to a random neighbor” quantumly is not unitary.
 
-The resolution is to enlarge the Hilbert space by introducing an auxiliary \emph{coin register} that provides additional degrees of freedom for unitary evolution. This model, first proposed by Watrous in the context of quantum graph algorithms, leads to the \emph{coined discrete-time quantum walk}.
+The resolution is to enlarge the Hilbert space by introducing an auxiliary \emph{coin register} that provides additional degrees of freedom for unitary evolution. This model, first proposed by Watrous \cite{Watrous2001} and later formalized in algorithmic contexts by Aharonov et al.~\cite{Aharonov2001}, leads to the \emph{coined discrete-time quantum walk}.
 
 \subsection{Coined Quantum Walk}
 
@@ -530,6 +527,8 @@ U = S C.
 \]
 
 By construction, $U$ is unitary and effects a “quantum hop” on the graph at each time step. On a regular graph, $C$ performs a uniform mixing over possible directions (like tossing a $d$-sided quantum coin), and $S$ implements a conditional shift. On irregular graphs, care must be taken to define appropriate coin spaces, or one may instead use Szegedy’s alternate framework.
+
+Coined quantum walks on simple structures such as the line were also analyzed in early work by Nayak and Vishwanath~\cite{Nayak2000}, who studied their spreading properties and asymptotic behavior.
 
 \subsection{Szegedy’s Walk}
 
@@ -713,7 +712,7 @@ To see this, we have
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Invariant Subspaces and Symmetry Reduction}
+\subsection{Structure and Symmetry in Cayley Graph Walks}
 
 Cayley graphs possess vertex-transitive symmetry under the group action $g : h \mapsto gh$. This symmetry induces invariant subspaces for the quantum walk evolution. If the initial state is uniform over a symmetry orbit, it remains so under the walk.
 
@@ -725,42 +724,55 @@ the resulting state remains a \emph{class function}, i.e., the amplitude $\brake
 
 This symmetry drastically reduces the effective state space. For instance, on distance-regular graphs (including many Cayley graphs), amplitudes are equal for all vertices at the same distance from the starting point. This idea is also used in the analysis of the glued trees graph, where the walk remains uniform on each layer.
 
-\subsection{Hitting and Mixing Properties}
+% \paragraph{Hitting and Mixing Properties}
 
+% Quantum walks on Cayley graphs have been applied to study hitting and mixing times. In the classical case, random walks on many Cayley graphs are rapidly mixing (e.g., those based on nonabelian simple groups, which often form expanders).
+
+% In the quantum case, mixing is more subtle due to unitary evolution. One typically considers \emph{instantaneous} or \emph{time-averaged} mixing. Some Cayley graphs support perfect state transfer or periodicity in CTQWs.
+
+% \textbf{Examples:}
+% \begin{itemize}
+%     \item On the cycle graph $C_n$, a CTQW exhibits perfect revival at time $t = \pi$ if $n$ is even.
+%     \item On the hypercube, the CTQW exhibits approximate uniform mixing at specific times.
+% \end{itemize}
+
+% These properties are derived from the spectral structure, which is accessible via group characters.
+
+% \paragraph{Discrete-Time Walks and Symmetry}
+
+% Coined DTQWs also benefit from Cayley graph symmetry. If a symmetric coin (e.g., the Grover coin) is used at each vertex of a vertex-transitive graph, the walk respects the full symmetry. As a result:
+% \begin{itemize}
+%     \item Amplitudes often remain uniform on symmetry-equivalent vertices.
+%     \item The dynamics of the walk can often be simplified by restricting to a smaller symmetric subspace.
+%     \item In some cases, symmetry can lead to \emph{localization}, where amplitude becomes trapped due to spectral properties of the coin.
+% \end{itemize}
+
+% These effects can be mitigated or exploited through careful coin design or by using Szegedy's method, which naturally respects symmetry.
+
+% In summary, Cayley graphs provide a rich and algebraically structured setting for quantum walks. Their underlying group-theoretic properties enable powerful techniques such as spectral analysis through irreducible representations, dimensionality reduction via symmetries and invariant subspaces, and explicit calculations of probabilities, mixing behavior, and hitting times. These features make Cayley graphs especially amenable to efficient quantum walk algorithms, which often exploit such structures either explicitly or implicitly. In the sections that follow, we extend these ideas to more general settings where group actions go beyond the framework of simple Cayley graphs.
+
+\paragraph{Hitting and Mixing Properties}
 Quantum walks on Cayley graphs have been applied to study hitting and mixing times. In the classical case, random walks on many Cayley graphs are rapidly mixing (e.g., those based on nonabelian simple groups, which often form expanders).
 
-In the quantum case, mixing is more subtle due to unitary evolution. One typically considers \emph{instantaneous} or \emph{time-averaged} mixing. Some Cayley graphs support perfect state transfer or periodicity in CTQWs.
+In the quantum case, mixing is more subtle due to unitary evolution. One typically considers instantaneous or time-averaged mixing. Some Cayley graphs support perfect state transfer or periodicity in CTQWs~\cite{Gerhardt2003}. Recent work has also established upper bounds on the mixing time for quantum walks on random graphs, showing polynomial-time convergence in certain regimes~\cite{Chakraborty2020}.
 
-\textbf{Examples:}
+Examples:
 \begin{itemize}
     \item On the cycle graph $C_n$, a CTQW exhibits perfect revival at time $t = \pi$ if $n$ is even.
     \item On the hypercube, the CTQW exhibits approximate uniform mixing at specific times.
 \end{itemize}
-
 These properties are derived from the spectral structure, which is accessible via group characters.
 
-\subsection{Discrete-Time Walks and Symmetry}
-
+\paragraph{Discrete-Time Walks and Symmetry}
 Coined DTQWs also benefit from Cayley graph symmetry. If a symmetric coin (e.g., the Grover coin) is used at each vertex of a vertex-transitive graph, the walk respects the full symmetry. As a result:
 \begin{itemize}
     \item Amplitudes often remain uniform on symmetry-equivalent vertices.
-    \item Walk dynamics can often be analyzed by reducing to a lower-dimensional invariant subspace.
-    \item In some cases, symmetry can lead to \emph{localization}, where amplitude becomes trapped due to spectral properties of the coin.
+    \item The dynamics of the walk can often be simplified by restricting to a smaller symmetric subspace.
+    \item In some cases, symmetry can lead to localization, where amplitude becomes trapped due to spectral properties of the coin.
 \end{itemize}
+These effects can be mitigated or exploited through careful coin design or by using Szegedy’s method, which naturally respects symmetry.
 
-These effects can be mitigated or exploited through careful coin design or by using Szegedy's method, which naturally respects symmetry.
-
-\subsection{Summary}
-
-Cayley graphs offer a rich and powerful structure for quantum walks. Their group-theoretic properties allow:
-\begin{itemize}
-    \item Spectral analysis via irreducible representations.
-    \item Dimensionality reduction using symmetry and invariant subspaces.
-    \item Explicit calculation of probabilities, mixing behavior, and hitting times.
-\end{itemize}
-
-Many efficient quantum walk algorithms exploit these properties either directly or implicitly. In subsequent sections, we will explore quantum walks on more general structures where group actions go beyond simple Cayley graphs.
-
+In summary, Cayley graphs provide a rich and algebraically structured setting for quantum walks. Their underlying group-theoretic properties enable powerful techniques such as spectral analysis through irreducible representations, dimensionality reduction via symmetries and invariant subspaces, and explicit calculations of probabilities, mixing behavior, and hitting times. These features make Cayley graphs especially amenable to efficient quantum walk algorithms, which often exploit such structures either explicitly or implicitly. In the sections that follow, we extend these ideas to more general settings where group actions go beyond the framework of simple Cayley graphs.
 
 
 
@@ -1054,18 +1066,18 @@ A public-key quantum money scheme consists of two algorithms, traditionally call
 
 We require two properties from such a scheme:
 \begin{description}
-    \item[Correctness:] For any valid output $(s, |\$\rangle)$ of $\mathsf{Mint}(1^n)$, the verification algorithm accepts with high probability. Formally, $\Pr[\mathsf{Verify}(s, |\$\rangle) = \mathtt{accept}]$ should be very close to 1 (typically we require it to be $1 - negl(n)$, where $negl(n)$ denotes a negligible function in $n$).
+    \item[Correctness:] For any valid output $(s, |\$\rangle)$ of $\mathsf{Gen}(1^n)$, the verification algorithm accepts with high probability. Formally, $\Pr[\mathsf{Verify}(s, |\$\rangle) = \mathtt{accept}]$ should be very close to 1 (typically we require it to be $1 - \negl(n)$, where $\negl(n)$ denotes a negligible function in $n$).
     \item[Security (Unforgeability):] No efficient adversary, given one or more genuine banknotes, can produce a new valid banknote. In the strongest formulation, if an adversary is given a single valid $(s, |\$\rangle)$, it should be infeasible for them to produce two quantum states $|\$'\rangle$ and $|\$''\rangle$ such that $\mathsf{Verify}(s, |\$'\rangle) = \mathsf{Verify}(s, |\$''\rangle) = \mathtt{accept}$ (i.e., they cannot create a second copy that passes verification while retaining the original). More generally, even given multiple banknotes, the adversary should not be able to create new ones with fresh serial numbers that pass verification. This captures the idea that quantum money cannot be counterfeited.
 \end{description}
 
-In a \emph{public-key} scheme, the verifier uses only the public information (here, the serial number and any scheme-wide public parameters) to check validity, and does not need any secret key. The bank (mint) may have a secret key to produce the states, but after minting, the bank’s involvement is not needed. In our scheme, the serial number will effectively contain the information needed for public verification (similar to how a classical bill might have a number anyone can look up, except here it’s used in a quantum procedure).
+In a \emph{public-key} scheme, the verifier uses only the public information (here, the serial number and any scheme-wide public parameters) to check validity, and does not need any secret key. The bank may have a secret key to produce the states, but after generation, the bank’s involvement is not needed. In our scheme, the serial number will effectively contain the information needed for public verification (similar to how a classical bill might have a number anyone can look up, except here it’s used in a quantum procedure).
 
 We next outline Zhandry’s scheme, which our scheme builds upon.
 
 \section{Fourier-Based Quantum Money from Group Actions}
-Zhandry’s quantum money scheme \cite{Zhandry2024} is built on an abelian group action $G \curvearrowright X$. We have a family of group actions parameterized by the security parameter $n$ (so the size of $G$ grows with $n$). For simplicity, assume $|G| = N$. The scheme also fixes a particular element $x_0 \in X$ that everyone knows (a public base point in $X$).
+Zhandry’s quantum money scheme \cite{Zhandry2024} is built on an abelian group action $*:G \times X \mapsto X$. We have a family of group actions parameterized by the security parameter $n$ (so the size of $G$ grows with $n$). For simplicity, assume $|G| = N$. The scheme also fixes a particular element $x_0 \in X$ that everyone knows (a public base point in $X$).
 
-The minting algorithm $\mathsf{Mint}$ in Zhandry’s scheme works as follows (informally):
+The generation algorithm $\mathsf{Gen}$ in Zhandry’s scheme works as follows (informally):
 \begin{enumerate}
     \item On input $1^n$, sample a random group element $h \leftarrow G$. This $h$ will serve as the serial number $s$ for the banknote.
     \item Prepare two registers: the first is a group element register, initialized to $|0_G\rangle$ (an encoding of the identity element of $G$), and the second is an $X$-register initialized to $|x_0\rangle$.
@@ -1102,9 +1114,9 @@ The intuition is that the genuine state $|\$_h\rangle$ contains a phase that exa
 Zhandry’s scheme is shown to be correct (valid notes pass) and is believed to be secure under the assumption that the group action is one-way. The hardness essentially boils down to: given $x_0$ and $|\$_h\rangle$, an adversary cannot figure out a different $h'$ that would produce a second valid state $|\$_{h'}\rangle$ or replicate $|\$_h\rangle$ (because that would solve the hidden subgroup or discrete log type problem in the group action).
 
 \section{Hartley-Transform Money Scheme Construction}
-Our scheme modifies the above Fourier-based construction by utilizing the \textbf{quantum Hartley transform (QHT)} in place of the QFT. Since the Hartley transform is closely related to the Fourier transform (essentially it produces the real and imaginary parts in a single real-valued transform), one might expect this substitution to be straightforward. And indeed, for the minting procedure it largely is: we will use the QHT to create real-amplitude superposition states.
+Our scheme modifies the above Fourier-based construction by utilizing the \textbf{quantum Hartley transform (QHT)} in place of the QFT. Since the Hartley transform is closely related to the Fourier transform (essentially it produces the real and imaginary parts in a single real-valued transform), one might expect this substitution to be straightforward. And indeed, for the generation procedure it largely is: we will use the QHT to create real-amplitude superposition states.
 
-Concretely, assume again a group action $G \curvearrowright X$ with $|G|=N$. We fix the same generating set $S$ and basepoint $x_0$. The $\mathsf{Gen}_{H}$ (Hartley generation) algorithm:
+Concretely, assume again a group action $*: G\times X \mapsto X$ with $|G|=N$. We fix the same generating set $S$ and basepoint $x_0$. The $\mathsf{Gen}_{H}$ (Hartley generation) algorithm:
 \begin{enumerate}
     \item Sample a random $h \leftarrow G$ to be the serial number.
     \item Prepare $|0_G, x_0\rangle$ as before.
@@ -1123,7 +1135,7 @@ Concretely, assume again a group action $G \curvearrowright X$ with $|G|=N$. We 
       |\$\rangle = \frac{1}{\sqrt{N}} \sum_{x \in X} \Big(\frac{1}{\sqrt{N}}\sum_{g: g*x_0 = x} \cas\big(\frac{2\pi \langle h,g \rangle}{N}\big)\Big)\, |x\rangle.
     \] 
     Since for a given $x\in X$, all $g$ such that $g*x_0=x$ have the form $g = u h$ for a unique $u \in G$ (because the action is free and transitive), one can simplify the internal sum using properties of the cas function. But we need not dive into that here.
-    \item No measurement of the first register is performed. In fact, we do not have a nice product state separation, so we cannot simply measure one register to get $h$. Instead, the output of minting is just the quantum state $|\$\rangle$ (which is entangled between what used to be two registers) and the known classical serial number $h$ (we know what $h$ we picked).
+    \item No measurement of the first register is performed. In fact, we do not have a nice product state separation, so we cannot simply measure one register to get $h$. Instead, the output of generation is just the quantum state $|\$\rangle$ (which is entangled between what used to be two registers) and the known classical serial number $h$ (we know what $h$ we picked).
 \end{enumerate}
 
 The resulting money state $|\$\rangle$ has only real amplitudes (because the initial superposition was real and the controlled operation doesn’t introduce complex numbers, and the Hartley transform yields real coefficients). In particular, in the computational basis of $X$, the state $|\$\rangle$ is some real-vector state (with both positive and negative values possible). We can think of it as a “Hartley orbit state” corresponding to $h$.
@@ -1255,13 +1267,13 @@ The final summation matches precisely with Equation~\eqref{eq:qht-alt}, which de
 \[ \ket{0}\ket{a} \mapsto \ket{0} \qht_N\ket{a}. \]
 The complete procedure is summarized in the following algorithm.
 
-% \begin{algorithm}[$\qht_N$] \
+% \begin{algorithm}[$\qht_N$] 
 \paragraph{Algorithm $\qht_N$}
-    % \label{alg:qht-N}
-    % \begin{description}[font = \normalfont\itshape, itemsep = 0mm, parsep = 0mm, topsep = 1mm]
-    %     \item [Input:] quantum state $\ket{\psi} \in \C^N$, where $N = 2^n$
-    %     \item [Output:] quantum state $\qht_N\ket{\psi}$
-    % \end{description}
+    \label{alg:qht-N}
+    \begin{description}[font = \normalfont\itshape, itemsep = 0mm, parsep = 0mm, topsep = 1mm]
+        \item [Input:] quantum state $\ket{\psi} \in \C^N$, where $N = 2^n$
+        \item [Output:] quantum state $\qht_N\ket{\psi}$
+    \end{description}
 
 \begin{enumerate}%[itemsep = 0mm, parsep = 1mm, topsep = 1mm]
     \item Initialize an ancilla qubit to $0$ to obtain the state $\ket{0}\ket{\psi}$
@@ -1277,15 +1289,15 @@ The complete procedure is summarized in the following algorithm.
 % \end{algorithm}
 
 
-% \begin{theorem}
-\paragraph{Theorem.}
+\begin{theorem}
+% \paragraph{Theorem.}
     \label{thm:qht-cost}
     Algorithm above is correct and can be implemented using $\approx \log^2 N + O(\log N)$ elementary gates.
-% \end{theorem}
+\end{theorem}
 
 
-% \begin{proof}
-\paragraph{Proof.}
+\begin{proof}
+% \paragraph{Proof.}
     The correctness of the algorithm follows from the preceding discussion. Except for the unitary \( U_R \) and the negation unitary in Step~\ref{stp:ngt}, all steps of the algorithm can be implemented using \( O(1) \) elementary gates. The negation operation in Step~\ref{stp:ngt} can be realized using approximately \( \lceil \log N \rceil \) elementary gates.
     
     To implement the unitary \( U_R \), which requires constructing the conditional rotation operator \( R(y, b) \) for arbitrary \( y \) and \( b \), we make use of the two-qubit controlled rotations:
@@ -1303,13 +1315,13 @@ The complete procedure is summarized in the following algorithm.
     T(N) \approx T(N / 2) + 2\log N + O(1).
     \]
     Solving this recurrence yields \( T(N) \approx \log^2 N + O(\log N) \), as claimed.
-%     \end{proof}
+    \end{proof}
 %%%%%%%%%%%  ta inja  %%%%%%%%%%%
 
 
 The resulting complexity for an $N$-point QHT is $O(\log^2 N)$ basic quantum gates (up to polylog factors for precision), which is on par (up to constant factors) with the complexity of a QFT circuit. We also derived explicit constants for small cases to show improvements over prior work.
 
-For the purposes of this thesis, the main point is: \emph{we can implement the Hartley transform needed for our money scheme with polynomial efficiency}. Thus, switching to the Hartley transform does not introduce any prohibitive cost. All steps of minting and verification remain efficient. Having covered the construction of the money scheme and the necessary tools, we now proceed to the final piece: the detailed verification algorithm using quantum walks, and an analysis of how it validates genuine banknotes and foils counterfeit attempts.
+For the purposes of this thesis, the main point is: \emph{we can implement the Hartley transform needed for our money scheme with polynomial efficiency}. Thus, switching to the Hartley transform does not introduce any prohibitive cost. All steps of generation and verification remain efficient. Having covered the construction of the money scheme and the necessary tools, we now proceed to the final piece: the detailed verification algorithm using quantum walks, and an analysis of how it validates genuine banknotes and foils counterfeit attempts.
 \vspace{1em}
 
 
@@ -1334,13 +1346,13 @@ The Hartley-based quantum money scheme introduced in the previous chapter requir
 
 
 
-    % \begin{lemma}
-    \paragraph{Lemma.}
+    \begin{lemma}
+    % \paragraph{Lemma.}
         \label{lem:h-eigen}
         The money state $\ket{\mathbb{Z}_N^{(h)} * x}_H$ is an eigenstate of $W$ with eigenvalue $e^{i\lambda_h t}$.
-    % \end{lemma}
-    % \begin{proof}
-    \paragraph{Proof.}
+    \end{lemma}
+    \begin{proof}
+    % \paragraph{Proof.}
         We have 
         \begin{align*}
             e^{iAt} \ket{\mathbb{Z}_N^{(h)} * x}_H
@@ -1350,7 +1362,7 @@ The Hartley-based quantum money scheme introduced in the previous chapter requir
             & = e^{i\lambda_{h}t} \ket{\mathbb{Z}_N^{(h)} * x}_H,
         \end{align*}
         where the second equality follows from the identity in \eqref{eq:QHT_QFT}, and the last equality follows from the fact that $\lambda_h = \lambda_{-h}$.
-    % \end{proof}
+    \end{proof}
 
 
     By setting \( t = \operatorname{poly}(\log N) \), Lemma~\ref{lem:h-eigen} ensures that phase estimation can be performed using the unitary \( W \) and the eigenstate \( \ket{\mathbb{Z}_N^{(h)} * x}_H \), yielding an approximation \( \tilde{\lambda}_h \) of \( \lambda_h \) such that
