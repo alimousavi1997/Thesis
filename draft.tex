@@ -111,88 +111,123 @@ The remainder of this thesis is organized as follows. In Chapter~\ref{chap:backg
 
 \section{Quantum Computation Basics}
 
-Quantum computation operates on information stored in quantum states. The fundamental unit of quantum information is the \emph{qubit}, which, unlike a classical bit, can exist in a superposition of basis states. A qubit is described by a state $|\psi\rangle = \alpha |0\rangle + \beta |1\rangle$ (in Dirac notation), where $\alpha,\beta \in \mathbb{C}$ and $|\alpha|^2 + |\beta|^2 = 1$. A system of $n$ qubits resides in a $2^n$-dimensional Hilbert space and its state can be a superposition of all $2^n$ basis states $|b_1b_2\cdots b_n\rangle$. 
 
-Computation is carried out by unitary transformations on these states. A quantum algorithm is typically a sequence of quantum gates (unitary operators) applied to an initial state (usually a simple basis state like $|00\cdots0\rangle$), followed by a measurement of some qubits to obtain a classical result. A crucial aspect of quantum computation is that certain transformations—such as the Fourier transform over an $N$-element group—can be implemented very efficiently on a quantum computer (in $\operatorname{poly}(\log N)$ time), whereas their classical counterparts might require $\operatorname{poly}(N)$ time.
+Quantum computation is a model of information processing rooted in the principles of quantum mechanics. Unlike classical systems, which encode and manipulate information using deterministic bits, quantum systems store information in quantum states—vectors in complex Hilbert spaces—that can exhibit phenomena with no classical analogue. The most notable of these are \emph{superposition}, which allows quantum systems to be in multiple configurations simultaneously, and \emph{entanglement}, which enables correlations between parts of a system that cannot be explained classically. These characteristics endow quantum computers with computational abilities that can outperform classical counterparts in certain tasks.
 
-\subsection{The Quantum Fourier Transform}
-
-One example important to this work is the \textbf{quantum Fourier transform} (QFT). For an abelian group $G$ of order $N$, the QFT is the unitary map
+To rigorously define the framework of quantum computation, we begin with some basic notation. Let $\mathcal{H}$ be a finite-dimensional Hilbert space over the complex numbers. This space is equipped with an inner product and an orthonormal basis $\{\ket{s} : s \in S\}$, where $S$ is a finite index set that corresponds to the classical configurations of the system. Each element $\ket{s} \in \mathcal{H}$ represents a quantum basis state, analogous to a classical state. A general quantum state $\ket{\alpha} \in \mathcal{H}$ is a unit vector, and can be expressed as a linear combination of the basis vectors:
 \[
-|g\rangle \mapsto \frac{1}{\sqrt{N}}\sum_{h \in G} \chi(h,g)\, |h\rangle,
+\ket{\alpha} = \sum_{s \in S} a_s \ket{s}, \qquad \text{where } a_s \in \mathbb{C}, \quad \sum_{s \in S} |a_s|^2 = 1.
 \]
-where $\{\chi(h,.)\}$ are the characters (complex exponential homomorphisms) of $G$. When $G = \mathbb{Z}_N$ (the integers mod $N$), the QFT takes $|j\rangle$ to:
-\[
-\frac{1}{\sqrt{N}}\sum_{k=0}^{N-1} e^{2\pi i j k / N} |k\rangle
-\] 
+Here, the complex numbers $a_s$ are called \emph{amplitudes}, and the squared magnitudes $|a_s|^2$ correspond to the probabilities of observing the state $\ket{s}$ upon measurement. The inner product between two states $\ket{\alpha}$ and $\ket{\beta}$ is denoted by $\bra{\beta}\alpha\rangle$, where $\bra{\alpha}$ is the conjugate transpose (or Hermitian adjoint) of the $\ket{\alpha}$.
 
-Let $G \cong \mathbb{Z}_{N_1} \oplus \cdots \oplus \mathbb{Z}_{N_k}$ be a decomposition of $G$. The character $\chi(\bm{a}, x)$ is then given by
+The most elementary quantum system is the \emph{qubit}, or quantum bit, which corresponds to a unit vector in the two-dimensional Hilbert space $\mathbb{C}^2$. In the computational basis $\{\ket{0}, \ket{1}\}$, any pure state of a qubit can be written as
 \[
-\chi(\bm{a}, \bm{x}) = \omega_{N_1}^{a_1x_1} \cdots \omega_{N_k}^{a_kx_k}, \quad \text{where } \omega_M = \exp(2\pi i/ M).
+\ket{\psi} = \alpha \ket{0} + \beta \ket{1}, \qquad \text{where } \alpha, \beta \in \mathbb{C}, \quad |\alpha|^2 + |\beta|^2 = 1.
 \]
+Unlike a classical bit, which must be either 0 or 1, a qubit can exist in a superposition of both states simultaneously. The ability to process such coherent superpositions is one of the key features that distinguishes quantum computation from classical models.
 
-The Fourier transform of a function $f: G \to \mathbb{C}$ is given by
+When considering multiple qubits, the joint state of the system resides in the \emph{tensor product} of the individual Hilbert spaces. For example, a system of $n$ qubits is described by the space
 \[
-\hat{f}(a) = \frac{1}{\sqrt{|G|}} \sum_{x \in G} \chi(a, x) f(x),
+\mathcal{H} = \left( \mathbb{C}^2 \right)^{\otimes n} \cong \mathbb{C}^{2^n}.
 \]
-and the QFT of a quantum state $\sum_{g \in G} f(g) \ket{g}$ is $\sum_{x \in G} \hat{f}(x) \ket{x}$.
+The standard basis for this space consists of all computational basis states $\ket{x}$ where $x \in \{0,1\}^n$ is a bit string of length $n$. A general pure state of $n$ qubits is then written as
+\[
+\ket{\Psi} = \sum_{x \in \{0,1\}^n} \alpha_x \ket{x}, \qquad \sum_{x} |\alpha_x|^2 = 1.
+\]
+Because of the exponential growth in the dimension of the Hilbert space with the number of qubits, quantum systems can store and process information in ways that are exponentially more efficient (in terms of representation) than classical systems. Additionally, this tensor product structure enables the existence of \emph{entangled states}—those which cannot be factored into product states of individual qubits. Entanglement plays a crucial role in quantum algorithms, communication, and cryptography.
 
-\paragraph{Fourier Basis and Group Actions.} For a regular group action $(G, X, *)$, define
-\[
-\ket{S^{(h)} * y} = \frac{1}{\sqrt{|S|}} \sum_{g \in S} \chi(g, h) \ket{g * y}.
-\]
-For fixed $x \in X$, we obtain two orthonormal bases of $\mathbb{C}^X$: the standard basis $\{ \ket{x} : x \in X \}$, and the Fourier basis
-\[
-\ket{G^{(h)} * x} = \frac{1}{\sqrt{|G|}} \sum_{g \in G} \chi(g, h) \ket{g * x}.
-\]
-These states are eigenstates of the action unitary $U_k: \ket{y} \mapsto \ket{k * y}$:
-\[
-U_k \ket{G^{(h)} * x} = \chi(-k, h) \ket{G^{(h)} * x}.
-\]
+The formal behavior of quantum systems is governed by a small set of postulates that form the mathematical foundation of quantum mechanics. These postulates determine how quantum systems are represented, how they evolve, and how observations are made.
 
-\paragraph{The $\comph$ Algorithm.}
-Given a state $\ket{G^{(h)} * x}$, one can recover $h$ using phase kickback. Starting from $\ket{G^{(h)} * x} \ket{0}$, apply:
+\begin{enumerate}
+  \item \textbf{State Space.} Every isolated physical system is associated with a Hilbert space $\mathcal{H}$, and its state is described by a unit vector $\ket{\psi} \in \mathcal{H}$. For composite systems composed of subsystems $A$ and $B$, the state space is the tensor product $\mathcal{H}_A \otimes \mathcal{H}_B$. If $\{\ket{a_i}\}$ and $\{\ket{b_j}\}$ are orthonormal bases for $\mathcal{H}_A$ and $\mathcal{H}_B$, then $\{\ket{a_i} \otimes \ket{b_j}\}$ forms an orthonormal basis for the joint system.
+
+  \item \textbf{Unitary Evolution.} The evolution of a closed quantum system is described by a unitary transformation. If the system is in state $\ket{\psi}$ at some initial time, then at a later time it evolves to $\ket{\psi'} = U \ket{\psi}$, where $U$ is a unitary operator satisfying $U^\dagger U = U U^\dagger = I$. This ensures that the norm of the state vector—and hence the total probability—is preserved under evolution.
+
+  \item \textbf{Measurement.} Measurement is a probabilistic process governed by an orthonormal basis $\{\ket{s}\}_{s \in S}$ of $\mathcal{H}$. When a measurement is performed on a state $\ket{\alpha} = \sum_{s \in S} a_s \ket{s}$, the outcome is some $s \in S$ with probability $|a_s|^2$, and the system collapses to the corresponding basis state $\ket{s}$. This probabilistic rule is known as the Born rule. Measurement is not reversible: it fundamentally alters the state and discards phase and superposition information not aligned with the measured basis.
+
+  \item \textbf{Composition of Systems.} If two quantum systems $A$ and $B$ are described by Hilbert spaces $\mathcal{H}_A$ and $\mathcal{H}_B$, respectively, then the combined system is described by the tensor product $\mathcal{H}_A \otimes \mathcal{H}_B$. A product state of the form $\ket{\psi_A} \otimes \ket{\psi_B}$ represents a system where $A$ and $B$ are uncorrelated. In general, however, the state may be entangled, and cannot be written as a product of subsystems.
+\end{enumerate}
+
+Together, these postulates define the operational behavior of quantum systems and underpin the structure of quantum computation. The state space formalism allows for the representation of complex probabilistic and entangled phenomena, while unitary evolution enables coherent manipulation of information. Measurement introduces irreversibility and classical output, allowing for the extraction of computational results from quantum processes. Finally, the tensor product composition rule enables scalable modeling of multipartite systems and is the mathematical basis for the power of quantum algorithms.
+
+
+\section{Classical vs Quantum Computation}
+
+
+In classical computation, circuits are composed of wires and logic gates, such as AND, OR, and NOT, that act on bits—elements of $\{0,1\}$. These logic gates are inherently irreversible: for example, given the output of an OR gate, one cannot deduce the exact inputs. In contrast, quantum computation operates under the strict constraint that all operations must be unitary, and therefore \emph{reversible}.
+
+Quantum computers are built from quantum circuits, which consist of wires (representing qubits) and quantum gates (unitary operations). Qubits may exist in superpositions of basis states and, when acted upon by quantum gates, evolve linearly in accordance with the postulates of quantum mechanics.
+
+Unlike classical gates that map fixed bitstrings to other bitstrings, quantum gates are linear operators acting on vectors in complex Hilbert space. For a single qubit, this means that gates must preserve the inner product and norm of quantum states. Hence, quantum gates must be represented by unitary matrices $U$ such that $U^\dagger U = I$.
+
+\subsection{Elementary Quantum Gates}
+
+Many single-qubit quantum gates have no classical counterparts. A few key examples include:
+
 \begin{itemize}
-    \item QFT to second register,
-    \item Controlled unitary $\sum_{k \in G} U_k \otimes \ket{k}\bra{k}$,
-    \item Inverse QFT to second register.
+  \item \textbf{Pauli-X (NOT) Gate:} Acts as the quantum analog of the classical NOT gate.
+  \[
+  X = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}, \quad X \ket{0} = \ket{1}, \quad X \ket{1} = \ket{0}
+  \]
+  
+  \item \textbf{Pauli-Y Gate:} Introduces a $\pi$-rotation around the $y$-axis of the Bloch sphere.
+  \[
+  Y = \begin{bmatrix} 0 & -i \\ i & 0 \end{bmatrix}
+  \]
+
+  \item \textbf{Pauli-Z Gate:} Flips the sign of the $\ket{1}$ component.
+  \[
+  Z = \begin{bmatrix} 1 & 0 \\ 0 & -1 \end{bmatrix}
+  \]
+
+  \item \textbf{Hadamard Gate (H):} Places a qubit into an equal superposition of $\ket{0}$ and $\ket{1}$.
+  \[
+  H = \frac{1}{\sqrt{2}} \begin{bmatrix} 1 & 1 \\ 1 & -1 \end{bmatrix}
+  \]
+  This gate transforms:
+  \[
+  \ket{0} \mapsto \frac{\ket{0} + \ket{1}}{\sqrt{2}}, \quad \ket{1} \mapsto \frac{\ket{0} - \ket{1}}{\sqrt{2}}
+  \]
+
+  \item \textbf{Phase Gate (S):} Applies a $\frac{\pi}{2}$ phase to $\ket{1}$:
+  \[
+  S = \begin{bmatrix} 1 & 0 \\ 0 & i \end{bmatrix}
+  \]
+
+  \item \textbf{$\pi/8$ Gate (T):} Applies a phase of $\pi/4$:
+  \[
+  T = \begin{bmatrix} 1 & 0 \\ 0 & e^{i\pi/4} \end{bmatrix}
+  \]
+  It is the square root of the Phase gate and thus the fourth root of $Z$.
 \end{itemize}
-This yields $\ket{G^{(h)} * x} \ket{h}$, extracting $h$ efficiently.
 
-\subsection{The Quantum Hartley Transform}
+These gates are all unitary and form the building blocks of single-qubit quantum circuits.
 
-Another concept we use is the \textbf{quantum Hartley transform} (QHT), which replaces complex exponentials with real sinusoidal kernels.
+\subsection{Controlled Gates and Universality}
 
-\paragraph{Definition.}
-For $G = \mathbb{Z}_N$, define
+Quantum computation requires not only single-qubit gates, but also multi-qubit gates that enable interactions between qubits. The most fundamental among these is the \emph{Controlled-NOT (CNOT)} gate. This two-qubit gate flips the target qubit if and only if the control qubit is in the state $\ket{1}$. In matrix form, and with respect to the computational basis $\{\ket{00}, \ket{01}, \ket{10}, \ket{11}\}$, it is given by
 \[
-\qht_N: \ket{a} \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\left(\frac{2\pi a y}{N}\right) \ket{y}, \label{eq:qht_def}
+\text{CNOT} = 
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 0 \\
+\end{bmatrix}.
 \]
-Where $\cas(x) = \cos(x) + \sin(x)$.
+The CNOT gate plays a central role in quantum algorithms and is essential for generating entangled states. It serves as the quantum analogue of the classical XOR gate. A natural generalization of the CNOT is the family of controlled-$U$ gates, where $U$ is any single-qubit unitary. A controlled-$U$ gate applies $U$ to the target qubit only when the control qubit is $\ket{1}$; otherwise, it acts as the identity. This construction is a key component in many quantum algorithms, including quantum phase estimation and Shor’s algorithm.
 
-For general abelian $G = \mathbb{Z}_{N_1} \oplus \cdots \oplus \mathbb{Z}_{N_k}$, the Hartley transform of $f : G \to \mathbb{R}$ is
-\begin{equation}
-    \qht(f)({\bm{a}}) = \frac{1}{\sqrt{|G|}} \sum_{{\bm{y}} \in G} \cas(2\pi \langle {\bm{a}}, \alpha({\bm{y}}) \rangle) f({\bm{y}}),
-\end{equation}
-where $\alpha({\bm{y}}) = y_1 / N_1 + \cdots + y_k / N_k$.
+In classical computation, the set of gates $\{\text{AND}, \text{NOT}\}$ is universal, meaning any Boolean function can be computed using only these gates. Analogously, in the quantum setting, certain sets of gates are \emph{universal for quantum computation}. That is, they can approximate any unitary transformation on any number of qubits to arbitrary precision. A particularly important universal gate set is $\{H, T, \text{CNOT}\}$, consisting of the Hadamard gate, the $\pi/8$ gate (also called the $T$ gate), and the CNOT gate. This set forms the basis for fault-tolerant quantum computing and is sufficient to construct any quantum algorithm.
 
-\paragraph{Unitary Equivalence.}
-Using the identity
+Unlike classical circuits, quantum circuits must obey the constraints of reversibility and linearity. They are acyclic and do not allow for operations like signal fanout or feedback loops. One key difference from classical logic is the restriction imposed by the \emph{no-cloning theorem}, which states that it is impossible to create a perfect copy of an arbitrary unknown quantum state. This makes operations like classical bit copying or broadcasting fundamentally incompatible with quantum mechanics. Moreover, measurement in quantum mechanics is inherently irreversible. When a qubit is measured in the computational basis, its state collapses probabilistically to either $\ket{0}$ or $\ket{1}$, with probabilities determined by the squared magnitudes of its amplitudes. The outcome is a classical bit, and the original quantum superposition is lost in the process.
+
+To illustrate these concepts, consider the task of swapping the quantum states of two qubits. This seemingly simple operation cannot be accomplished directly but can be implemented by a specific sequence of three CNOT gates. Given two qubits in states $\ket{a}$ and $\ket{b}$, the SWAP operation is performed via the sequence
 \[
-\cas(2\pi \langle {\bm{a}}, \alpha({\bm{y}}) \rangle) = \frac{1 - i}{2}\chi({\bm{a}}, {\bm{y}}) + \frac{1 + i}{2}\chi(-{\bm{a}}, {\bm{y}}),
+\text{CNOT}_{1,2} \rightarrow \text{CNOT}_{2,1} \rightarrow \text{CNOT}_{1,2},
 \]
-we obtain:
-\begin{equation}
-\qht_G = \frac{1 - i}{2} \qft_G + \frac{1 + i}{2} \qft_G^*, \label{eq:QHT_QFT}
-\end{equation}
-showing that $\qht_G^2 = {1}$ and hence the $\qht$ is unitary.
+which effectively interchanges the states, resulting in $\ket{b} \ket{a}$. This example highlights how even basic classical-like operations must be constructed carefully using reversible building blocks in the quantum circuit model.
 
-\paragraph{Quantum Formulation.}
-The quantum Hartley transform over $G$ maps:
-\[
-\sum_{{x} \in G} f({x}) \ket{{x}} \mapsto \sum_{{\bm{a}} \in G} \qht_G(f)({\bm{a}}) \ket{{\bm{a}}}.
-\]
-Because the cas function is real-valued, the resulting amplitudes remain real—a fact that plays a crucial role in real-amplitude quantum protocols.
+
 
 
 \section{Group Actions in Cryptography}
@@ -200,7 +235,7 @@ At the heart of our quantum money scheme is the notion of a group action. A \tex
 
 The orbit of an element $x \in X$ under the action is the set $G * x = \{g*x : g \in G\} \subseteq X$. If there is exactly one orbit (i.e., $G * x = X$ for some $x$), the action is called \emph{transitive}. If, in addition, no non-identity group element fixes any $x$ (i.e., $g * x = x$ implies $g = e$), then the action is \emph{free}. A group action that is both transitive and free is sometimes called a \textbf{regular action}. In a regular action, for any two elements $y, z \in X$, there is a unique group element $g$ such that $g * y = z$. In other words, $G$ acts like a permutation group that moves elements of $X$ around, and knowing the starting and ending point uniquely determines the “move” $g$. In this case $|X| = |G|$, and we can think of $X$ as essentially a copy of $G$ with the group structure “hidden” by the action.
 
-Group actions are ubiquitous in modern cryptography. A \textbf{cryptographic group action} is one where the action is easy to compute in the forward direction, but inverting the action (recovering $g$ from $x$ and $g*x$) is computationally hard. This essentially functions as a one-way function: given $x$ and $g$, it is easy to compute $y = g*x$, but given $x$ and $y$ it is infeasible to find $g$ (except with negligible probability). One classical example is the discrete logarithm problem: consider the cyclic group $G = \mathbb{Z}_p^*$ (the multiplicative group of a prime field) acting on itself by exponentiation. Let $X = G$ and define $g * x = x^g \pmod p$ (treating group elements as integers). Here $g$ is an exponent. This is a group action (in fact, just the group’s own operation written differently), and computing $x^g \bmod p$ is efficient. However, given $x$ and $y = x^g$, finding $g$ requires solving a discrete log problem, which is believed to be hard for suitable choices of $p$. Thus, exponentiation can be viewed as a one-way group action.
+Group actions are ubiquitous in modern cryptography. A \textbf{cryptographic group action} ~\cite{Castryck2020} is one where the action is easy to compute in the forward direction, but inverting the action (recovering $g$ from $x$ and $g*x$) is computationally hard. This essentially functions as a one-way function: given $x$ and $g$, it is easy to compute $y = g*x$, but given $x$ and $y$ it is infeasible to find $g$ (except with negligible probability). One classical example is the discrete logarithm problem: consider the cyclic group $G = \mathbb{Z}_p^*$ (the multiplicative group of a prime field) acting on itself by exponentiation. Let $X = G$ and define $g * x = x^g \pmod p$ (treating group elements as integers). Here $g$ is an exponent. This is a group action (in fact, just the group’s own operation written differently), and computing $x^g \bmod p$ is efficient. However, given $x$ and $y = x^g$, finding $g$ requires solving a discrete log problem, which is believed to be hard for suitable choices of $p$. Thus, exponentiation can be viewed as a one-way group action.
 
 Another prominent example comes from elliptic-curve cryptography: the action of an ideal class group on a set of elliptic curves. In schemes like CSIDH (Commutative Supersingular Isogeny Diffie–Hellman), an abelian group of ideal classes $G$ acts on the set $X$ of supersingular elliptic curves by isogeny (an isogeny is a structure-preserving map between curves). Starting from a curve $x_0$, one can efficiently compute $g * x_0$ (which is another elliptic curve) for any group element $g$, but given two curves $x_0$ and $x = g * x_0$, it is believed to be computationally hard to recover $g$. This hard problem is the foundation of isogeny-based cryptography. We refer to such $G$ and $X$ as a \emph{cryptographic group action} pair.
 
@@ -211,6 +246,185 @@ We will assume throughout that we have a family of abelian group actions $(G,X)$
 Finally, we note that working in the \textbf{generic group model} (or generic group \emph{action} model) is a common theoretical approach to analyze security. In a generic model, the group elements are treated as black-box labels without exploiting any special algebraic structure beyond group axioms. Doliskani’s proof of security for Zhandry’s scheme [15] was in such a generic model for group actions, lending confidence that no “generic” attack can break the scheme. In this thesis, we focus on designing the scheme and algorithms at a high level and assume the underlying group action is secure; a detailed security proof is beyond our scope, though we rely on prior results for reassurance.
 
 
+
+
+
+
+
+
+\section{The Quantum Fourier Transform}
+Let $G$ be an abelian group. The group of characters of $G$, denoted $\hat{G}$, consists of homomorphisms of the form $\chi(a, \cdot): G \to \mathbb{C}$ for each $a \in G$. If the group has the structure $G \cong \mathbb{Z}_{N_1} \oplus \cdots \oplus \mathbb{Z}_{N_k}$, then the character function $\chi(a, \cdot)$ can be expressed explicitly as
+\[
+\chi(a, x) = \omega_{N_1}^{a_1x_1} \cdots \omega_{N_k}^{a_kx_k}
+\]
+where $\omega_M = \exp(2\pi i / M)$ is a primitive $M$-th root of unity. Given a function $f: G \to \mathbb{C}$, its Fourier transform is defined as
+\[
+\hat{f}(a) = \frac{1}{\sqrt{\abs{G}}} \sum_{x \in G} \chi(a, x) f(x).
+\]
+Correspondingly, the quantum Fourier transform of a normalized state $\sum_{g \in G} f(g) \ket{g}$ is given by $\sum_{x \in G} \hat{f}(x) \ket{x}$.
+
+Now consider a regular group action $(G, X, *)$. For any subset $S \subseteq G$, element $y \in X$, and $h \in G$, we define the following state:
+\begin{equation}
+    \label{eq:x-fourier-basis}
+    \ket{S^{(h)} * y} = \frac{1}{\sqrt{\abs{S}}} \sum_{g \in S} \chi(g, h) \ket{g * y}.
+\end{equation}
+The vector space $\mathbb{C}^X$ has two natural orthonormal bases. The first is the standard basis $\{\ket{x} : x \in X\}$, which, for any fixed $x \in X$, can be written as $\{\ket{g * x} : g \in G\}$ because the regularity of the action implies a bijection between $G$ and $X$ (i.e., $|G| = |X|$). The second basis consists of the following quantum states:
+\[
+\ket{G^{(h)} * x} = \frac{1}{\sqrt{\abs{G}}} \sum_{g \in G} \chi(g, h) \ket{g * x}, \quad h \in G.
+\]
+These states are simultaneous eigenvectors of the group action unitaries. Specifically, for each $k \in G$, let $U_k$ denote the unitary operator defined by $U_k \ket{y} = \ket{k * y}$. Then we have:
+\[
+U_k \ket{G^{(h)} * x} = \chi(-k, h) \ket{G^{(h)} * x}.
+\]
+This property makes the states $\ket{G^{(h)} * x}$ analogous to Fourier states over the abelian group $G$, and we will often refer to them as such.
+
+
+\section{The Quantum Hartley Transform}
+
+Another concept we use is the \textbf{quantum Hartley transform} (QHT), which replaces complex exponentials with real sinusoidal kernels.
+Let $N$ be a positive integer, and let $\Z_N$ denote the additive cyclic group of integers modulo $N$. The Hartley transform of a function $f: \Z_N \to \R$ is defined as the function $\cht_N(f): \Z_N \to \R$ given by
+\[
+\cht_N(f)(a) = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\Big(\frac{2 \pi ay}{N}\Big) f(y),
+\]
+where $\cas(x) = \cos(x) + \sin(x)$. Similar to the Fourier transform, $\cht_N$ is a linear operation, and one can verify that it is unitary. This definition extends naturally to general abelian groups. Suppose $G = \Z_{N_1} \oplus \Z_{N_2} \oplus \cdots \oplus \Z_{N_k}$ is a decomposition of an abelian group into cyclic components. For a function $f: G \to \R$, the Hartley transform $\cht_G(f): G \to \R$ is defined by
+\begin{equation}
+    \label{eq:cht-add}
+    \cht_G(f)(a_1, \dots, a_k) = \frac{1}{\sqrt{\abs{G}}} \sum_{y_1 = 0}^{N_1 - 1} \cdots \sum_{y_k = 0}^{N_k - 1} \cas\Big(\frac{2 \pi a_1y_1}{N_1} + \cdots + \frac{2 \pi a_ky_k}{N_k}\Big) f(y_1, \dots, y_k),
+\end{equation}
+with $(a_1, \dots, a_k) \in G$. Introducing the notation $\alpha(\bm{y}) = y_1 / N_1 + \cdots + y_k / N_k$, a more concise form for $\cht_G$ is
+\[
+\cht_G(f)(\bm{a}) = \frac{1}{\sqrt{\abs{G}}} \sum_{\bm{y} \in G} \cas(2\pi \lrang{\bm{a}, \alpha(\bm{y})}) f(\bm{y}).
+\]
+
+Using the identity
+\[
+\cas(2\pi \lrang{\bm{a}, \alpha(\bm{y})}) = \frac{1 - i}{2}\chi(\bm{a}, \bm{y}) + \frac{1 + i}{2}\chi(-\bm{a}, \bm{y}),
+\]
+it follows that
+\begin{equation}
+    \label{eq:ht-ft}
+    \cht_G = \frac{1 - i}{2}\cft_G + \frac{1 + i}{2}\cft_G^*,
+\end{equation}
+where $\cft_G$ denotes the Fourier transform over $G$. From this, it can be deduced that $\cht_G^2 = \mathds{1}$, confirming that $\cht_G$ is also unitary. An alternative version of the Hartley transform, often appearing in literature, is the multiplicative variant defined by
+\begin{equation}
+    \label{eq:cht-mult}
+    \cht_G(f)(a_1, \dots, a_k) = \frac{1}{\sqrt{\abs{G}}} \sum_{y_1 = 0}^{N_1 - 1} \cdots \sum_{y_k = 0}^{N_k - 1} \mathrm{cas}\Big(\frac{2 \pi a_1y_1}{N_1}\Big) \cdots \cas\Big(\frac{2 \pi a_ky_k}{N_k}\Big) f(y_1, \dots, y_k).
+\end{equation}
+This transform is also unitary, as demonstrated in the following lemma.
+
+\begin{lemma}
+    The Hartley transform \eqref{eq:cht-mult} is unitary.
+\end{lemma}
+
+\begin{proof}
+    Consider the function $f$ as a vector indexed by the elements of $G$. The matrix associated with $\cht_G$ is the tensor product of the matrices corresponding to the Hartley transforms over the cyclic components $\Z_{N_i}$ of $G$. Specifically, $\cht_G = \cht_{N_1} \otimes \cht_{N_2} \otimes \cdots \otimes \cht_{N_k}$. Since each $\cht_{N_i}$ is unitary, the tensor product is also unitary, proving the claim.
+\end{proof}
+
+The quantum Hartley transform over an abelian group $G$ is given by
+\begin{equation}
+    \label{eq:qht}
+    \qht_G: \sum_{\bm{x} \in G} f(\bm{x}) \ket{\bm{x}} \mapsto \sum_{\bm{a} \in G} \cht_G(f)(\bm{a}) \ket{\bm{a}},
+\end{equation}
+where normalization of the input state is omitted for brevity. The function $\cht_G(f)$ may refer to either the additive form \eqref{eq:cht-add} or the multiplicative form \eqref{eq:cht-mult}. In the special case of a single basis state $\ket{a}$ in the group $\Z_N$, the quantum Hartley transform takes the form
+\begin{equation}
+	\label{eq:qht-N}
+	\qht_N: \ket{a} \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\Big(\frac{2\pi a y}{N}\Big) \ket{y}.
+\end{equation}
+
+
+% Another concept we use is the \textbf{quantum Hartley transform} (QHT), which replaces complex exponentials with real sinusoidal kernels.
+
+% \paragraph{Definition.}
+% For $G = \mathbb{Z}_N$, define
+% \[
+% \qht_N: \ket{a} \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\left(\frac{2\pi a y}{N}\right) \ket{y}, \label{eq:qht_def}
+% \]
+% Where $\cas(x) = \cos(x) + \sin(x)$.
+
+% For general abelian $G = \mathbb{Z}_{N_1} \oplus \cdots \oplus \mathbb{Z}_{N_k}$, the Hartley transform of $f : G \to \mathbb{R}$ is
+% \begin{equation}
+%     \qht(f)({\bm{a}}) = \frac{1}{\sqrt{|G|}} \sum_{{\bm{y}} \in G} \cas(2\pi \langle {\bm{a}}, \alpha({\bm{y}}) \rangle) f({\bm{y}}),
+% \end{equation}
+% where $\alpha({\bm{y}}) = y_1 / N_1 + \cdots + y_k / N_k$.
+
+% \paragraph{Unitary Equivalence.}
+% Using the identity
+% \[
+% \cas(2\pi \langle {\bm{a}}, \alpha({\bm{y}}) \rangle) = \frac{1 - i}{2}\chi({\bm{a}}, {\bm{y}}) + \frac{1 + i}{2}\chi(-{\bm{a}}, {\bm{y}}),
+% \]
+% we obtain:
+% \begin{equation}
+% \qht_G = \frac{1 - i}{2} \qft_G + \frac{1 + i}{2} \qft_G^*, \label{eq:QHT_QFT}
+% \end{equation}
+% showing that $\qht_G^2 = {1}$ and hence the $\qht$ is unitary.
+
+% \paragraph{Quantum Formulation.}
+% The quantum Hartley transform over $G$ maps:
+% \[
+% \sum_{{x} \in G} f({x}) \ket{{x}} \mapsto \sum_{{\bm{a}} \in G} \qht_G(f)({\bm{a}}) \ket{{\bm{a}}}.
+% \]
+% Because the cas function is real-valued, the resulting amplitudes remain real—a fact that plays a crucial role in real-amplitude quantum protocols.
+
+
+
+\section{Quantum Algorithms}
+
+
+Quantum algorithms harness the principles of quantum mechanics to solve certain computational problems more efficiently than classical algorithms. Their power often stems from features like superposition, entanglement, and interference, which enable novel approaches to problems in search, algebra, and cryptography.
+
+In this section, we review two fundamental quantum algorithms—the \textsf{cmpIndex} algorithm and the \textit{quantum phase estimation} algorithm—both of which will play a key role in the constructions and analyses presented in the subsequent chapters.
+
+\paragraph{The $\comph$ algorithm.}
+Suppose we are given a quantum state of the form $\ket{G^{(h)} * x}$. There exists an efficient procedure to recover the index $h$. This procedure is implemented via a unitary transformation that maps the state $\ket{G^{(h)} * x} \ket{0}$ to $\ket{G^{(h)} * x} \ket{h}$ using the technique of \emph{phase kickback}. The algorithm proceeds as follows: begin with the state $\ket{G^{(h)} * x} \ket{0}$, apply the quantum Fourier transform to the second register, and then apply the unitary operator $\sum_{k \in G} U_k \otimes \ket{k} \bra{k}$, which acts jointly on both registers. This produces the state
+\[
+\frac{1}{\sqrt{\abs{G}}} \sum_{k \in G} \ket{G^{(h)} * x} \chi(-k, h) \ket{k}.
+\]
+Finally, applying the inverse quantum Fourier transform to the second register yields the desired state $\ket{G^{(h)} * x} \ket{h}$, successfully extracting the label $h$.
+
+\paragraph{The Phase Estimation Algorithm.}
+
+The quantum Fourier transform lies at the heart of a powerful primitive known as \emph{quantum phase estimation}. This algorithm is fundamental to many quantum algorithms and plays a central role in problems involving eigenvalue estimation. Suppose we are given a unitary operator $U$ with an eigenvector $\ket{u}$ such that
+\[
+U \ket{u} = e^{2\pi i \phi} \ket{u}
+\]
+for some unknown phase $\phi \in [0, 1)$. The goal of the phase estimation algorithm is to estimate the value of $\phi$ to $n$ bits of precision.
+
+Phase estimation is not only interesting as a stand-alone quantum task—estimating eigenphases of unitaries—but also serves as a key subroutine in many important quantum algorithms, such as Shor’s factoring algorithm, quantum order finding, and quantum simulations of physical systems.
+
+The algorithm requires two quantum registers: the first (of $t$ qubits) will store the estimated phase, and the second holds the eigenvector $\ket{u}$. We assume access to a black-box unitary that performs the controlled-$U^j$ operation for any integer $j$.
+
+\vspace{1em}
+\noindent\textbf{Algorithm: Quantum Phase Estimation}
+\begin{itemize}
+  \item \textbf{Inputs:}
+    \begin{itemize}
+        \item A black box that implements controlled-$U^j$ for integer $j$.
+        \item An eigenstate $\ket{u}$ of $U$, such that $U \ket{u} = e^{2\pi i \phi} \ket{u}$.
+        \item $t = n + \log(2 + \frac{1}{2\epsilon})$ qubits in the first register initialized to $\ket{0}^{\otimes t}$, where $\epsilon$ is the allowed error.
+    \end{itemize}
+  \item \textbf{Output:} An $n$-bit approximation $\tilde{\phi}$ of $\phi$.
+  \item \textbf{Procedure:}
+    \begin{enumerate}
+      \item Initialize the first register to $\ket{0}^{\otimes t}$ and the second register to $\ket{u}$.
+      \item Apply Hadamard gates to each of the $t$ qubits in the first register to create a uniform superposition:
+      \[
+      \frac{1}{\sqrt{2^t}} \sum_{j=0}^{2^t - 1} \ket{j} \ket{u}.
+      \]
+      \item Apply the controlled-$U^j$ operation to the second register, controlled on the $j$-th basis state of the first register. This yields:
+      \[
+      \frac{1}{\sqrt{2^t}} \sum_{j=0}^{2^t - 1} e^{2\pi i j \phi} \ket{j} \ket{u}.
+      \]
+      \item Discard the second register (since it remains unchanged as $\ket{u}$) and apply the inverse quantum Fourier transform to the first register.
+      \item Measure the first register. With high probability, the outcome is a $t$-bit string that approximates $\phi$ to $n$ bits of accuracy.
+    \end{enumerate}
+\end{itemize}
+
+% \noindent\textbf{Runtime:} $\mathcal{O}(t^2)$ operations and a single invocation of the controlled-$U^j$ oracle for each $j$.
+
+% \noindent\textbf{Success Probability:} At least $1 - \epsilon$.
+
+\vspace{1em}
+This procedure efficiently extracts the phase $\phi$ associated with a known eigenvector of a unitary operator and provides a foundational tool for quantum algorithms that exploit spectral properties of quantum operators. For a complete description and analysis of this algorithm, we refer the reader to \cite{NielsenChuang2010}.
 
 
 
