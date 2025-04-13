@@ -24,12 +24,13 @@
 
 
 
+
 \definecolor{citecolor}{HTML}{009933}
 
 \hypersetup{
 	unicode = true,
     colorlinks = true,
-    citecolor = citecolor,
+    citecolor = blue,
     filecolor = blue,
     linkcolor = blue,
     urlcolor = blue,
@@ -41,12 +42,19 @@
 
 
 \title{
-  Quantum Walks and Application to Quantum Money\\[1em]
-%   \large Supervised by Dr. Jake Doliskani\\[3em]
-  \normalsize McMaster University\\
-  Department of Computing and Software
+  \textbf{Quantum Walks and Application to Quantum Money}\\[2em]
+  \normalsize by\\[2em]
+  \text{\large Ali Mousavi} \\[5em]
+  \text{\shortstack{A Master's Thesis \\[0.5em]
+   Submitted to the Department of Computing and Software\\[0.5em]
+   McMaster University\\[0.5em]
+   In Fulfillment of the Requirements\\[0.5em]
+   For a Master's Degree}
+  }
+
 }
-\author{Ali Mousavi}
+
+
 \date{April 2025}
 
 
@@ -68,7 +76,7 @@
 \textbf{\large Abstract}\\
 
 
-This thesis explores the foundations of quantum computation, focusing on quantum walks and their application to quantum money. Quantum walks, particularly continuous-time quantum walks based on group actions, serve as a powerful computational tool with applications in search algorithms and cryptographic protocols. We examine their mathematical structure and their advantages over classical random walks, emphasizing their efficiency in state evolution and probability distribution spreading. As a part of this work, we examine efficient implementations of transforms such as the Quantum Fourier Transform (QFT) and the Quantum Hartley Transform (QHT), analyzing their role in encoding quantum states for secure cryptographic applications. In particular, we discuss a novel instantiation of a quantum money scheme based on QHT, leveraging its unique properties for improved security and efficiency.
+This thesis explores the foundations of quantum computation, focusing on quantum walks and their application to quantum money. Quantum walks, particularly continuous-time quantum walks based on group actions, serve as a powerful computational tool with applications in search algorithms and cryptographic protocols. We examine their mathematical structure and their advantages over classical random walks, emphasizing their efficiency in state evolution and probability distribution spreading. As a part of this work, we examine efficient implementations of transforms such as the Quantum Fourier Transform ($\qft$) and the Quantum Hartley Transform ($\qht$), analyzing their role in encoding quantum states for secure cryptographic applications. In particular, we discuss a novel instantiation of a quantum money scheme based on $\qht$, leveraging its unique properties for improved security and efficiency.
 To ensure the robustness of this quantum money scheme, we develop a verification mechanism utilizing quantum walks. Unlike previous approaches, which rely on standard quantum state measurements, our method employs continuous-time quantum walks to authenticate quantum money, preventing counterfeiting while maintaining computational feasibility. Additionally, we present a detailed discussion on the efficient implementation of this scheme, including optimized circuit designs and error mitigation strategies.
 
 
@@ -87,7 +95,7 @@ In 2009, Aaronson~\cite{Aaronson2009} proposed the first \emph{public-key quantu
 A promising candidate for secure public-key quantum money based on more standard assumptions was recently proposed by Zhandry~\cite{Zhandry2022}. In Zhandry’s scheme, the core idea is to use an abelian group action as the foundation for the quantum state. Each money state (quantum banknote) is prepared as a \emph{group-action Fourier state}, and the corresponding serial number is an element of the underlying group (we will elaborate on these terms in later chapters). The verification algorithm in this scheme uses a group-action phase kickback routine to extract the serial number from the quantum banknote and check its validity. Doliskani~\cite{Doliskani2023} later proved that Zhandry’s scheme is secure in the generic group action model, providing evidence for its security under well-defined assumptions.
 
 \medskip\noindent\textbf{This Work – Motivation and Contributions.} 
-In this thesis, we adapt Zhandry’s group-action quantum money scheme by replacing its use of the Quantum Fourier Transform with the \emph{Quantum Hartley Transform} (QHT) over finite abelian groups. The motivation behind this substitution is multifold. First, using the Hartley transform causes the banknotes to have \emph{real} amplitudes instead of complex amplitudes. We believe this shift from complex to real quantum states may offer both computational and theoretical advantages. For example, certain mathematical identities hold for any two real orthonormal bases that do not generally hold for complex bases; such differences can affect the properties of quantum states and were a barrier in prior analyses (indeed, an attempted “quantum lightning” construction in \cite{Zhandry2022} failed due to properties of complex phases that do not arise with real amplitudes). Beyond this specific context, our work is a first step toward employing real-valued quantum transforms in quantum cryptography and quantum algorithms. To the best of our knowledge, this is the first significant quantum cryptographic construction that makes essential use of the quantum Hartley transform. We hope that exploring real-amplitude quantum states will inspire further research into new quantum algorithms and optimizations for real-valued transforms.
+In this thesis, we adapt Zhandry’s group-action quantum money scheme by replacing its use of the Quantum Fourier Transform with the \emph{Quantum Hartley Transform} ($\qht$) over finite abelian groups. The motivation behind this substitution is multifold. First, using the Hartley transform causes the banknotes to have \emph{real} amplitudes instead of complex amplitudes. We believe this shift from complex to real quantum states may offer both computational and theoretical advantages. For example, certain mathematical identities hold for any two real orthonormal bases that do not generally hold for complex bases; such differences can affect the properties of quantum states and were a barrier in prior analyses (indeed, an attempted “quantum lightning” construction in \cite{Zhandry2022} failed due to properties of complex phases that do not arise with real amplitudes). Beyond this specific context, our work is a first step toward employing real-valued quantum transforms in quantum cryptography and quantum algorithms. To the best of our knowledge, this is the first significant quantum cryptographic construction that makes essential use of the quantum Hartley transform. We hope that exploring real-amplitude quantum states will inspire further research into new quantum algorithms and optimizations for real-valued transforms.
 
 We now summarize our main contributions:
 \begin{itemize}
@@ -112,7 +120,7 @@ The remainder of this thesis is organized as follows. In Chapter~\ref{chap:backg
 \section{Quantum Computation Basics}
 
 
-Quantum computation is a model of information processing rooted in the principles of quantum mechanics. Unlike classical systems, which encode and manipulate information using deterministic bits, quantum systems store information in quantum states—vectors in complex Hilbert spaces—that can exhibit phenomena with no classical analogue. The most notable of these are \emph{superposition}, which allows quantum systems to be in multiple configurations simultaneously, and \emph{entanglement}, which enables correlations between parts of a system that cannot be explained classically. These characteristics endow quantum computers with computational abilities that can outperform classical counterparts in certain tasks.
+Quantum computation is a model of information processing rooted in the principles of quantum mechanics. Unlike classical systems, which encode and manipulate information using deterministic bits, quantum systems store information in quantum states—vectors in complex Hilbert spaces—that can exhibit phenomena with no classical analogue. The most notable of these are \emph{superposition}, which allows quantum systems to be in multiple configurations simultaneously, and \emph{entanglement}, which enables correlations between parts of a system that cannot be explained classically. These characteristics endow quantum computers with computational abilities that can outperform classical counterparts in certain tasks. For a comprehensive introduction to quantum computation and quantum information we refer the reader to ~\cite{NielsenChuang2010, watrous2018theory, kaye2006introduction}.
 
 To rigorously define the framework of quantum computation, we begin with some basic notation. Let $\mathcal{H}$ be a finite-dimensional Hilbert space over the complex numbers. This space is equipped with an inner product and an orthonormal basis $\{\ket{s} : s \in S\}$, where $S$ is a finite index set that corresponds to the classical configurations of the system. Each element $\ket{s} \in \mathcal{H}$ represents a quantum basis state, analogous to a classical state. A general quantum state $\ket{\alpha} \in \mathcal{H}$ is a unit vector, and can be expressed as a linear combination of the basis vectors:
 \[
@@ -145,7 +153,16 @@ The formal behavior of quantum systems is governed by a small set of postulates 
 
   \item \textbf{Measurement.} Measurement is a probabilistic process governed by an orthonormal basis $\{\ket{s}\}_{s \in S}$ of $\mathcal{H}$. When a measurement is performed on a state $\ket{\alpha} = \sum_{s \in S} a_s \ket{s}$, the outcome is some $s \in S$ with probability $|a_s|^2$, and the system collapses to the corresponding basis state $\ket{s}$. This probabilistic rule is known as the Born rule. Measurement is not reversible: it fundamentally alters the state and discards phase and superposition information not aligned with the measured basis.
 
-  \item \textbf{Composition of Systems.} If two quantum systems $A$ and $B$ are described by Hilbert spaces $\mathcal{H}_A$ and $\mathcal{H}_B$, respectively, then the combined system is described by the tensor product $\mathcal{H}_A \otimes \mathcal{H}_B$. A product state of the form $\ket{\psi_A} \otimes \ket{\psi_B}$ represents a system where $A$ and $B$ are uncorrelated. In general, however, the state may be entangled, and cannot be written as a product of subsystems.
+  \item \textbf{Composition of Systems.} If two quantum systems \( A \) and \( B \) are described by Hilbert spaces \( \mathcal{H}_A \) and \( \mathcal{H}_B \), respectively, then the combined system is described by the tensor product \( \mathcal{H}_A \otimes \mathcal{H}_B \). A product state of the form \( \ket{\psi_A} \otimes \ket{\psi_B} \) represents a system where \( A \) and \( B \) are uncorrelated. In general, however, the state may be entangled, and cannot be written as a product of subsystems.
+
+  If unitary operators \( U_A \) and \( U_B \) act on \( \mathcal{H}_A \) and \( \mathcal{H}_B \), respectively, then the combined unitary \( U_A \otimes U_B \) acts on the joint system by applying \( U_A \) to subsystem \( A \) and \( U_B \) to subsystem \( B \), independently. That is,
+  \[
+  (U_A \otimes U_B)(\ket{\psi_A} \otimes \ket{\psi_B}) = (U_A \ket{\psi_A}) \otimes (U_B \ket{\psi_B}).
+  \]
+  This operation preserves the separability of product states, and more generally, acts linearly on the full Hilbert space \( \mathcal{H}_A \otimes \mathcal{H}_B \).
+
+
+
 \end{enumerate}
 
 Together, these postulates define the operational behavior of quantum systems and underpin the structure of quantum computation. The state space formalism allows for the representation of complex probabilistic and entangled phenomena, while unitary evolution enables coherent manipulation of information. Measurement introduces irreversibility and classical output, allowing for the extraction of computational results from quantum processes. Finally, the tensor product composition rule enables scalable modeling of multipartite systems and is the mathematical basis for the power of quantum algorithms.
@@ -253,6 +270,23 @@ Finally, we note that working in the \textbf{generic group model} (or generic gr
 
 
 \section{The Quantum Fourier Transform}
+The \textit{Quantum Fourier Transform $\qft$} is a quantum analogue of the classical discrete Fourier transform and plays a fundamental role in many quantum algorithms, including Shor’s factoring algorithm and quantum phase estimation. It enables the transformation of quantum states into the frequency domain, revealing periodicities and structure that may be hidden in the computational basis.
+
+A common instance of the $\qft$ is over the cyclic group \( \mathbb{Z}_N  = \{0,1,...,N-1\}\). Given a state \( \ket{x} \in \mathbb{C}^N \), the $\qft$ over \( \mathbb{Z}_N \) maps it to
+\[
+\ket{x} \mapsto \frac{1}{\sqrt{N}} \sum_{k=0}^{N-1} e^{2\pi i xk / N} \ket{k}.
+\]
+When \( N = 2^n \), we can express the index \( x \) in binary as \( x = j_1 j_2 \ldots j_n \), where \( x = j_1 2^{n-1} + j_2 2^{n-2} + \cdots + j_n \). In this case, the $\qft$ has a beautiful product representation:
+\[
+\ket{j_1 \cdots j_n} \mapsto \frac{1}{2^{n/2}} \bigotimes_{k=1}^n \left( \ket{0} + e^{2\pi i 0.j_k j_{k+1} \cdots j_n} \ket{1} \right),
+\]
+where \( 0.j_k j_{k+1} \cdots j_n \) denotes the binary fraction \( \frac{j_k}{2} + \frac{j_{k+1}}{4} + \cdots + \frac{j_n}{2^{n-k+1}} \). This form reveals the tensor product structure of the $\qft$: the transformed state decomposes as a product of single-qubit superpositions, each involving successively finer phase rotations.
+
+This structure allows for an efficient quantum circuit implementation. The circuit consists of a sequence of Hadamard gates and controlled phase gates \( R_k = \begin{bmatrix} 1 & 0 \\ 0 & e^{2\pi i / 2^k} \end{bmatrix} \), followed by a series of swap gates to reverse the order of qubits. For each qubit \( j_k \), a Hadamard gate is applied first, followed by controlled-\( R_2, R_3, \ldots \) gates from subsequent qubits. The number of gates required is \( \Theta(n^2) \), making the $\qft$ over \( 2^n \) dimensions efficiently implementable on a quantum computer \cite[Section 5.1]{NielsenChuang2010}.
+
+In this work, we extend the notion of the $\qft$ to more general finite groups beyond \( \mathbb{Z}_N \). This generalization is essential for studying quantum walks on group-based graphs and analyzing quantum algorithms defined over non-abelian structures.
+
+
 Let $G$ be an abelian group. The group of characters of $G$, denoted $\hat{G}$, consists of homomorphisms of the form $\chi(a, \cdot): G \to \mathbb{C}$ for each $a \in G$. If the group has the structure $G \cong \mathbb{Z}_{N_1} \oplus \cdots \oplus \mathbb{Z}_{N_k}$, then the character function $\chi(a, \cdot)$ can be expressed explicitly as
 \[
 \chi(a, x) = \omega_{N_1}^{a_1x_1} \cdots \omega_{N_k}^{a_kx_k}
@@ -261,7 +295,8 @@ where $\omega_M = \exp(2\pi i / M)$ is a primitive $M$-th root of unity. Given a
 \[
 \hat{f}(a) = \frac{1}{\sqrt{\abs{G}}} \sum_{x \in G} \chi(a, x) f(x).
 \]
-Correspondingly, the quantum Fourier transform of a normalized state $\sum_{g \in G} f(g) \ket{g}$ is given by $\sum_{x \in G} \hat{f}(x) \ket{x}$.
+Correspondingly, the quantum Fourier transform of a normalized state $\sum_{g \in G} f(g) \ket{g}$ is given by $\sum_{x \in G} \hat{f}(x) \ket{x}$. The $\qft$ over \( G \) is simply a tensor product of $\qft$s over each \( \mathbb{Z}_{N_i} \), and can therefore be implemented efficiently.
+
 
 Now consider a regular group action $(G, X, *)$. For any subset $S \subseteq G$, element $y \in X$, and $h \in G$, we define the following state:
 \begin{equation}
@@ -281,7 +316,7 @@ This property makes the states $\ket{G^{(h)} * x}$ analogous to Fourier states o
 
 \section{The Quantum Hartley Transform}
 
-Another concept we use is the \textbf{quantum Hartley transform} (QHT), which replaces complex exponentials with real sinusoidal kernels.
+Another concept we use is the \textbf{quantum Hartley transform} ($\qht$), which replaces complex exponentials with real sinusoidal kernels.
 Let $N$ be a positive integer, and let $\Z_N$ denote the additive cyclic group of integers modulo $N$. The Hartley transform of a function $f: \Z_N \to \R$ is defined as the function $\cht_N(f): \Z_N \to \R$ given by
 \[
 \cht_N(f)(a) = \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\Big(\frac{2 \pi ay}{N}\Big) f(y),
@@ -330,42 +365,8 @@ where normalization of the input state is omitted for brevity. The function $\ch
 	\label{eq:qht-N}
 	\qht_N: \ket{a} \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\Big(\frac{2\pi a y}{N}\Big) \ket{y}.
 \end{equation}
-
-
-% Another concept we use is the \textbf{quantum Hartley transform} (QHT), which replaces complex exponentials with real sinusoidal kernels.
-
-% \paragraph{Definition.}
-% For $G = \mathbb{Z}_N$, define
-% \[
-% \qht_N: \ket{a} \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\left(\frac{2\pi a y}{N}\right) \ket{y}, \label{eq:qht_def}
-% \]
-% Where $\cas(x) = \cos(x) + \sin(x)$.
-
-% For general abelian $G = \mathbb{Z}_{N_1} \oplus \cdots \oplus \mathbb{Z}_{N_k}$, the Hartley transform of $f : G \to \mathbb{R}$ is
-% \begin{equation}
-%     \qht(f)({\bm{a}}) = \frac{1}{\sqrt{|G|}} \sum_{{\bm{y}} \in G} \cas(2\pi \langle {\bm{a}}, \alpha({\bm{y}}) \rangle) f({\bm{y}}),
-% \end{equation}
-% where $\alpha({\bm{y}}) = y_1 / N_1 + \cdots + y_k / N_k$.
-
-% \paragraph{Unitary Equivalence.}
-% Using the identity
-% \[
-% \cas(2\pi \langle {\bm{a}}, \alpha({\bm{y}}) \rangle) = \frac{1 - i}{2}\chi({\bm{a}}, {\bm{y}}) + \frac{1 + i}{2}\chi(-{\bm{a}}, {\bm{y}}),
-% \]
-% we obtain:
-% \begin{equation}
-% \qht_G = \frac{1 - i}{2} \qft_G + \frac{1 + i}{2} \qft_G^*, \label{eq:QHT_QFT}
-% \end{equation}
-% showing that $\qht_G^2 = {1}$ and hence the $\qht$ is unitary.
-
-% \paragraph{Quantum Formulation.}
-% The quantum Hartley transform over $G$ maps:
-% \[
-% \sum_{{x} \in G} f({x}) \ket{{x}} \mapsto \sum_{{\bm{a}} \in G} \qht_G(f)({\bm{a}}) \ket{{\bm{a}}}.
-% \]
-% Because the cas function is real-valued, the resulting amplitudes remain real—a fact that plays a crucial role in real-amplitude quantum protocols.
-
-
+The unitary operator $\qht_N$ can be implemented efficiently, as will be shown in Section~\ref{sec:efficient_qht}. When using the multiplicative form~\eqref{eq:cht-mult}, the unitary $\qht_G$ decomposes as a tensor product of unitaries of the form $\qht_N$.
+  
 
 \section{Quantum Algorithms}
 
@@ -608,8 +609,10 @@ When $S$ is symmetric, $\Gamma(G, S)$ is an undirected $|S|$-regular graph. Note
 \subsection{Examples of Cayley Graphs}
 
 \begin{itemize}
-    \item \textbf{Cycle Graph $C_n$:} The cycle graph is the Cayley graph of the cyclic group $\mathbb{Z}_n = \{0, 1, \dots, n-1\}$ with generating set $S = \{1, -1\}$. Each vertex $j \in \mathbb{Z}_n$ is connected to $j \pm 1 \mod n$.
-
+    \item \textbf{Cycle Graph $C_n$:} The cycle graph is the Cayley graph of the cyclic group $\mathbb{Z}_n = \{0, 1, \dots, n-1\}$ with generating set $S = \{1, -1\}$. Each vertex $j \in \mathbb{Z}_n$ is connected to $j \pm 1 \mod n$. This graph is of particular interest in this work, as we will make use of it in chapter~\ref{chap:verification}.
+    \begin{center}
+        \includegraphics[width = 5cm]{cyclic_graph.pdf}
+    \end{center}
     \item \textbf{Hypercube $Q_n$:} The $n$-dimensional Boolean hypercube is the Cayley graph of the group $(\mathbb{Z}_2)^n$ with generating set $S = \{e_1, \dots, e_n\}$, where $e_i$ flips the $i$-th bit. This graph is $n$-regular and bipartite.
 
     \item \textbf{Complete Graph $K_N$:} The complete graph on $N$ vertices can be viewed as the Cayley graph of $\mathbb{Z}_N$ with generating set $S = \{1, 2, \dots, N-1\}$ (all nonzero elements). Each vertex $g$ has an edge to every other vertex $g+s$.
@@ -1090,7 +1093,7 @@ The generation algorithm $\mathsf{Gen}$ in Zhandry’s scheme works as follows (
     \frac{1}{\sqrt{N}} \sum_{g \in G} |g\rangle \otimes |g * x_0\rangle\,,
     \] 
     which is an entangled state between a superposition of group elements and their corresponding $X$-elements.
-    \item Apply the inverse QFT (which is the adjoint of the QFT) on the first register. This recombines the amplitudes in the first register. The result (by properties of the QFT) can be shown to be 
+    \item Apply the inverse $\qft$ (which is the adjoint of the $\qft$) on the first register. This recombines the amplitudes in the first register. The result (by properties of the $\qft$) can be shown to be 
     \[
     \frac{1}{\sqrt{N}} \sum_{g \in G} \omega^{\langle h,\,g \rangle} |g\rangle \otimes |g * x_0\rangle\,,
     \] 
@@ -1114,25 +1117,27 @@ The intuition is that the genuine state $|\$_h\rangle$ contains a phase that exa
 Zhandry’s scheme is shown to be correct (valid notes pass) and is believed to be secure under the assumption that the group action is one-way. The hardness essentially boils down to: given $x_0$ and $|\$_h\rangle$, an adversary cannot figure out a different $h'$ that would produce a second valid state $|\$_{h'}\rangle$ or replicate $|\$_h\rangle$ (because that would solve the hidden subgroup or discrete log type problem in the group action).
 
 \section{Hartley-Transform Money Scheme Construction}
-Our scheme modifies the above Fourier-based construction by utilizing the \textbf{quantum Hartley transform (QHT)} in place of the QFT. Since the Hartley transform is closely related to the Fourier transform (essentially it produces the real and imaginary parts in a single real-valued transform), one might expect this substitution to be straightforward. And indeed, for the generation procedure it largely is: we will use the QHT to create real-amplitude superposition states.
 
-Concretely, assume again a group action $*: G\times X \mapsto X$ with $|G|=N$. We fix the same generating set $S$ and basepoint $x_0$. The $\mathsf{Gen}_{H}$ (Hartley generation) algorithm:
+
+Our scheme modifies the above Fourier-based construction by utilizing the \textbf{quantum Hartley transform ($\qht$)} in place of the $\qft$. Since the Hartley transform is closely related to the Fourier transform (essentially it produces the real and imaginary parts in a single real-valued transform), one might expect this substitution to be straightforward. And indeed, for the generation procedure it largely is: we will use the $\qht$ to create real-amplitude superposition states.
+
+Concretely, assume again a group action $*: G\times X \mapsto X$ with $|G|=N$. For concreteness, we assume that $G = \Z_N$; the genralization of the scheme to a general group $G$ is straightforward. We fix the same generating set $S$ and basepoint $x_0$. The $\mathsf{Gen}_{H}$ (Hartley generation) algorithm:
 \begin{enumerate}
     \item Sample a random $h \leftarrow G$ to be the serial number.
     \item Prepare $|0_G, x_0\rangle$ as before.
-    \item Apply the \emph{quantum Hartley transform} over $G$ to the first register. The Hartley transform (on an abelian group of order $N$) is defined as:
+    \item Apply the \emph{quantum Hartley transform} over $G$ to the first register, as we saw in \ref{eq:qht-N}:
     \[
-       \mathrm{QHT}: |g\rangle \mapsto \frac{1}{\sqrt{N}} \sum_{k \in G} \cas \Big(\frac{2\pi \langle k,g \rangle}{N}\Big) |k\rangle,
+       \qht: |g\rangle \mapsto \frac{1}{\sqrt{N}} \sum_{k \in \mathbb{Z}_N} \cas \Big(\frac{2\pi  kg }{N}\Big) |k\rangle,
     \] 
-    where $\mathrm{cas}(\theta) = \cos \theta + \sin \theta$ and $\langle k,g \rangle$ denotes some pairing like an exponent or dot product (for cyclic groups this is just $kg$). In simpler terms, $\mathrm{QHT}(|0_G\rangle) = \frac{1}{\sqrt{N}}\sum_{k \in G} |k\rangle$ (because $\cas(0)=1$), \emph{the same uniform superposition as the QFT produces for $|0\rangle$}. So after this step, we again have $\frac{1}{\sqrt{N}}\sum_{g \in G} |g\rangle|x_0\rangle$, but crucially the coefficients are all \emph{real} and positive (in fact all $1/\sqrt{N}$).
+    where $\mathrm{cas}(\theta) = \cos \theta + \sin \theta$. In simpler terms, $\qht(|0_G\rangle) = \frac{1}{\sqrt{N}}\sum_{k \in G} |k\rangle$ (because $\cas(0)=1$), \emph{the same uniform superposition as the $\qft$ produces for $|0\rangle$}. So after this step, we again have $\frac{1}{\sqrt{N}}\sum_{g \in G} |g\rangle|x_0\rangle$, but crucially the coefficients are all \emph{real} and positive (in fact all $1/\sqrt{N}$).
     \item Perform the controlled group action by the first register on the second: $\frac{1}{\sqrt{N}}\sum_{g} |g\rangle |g*x_0\rangle$.
-    \item Apply the inverse QHT on the first register (which being its own inverse up to a constant factor, is the same operation again since Hartley is symmetric like Fourier). Now here is where things differ: after this operation, the joint state will be 
+    \item Apply the inverse $\qht$ on the first register (which being its own inverse up to a constant factor, is the same operation again since Hartley is symmetric like Fourier). Now here is where things differ: after this operation, the joint state will be 
     \[
-       \frac{1}{\sqrt{N}} \sum_{g \in G} \cas\Big(\frac{2\pi \langle h,g \rangle}{N}\Big)\, |g\rangle \otimes |g*x_0\rangle.
+       \frac{1}{\sqrt{N}} \sum_{g \in \mathbb{Z}_N} \cas\Big(\frac{2\pi hg}{N}\Big)\, |g\rangle \otimes |g*x_0\rangle.
     \] 
-    Because the Hartley transform combines what would be cosine and sine terms, this state is not as nicely factorable as in the Fourier case. In the Fourier case, we got $|h\rangle \otimes \text{(orbit state)}$. In the Hartley case, we do not get a single basis state in the first register; instead we get a superposition in the first register with real coefficients $c_g = \cas(2\pi\langle h,g\rangle/N)$. However, note that $c_g$ is just some real number in $[-1,1]$ depending on $h$ and $g$. Another way to express the above state is:
+    Because the Hartley transform combines what would be cosine and sine terms, this state is not as nicely factorable as in the Fourier case. In the Fourier case, we got $|h\rangle \otimes \text{(orbit state)}$. In the Hartley case, we do not get a single basis state in the first register; instead we get a superposition in the first register with real coefficients $c_g = \cas(2\pi hg/N)$. However, note that $c_g$ is just some real number in $[-1,1]$ depending on $h$ and $g$. Another way to express the above state is:
     \[
-      |\$\rangle = \frac{1}{\sqrt{N}} \sum_{x \in X} \Big(\frac{1}{\sqrt{N}}\sum_{g: g*x_0 = x} \cas\big(\frac{2\pi \langle h,g \rangle}{N}\big)\Big)\, |x\rangle.
+      |\$\rangle = \frac{1}{\sqrt{N}} \sum_{x \in X} \Big(\frac{1}{\sqrt{N}}\sum_{g: g*x_0 = x} \cas\big(\frac{2\pi  hg}{N}\big)\Big)\, |x\rangle.
     \] 
     Since for a given $x\in X$, all $g$ such that $g*x_0=x$ have the form $g = u h$ for a unique $u \in G$ (because the action is free and transitive), one can simplify the internal sum using properties of the cas function. But we need not dive into that here.
     \item No measurement of the first register is performed. In fact, we do not have a nice product state separation, so we cannot simply measure one register to get $h$. Instead, the output of generation is just the quantum state $|\$\rangle$ (which is entangled between what used to be two registers) and the known classical serial number $h$ (we know what $h$ we picked).
@@ -1155,12 +1160,12 @@ The key quantum tool enabling this verification is the continuous-time quantum w
 
 We defer the full analysis of the success probabilities and how many repetitions are needed to Chapter 6, where we describe the verification algorithm in detail. For now, the takeaway is that by using the quantum walk approach, we can reliably verify Hartley-based money states, restoring security while still enjoying the properties of real amplitudes.
 
-\section{Efficient Quantum Hartley Transform Implementation}
-Before moving on to the verification algorithm, we briefly discuss how we implement the quantum Hartley transform (QHT) efficiently, as this is an important practical aspect of our scheme. The Fourier transform is well-known to have efficient circuits; for the Hartley transform, fewer results are available, so we contributed a new circuit construction.
+\section{Efficient Quantum Hartley Transform Implementation}\label{sec:efficient_qht}
+Before moving on to the verification algorithm, we briefly discuss how we implement the quantum Hartley transform ($\qht$) efficiently, as this is an important practical aspect of our scheme. The Fourier transform is well-known to have efficient circuits; for the Hartley transform, fewer results are available, so we contributed a new circuit construction.
 
-The QHT we need is over an abelian group, which for concreteness one can think of as $\mathbb{Z}_N$ (the general finite abelian group case can usually be reduced to a direct sum of cyclic groups, applying QHT on each cyclic component). Classical Hartley transforms have a recursive structure similar to fast Fourier transforms. In fact, there are known formulas to express a Hartley transform of size $N$ in terms of two Hartley transforms of size $N/2$ plus some additional linear operations \cite{Bracewell1984}. We leveraged such structures to design a divide-and-conquer quantum circuit.
+The $\qht$ we need is over an abelian group, which for concreteness one can think of as $\mathbb{Z}_N$ (the general finite abelian group case can usually be reduced to a direct sum of cyclic groups, applying $\qht$ on each cyclic component). Classical Hartley transforms have a recursive structure similar to fast Fourier transforms. In fact, there are known formulas to express a Hartley transform of size $N$ in terms of two Hartley transforms of size $N/2$ plus some additional linear operations \cite{Bracewell1984}. We leveraged such structures to design a divide-and-conquer quantum circuit.
 
-Our algorithm for QHT works roughly as follows:
+Our algorithm for $\qht$ works roughly as follows:
 - If $N$ is even, we can express the length-$N$ Hartley transform in terms of two length-$N/2$ Hartley transforms plus a combination of cheap operations (additions, permutations of data, etc.). We implement this decomposition recursively as a quantum circuit. The base of the recursion is when the size is small (like $N=2$ or $4$, where the transform can be done with a constant number of gates).
 - We found that by carefully optimizing this recursion and using some known quantum subroutines for certain linear combinations, the overall gate count is improved compared to naive methods or previous proposals \cite{Klappenecker2001DCT,Klappenecker2001Signal}. In particular, our circuit avoids introducing any quantum Fourier transform internally (unlike \cite{Klappenecker2001Signal} which computed Hartley via Fourier plus some adjustments), and this yields a purely real rotation-based circuit.
 
@@ -1184,7 +1189,7 @@ In the final expression, we have isolated the first qubit for clarity. Let \( \k
 Next, we apply the phase unitary \( P(y, b) \), defined by \( \ket{y} \ket{b} \mapsto \omega_N^{by} \ket{y} \ket{b} \), followed by a Hadamard transform on the final qubit. This results in the state given in Equation~\eqref{eq:qft_alt}.
 
 
-We now describe our algorithm for efficiently computing the quantum Hartley transform \( \qht_N \). The key idea is to leverage the recursive structure of \( \qht_N \), analogous to the strategy used for \( \qft_N \). To facilitate this, we begin by rewriting the summation in Equation~\eqref{eq:qht_def} to expose its recursive form. Our approach is as follows:
+We now describe our algorithm for efficiently computing the quantum Hartley transform \( \qht_N \). The key idea is to leverage the recursive structure of \( \qht_N \), analogous to the strategy used for \( \qft_N \). To facilitate this, we begin by rewriting the summation in Equation~\eqref{eq:qht-N} to expose its recursive form. Our approach is as follows:
 \begin{equation}
     \label{eq:cas-expand}
 	\frac{1}{\sqrt{N}} \sum_{y = 0}^{N - 1} \cas\Big( \frac{2\pi a y}{N} \Big) \ket{y}
@@ -1218,7 +1223,7 @@ We now demonstrate how to compute \( \qht_N \) recursively. For a given \( a \in
     & = \frac{1}{\sqrt{N / 2}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) \ket{0} \ket{y} \ket{b} \\
     & \mapsto \frac{1}{\sqrt{N}} \sum_{y = 0}^{N / 2 - 1} \cas\Big( \frac{4\pi t y}{N} \Big) (\ket{0} + \ket{1}) \ket{y}\ket{b}. & (H \otimes \mathds{1})
 \end{align*}
-Next, we apply a controlled negation operation, where the ancilla qubit is flipped if and only if the least significant bit \( b \) is equal to 1.
+Here, $\mathds{1} \otimes \qht_{N / 2} \otimes \mathds{1}$ is a unitary that applies the identity to the first and last qubits and applies $\qht_{N/2}$ to the rest of the qubits. Next, we apply a controlled negation operation, where the ancilla qubit is flipped if and only if the least significant bit \( b \) is equal to 1.
 \[
     V: \ket{0}\ket{y} \mapsto \ket{0}\ket{y}, \quad \ket{1}\ket{y} \mapsto \ket{1}\ket{N / 2 -y},
 \]
@@ -1301,12 +1306,11 @@ The complete procedure is summarized in the following algorithm.
     The correctness of the algorithm follows from the preceding discussion. Except for the unitary \( U_R \) and the negation unitary in Step~\ref{stp:ngt}, all steps of the algorithm can be implemented using \( O(1) \) elementary gates. The negation operation in Step~\ref{stp:ngt} can be realized using approximately \( \lceil \log N \rceil \) elementary gates.
     
     To implement the unitary \( U_R \), which requires constructing the conditional rotation operator \( R(y, b) \) for arbitrary \( y \) and \( b \), we make use of the two-qubit controlled rotations:
-    \[
-    R_j = \ket{0}\bra{0} \otimes \mathds{1} + \ket{1}\bra{1} \otimes
-    \begin{bmatrix}
-    \cos\left(\frac{2\pi 2^j}{N}\right) & \sin\left(\frac{2\pi 2^j}{N}\right) \\
-    -\sin\left(\frac{2\pi 2^j}{N}\right) & \cos\left(\frac{2\pi 2^j}{N}\right)
-    \end{bmatrix},
+    \[ R_j = \ket{0}\bra{0} \otimes \mathds{1} + \ket{1}\bra{1} \otimes
+        \begin{bmatrix}
+            \cos(2\pi 2^j / N) & \sin(2\pi 2^j / N) \\
+            -\sin(2\pi 2^j / N) & \cos(2\pi 2^j / N)
+        \end{bmatrix},
     \]
     for \( j = 0, 1, \dots, n - 1 \). When \( b = 0 \), we have \( R(y, 0) = \mathds{1} \), and when \( b = 1 \), the operator \( R(y, 1) \) is the product of those \( R_j \) for which the \( j \)th bit of \( y \) is 1. Therefore, for a binary string \( y \) of length \( k = \lceil \log y \rceil \), we can implement \( U_R \) using at most \( k \) gates from the set \( \{R_j\} \).
     
@@ -1319,7 +1323,7 @@ The complete procedure is summarized in the following algorithm.
 %%%%%%%%%%%  ta inja  %%%%%%%%%%%
 
 
-The resulting complexity for an $N$-point QHT is $O(\log^2 N)$ basic quantum gates (up to polylog factors for precision), which is on par (up to constant factors) with the complexity of a QFT circuit. We also derived explicit constants for small cases to show improvements over prior work.
+The resulting complexity for an $N$-point $\qht$ is $O(\log^2 N)$ basic quantum gates (up to polylog factors for precision), which is on par (up to constant factors) with the complexity of a $\qft$ circuit. We also derived explicit constants for small cases to show improvements over prior work.
 
 For the purposes of this thesis, the main point is: \emph{we can implement the Hartley transform needed for our money scheme with polynomial efficiency}. Thus, switching to the Hartley transform does not introduce any prohibitive cost. All steps of generation and verification remain efficient. Having covered the construction of the money scheme and the necessary tools, we now proceed to the final piece: the detailed verification algorithm using quantum walks, and an analysis of how it validates genuine banknotes and foils counterfeit attempts.
 \vspace{1em}
@@ -1361,7 +1365,7 @@ The Hartley-based quantum money scheme introduced in the previous chapter requir
             & = e^{i\lambda_{h}t} \frac{1 - i}{2} \ket{\mathbb{Z}_N^{(h)} * x} + \frac{1 + i}{2} e^{i\lambda_{-h}t} \ket{\mathbb{Z}_N^{(-h)} * x} \\
             & = e^{i\lambda_{h}t} \ket{\mathbb{Z}_N^{(h)} * x}_H,
         \end{align*}
-        where the second equality follows from the identity in \eqref{eq:QHT_QFT}, and the last equality follows from the fact that $\lambda_h = \lambda_{-h}$.
+        where the second equality follows from the identity in \eqref{eq:ht-ft}, and the last equality follows from the fact that $\lambda_h = \lambda_{-h}$.
     \end{proof}
 
 

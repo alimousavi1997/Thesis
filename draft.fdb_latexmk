@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex draft"] 1744476938.06398 "draft.aux" "draft.bbl" "draft" 1744477282.78991 0
-  "./references.bib" 1744476684 9071 e966fa42a56b7f797ab834453b8e2594 ""
+["bibtex draft"] 1744554164.67869 "draft.aux" "draft.bbl" "draft" 1744554167.93608 0
+  "./references.bib" 1744487149 9430 98aca75c608a02b512a54a9cabb5d11b ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/bibtex/bst/bibtex/plain.bst" 1291864736 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "draft.aux" 1744477282 10270 b2bd7f284bf496e98092ae3b75ad2684 "pdflatex"
+  "draft.aux" 1744554166 10563 1b2d7c1eef5efc3c5b7d9db01ea411de "pdflatex"
   (generated)
   "draft.bbl"
   "draft.blg"
   (rewritten before read)
-["pdflatex"] 1744477281.43586 "c:/Users/seyed/Desktop/Thesis/draft.tex" "draft.pdf" "draft" 1744477282.79066 0
-  "C:/Users/seyed/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1743963647 81247 50d52f6487769ef97fe2dc7d59ae1563 ""
+["pdflatex"] 1744554165.2101 "c:/Users/seyed/Desktop/Thesis/draft.tex" "draft.pdf" "draft" 1744554167.9372 0
+  "C:/Users/seyed/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1744485324 81247 50d52f6487769ef97fe2dc7d59ae1563 ""
   "C:/Users/seyed/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1200.pk" 1743963780 14064 017555a2d6ade7eca7d7334e3750688d ""
   "C:/Users/seyed/AppData/Local/MiKTeX/fonts/tfm/public/rsfs/rsfs10.tfm" 1725386838 688 37338d6ab346c2f1466b29e195316aa4 ""
   "C:/Users/seyed/AppData/Local/MiKTeX/fonts/tfm/public/rsfs/rsfs5.tfm" 1725386839 684 3a51bd4fd9600428d5264cf25f04bb9a ""
@@ -69,7 +69,6 @@
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmib10.pfb" 1247596666 36912 b448ef9ad9d7228ec3c6e71005136d55 ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1247596667 35752 024fb6c41858982481f6968b5fc26508 ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1247596667 32722 d7379af29a190c3f453aba36302ff5a9 ""
-  "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1247596666 32362 bc3f3eec7ab7d65fe700963d4017d32c ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb" 1247596667 32734 69e00a6b65cedb993666e42eedb3d48f ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb" 1247596667 32762 7fee39e011c23b3589931effd97b9702 ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1247596667 32726 39f0f9e62e84beb801509898a605dbd5 ""
@@ -150,12 +149,13 @@
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/seyed/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1700127522 55487 80a65caedd3722f4c20a14a69e785d8f ""
   "article_macros.sty" 1729181790 3352 592d73825acc8ec5d976deb83b32c098 ""
-  "c:/Users/seyed/Desktop/Thesis/draft.tex" 1744477280 124366 c4c5306cbd399cafe266bb21fde76f24 ""
-  "draft.aux" 1744477282 10270 b2bd7f284bf496e98092ae3b75ad2684 "pdflatex"
-  "draft.bbl" 1744476938 6148 00ffed7019e2c27bd867fe2d91120063 "bibtex draft"
-  "draft.out" 1744477282 8561 bc8fda8f1ba3ac48864dfa30b676dce4 "pdflatex"
-  "draft.tex" 1744477280 124366 c4c5306cbd399cafe266bb21fde76f24 ""
-  "draft.toc" 1744477282 4107 30dc94b1c42ff421e4b52d5c31d5f4b7 "pdflatex"
+  "c:/Users/seyed/Desktop/Thesis/draft.tex" 1744554160 126742 fd5c351868178daf42abb54ff5d309e9 ""
+  "cyclic_graph.pdf" 1744485334 20980 92da6ad83bec89cfb6b1b31e47cdccd2 ""
+  "draft.aux" 1744554166 10563 1b2d7c1eef5efc3c5b7d9db01ea411de "pdflatex"
+  "draft.bbl" 1744554165 6461 76f95f8c5da21eeadcebaef581aad445 "bibtex draft"
+  "draft.out" 1744554166 8561 bc8fda8f1ba3ac48864dfa30b676dce4 "pdflatex"
+  "draft.tex" 1744554160 126742 fd5c351868178daf42abb54ff5d309e9 ""
+  "draft.toc" 1744554166 4107 0ef1af520b74506c734d71fc1086e75e "pdflatex"
   (generated)
   "draft.aux"
   "draft.log"
